@@ -17,7 +17,7 @@ export async function GET(
             // .maybeSingle();
 
         if (error) {
-            console.error('[Supabase Error]', error);
+            console.error('[Supabase Error]:', error);
             return NextResponse.json({ error: error.message }, { status: 400 });
         }
 
