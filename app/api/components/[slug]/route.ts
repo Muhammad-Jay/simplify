@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/server';
 
 export async function GET(
     req: NextRequest,
@@ -8,7 +8,7 @@ export async function GET(
     const { slug } = await params;
 
     try {
-        const supabase = createClient();
+        const supabase = await createClient();
 
         const { data, error } = await supabase
             .from('components_slug')
@@ -26,4 +26,8 @@ export async function GET(
         console.error('[Server Error]', err);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
+}
+
+export async function POST(){
+
 }
