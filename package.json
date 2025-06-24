@@ -27,7 +27,7 @@
     "@liveblocks/react-lexical": "^2.24.3",
     "@liveblocks/react-tiptap": "^2.24.0",
     "@liveblocks/react-ui": "^2.24.0",
-    "@muhammad.ahmed/simplify-ui": "^1.0.0",
+    "@muhammad.ahmed/simplify-ui": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.6",
