@@ -1,0 +1,228 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@liveblocks/react-ui/styles.css";
+@import "@liveblocks/react-lexical/styles.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*@tailwind base;*/
+/*@tailwind components;*/
+@tailwind utilities;
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer utilities {
+  .center{
+    @apply flex items-center justify-center;
+  }
+  .screen{
+    @apply w-[100dvw] h-[100dvh];
+  }
+  .wrapper{
+    @apply w-fit h-fit p-[10px] rounded-md
+  }
+  .container-full{
+    @apply w-full h-full;
+  }
+  .container-fit{
+    @apply w-fit h-fit;
+  }
+  .between{
+    @apply flex items-center justify-between;
+  }
+  .bg-primary{
+    @apply bg-black;
+  }
+  .bg-secondary{
+    @apply bg-zinc-900;
+  }
+  .bg-accent{
+    @apply bg-gradient-to-br from-[#00BBC2] to-[#00BBC2]/60;
+  }
+  .button-accent{
+    @apply bg-gradient-to-br from-[#00BBC2] to-[#00BBC2]/40;
+  }
+  .button-light{
+    @apply bg-[#00BBC2]/70;
+  }
+  .wrapper-grid{
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-start items-center gap-4;
+  }
+  .bd{
+    @apply border-1 border-[#00BBC2]/30;
+  }
+  .transition-500{
+    @apply transition-all duration-500;
+  }
+  .transition-300{
+    @apply transition-all duration-300;
+  }
+  .page {
+    @apply flex items-center justify-center w-full h-full bg-black;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+#no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+#spin-animate{
+  animation: spin 5s infinite;
+}
+
+@keyframes spin {
+  0%{
+    transform: rotate(0deg);
+  }
+  50%{
+    transform: rotate(180deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+}
+
+html{
+  scroll-behavior: smooth;
+}
+
+#card {
+  overflow: hidden;
+  stroke-opacity: .97;
+  clip-path: path('M20 1.5H730C740.217 1.5 748.5 9.78273 748.5 20V63.5C748.5 73.7173 740.217 82 730 82H622.5C610.626 82 601 91.6259 601 103.5V423C601 434.874 610.626 444.5 622.5 444.5H730C740.217 444.5 748.5 452.783 748.5 463V730C748.5 740.217 740.217 748.5 730 748.5H324C313.783 748.5 305.5 740.217 305.5 730V324.5C305.5 312.626 295.874 303 284 303H20C9.78273 303 1.5 294.717 1.5 284.5V20C1.5 9.78273 9.78273 1.5 20 1.5Z') !important;
+}
+
+#nav-links{
+  clip-path: path('M5.39746 1H346.727C349.849 1.00019 351.729 4.39504 350.18 7.01953L350.019 7.27148L325.874 42.2715C325.127 43.3538 323.896 44 322.581 44H27.8486C26.5714 44 25.3765 43.3902 24.626 42.3691L24.4814 42.1602L2.03027 7.16016C0.322581 4.49793 2.23462 1.00004 5.39746 1Z');
+  overflow: hidden;
+  width: 380px;
+}
+
+#pulse{
+  animation: pulse 3s infinite ease-in-out;
+}
+
+
+
+
+
+.lb-root .lb-button{
+  margin: 0 1.7px;
+}

@@ -1,0 +1,7 @@
+.wordCount {
+    padding: 5px;
+    color: var(--color-text-lightest);
+    font-size: var(--size-xs);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-elevated);
+}
