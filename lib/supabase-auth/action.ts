@@ -8,8 +8,7 @@ import {signUpUser} from "@/lib/database";
 export async function getCurrentUser(){
     const supabase = await createClient()
     const {data, error} = await supabase.auth.getUser()
-
-    if (error) console.error(error)
+    if (error) console.error("wow nooooo",error)
     return data
 }
 

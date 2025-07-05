@@ -4,6 +4,7 @@ import {USER} from "@/types";
 import useAuthClient from "@/hooks/supabase-auth/useAuthClient";
 import {cn} from "@/lib/utils";
 import Link from 'next/link'
+import {User} from 'lucide-react'
 
 
 const Navbar = () => {
@@ -20,8 +21,8 @@ const Navbar = () => {
                 <span className="w-full hidden group-hover:text-cyan-400 transition-500 capitalize h-full md:flex items-center text-nowrap text-white justify-center font-semibold text-xs">
                     profile
                 </span>
-                <div className="w-[32px] h-[32px] bg-secondary rounded-full text-xs flex items-center justify-center">
-
+                <div className="w-[32px] h-[32px] bg-secondary text-white rounded-full text-xs flex items-center justify-center">
+                    <User size={17} className={'group-hover:text-cyan-400 transition-500'}/>
                 </div>
             </Link>
         </div>

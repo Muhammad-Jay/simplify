@@ -8,7 +8,7 @@ const Page = async ({params}: GroupParamsTypes) => {
 
     return (
         <div className={'page rounded-md center'}>
-            <DocumentWrapper documents={domeDocuments} type={groupID}/>
+            {/*<DocumentWrapper documents={domeDocuments} type={groupID}/>*/}
         </div>
     )
 }

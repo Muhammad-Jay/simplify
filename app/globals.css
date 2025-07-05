@@ -10,6 +10,11 @@
 @tailwind utilities;
 
 @theme inline {
+  --animate-first: moveVertical 30s ease infinite;
+  --animate-second: moveInCircle 20s reverse infinite;
+  --animate-third: moveInCircle 40s linear infinite;
+  --animate-fourth: moveHorizontal 40s ease infinite;
+  --animate-fifth: moveInCircle 20s ease infinite;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -118,6 +123,43 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+  50% {
+    transform: translateX(50%) translateY(10%);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+}
+
+@keyframes moveInCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes moveVertical {
+  0% {
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
 @layer utilities {
   .center{
     @apply flex items-center justify-center;
@@ -142,6 +184,9 @@
   }
   .bg-secondary{
     @apply bg-zinc-900;
+  }
+  .gradient{
+    @apply bg-gradient-to-r from-black via-cyan-400/30 via-black via-cyan-400/33 to-transparent;
   }
   .bg-accent{
     @apply bg-gradient-to-br from-[#00BBC2] to-[#00BBC2]/60;

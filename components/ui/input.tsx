@@ -10,7 +10,7 @@ type InputProps = {
     placeholder?: string
     value?: string,
     id?: string,
-    onChange?: ()=> void,
+    onChange?: (e?:any)=> void,
     defaultValue?: string,
     name?: string
 }
@@ -23,6 +23,7 @@ function Input({
                    placeholder,
                    value,
                    onChange,
+                   defaultValue,
                    ...props
                } : InputProps) {
     return (

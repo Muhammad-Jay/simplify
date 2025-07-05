@@ -16,6 +16,13 @@ export type Messages = {
     parts: object[]
 }
 
+export type MetadataTypes = {
+    name: string,
+    description: string,
+    tags: string[],
+    dependencies: Record<string, string>[] | undefined,
+}
+
 export type TranscriptMessages = {
     role: string,
     message: string

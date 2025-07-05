@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -11,21 +12,35 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import useCreateComponent, {FormDataType} from "@/hooks/components/useCreateComponent";
+import {useState} from "react";
 
 export function DialogBtn() {
+    const [formData, setFormData] = useState<FormDataType>({
+        name: 'My Component',
+        fileName: "./component"
+    })
+    const {createComponent, loading} = useCreateComponent(formData)
+
+    const handleChange = (e: any) => {
+        const {name, value} = e.target;
+        setFormData((prev) => ({...prev, [name]: value}));
+    }
+
     return (
         <Dialog>
-            <form>
+            <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    await createComponent();
+                }}>
                 <DialogTrigger asChild>
-                    <Button variant="ghost">
-                        <div className={'center w-[165px] h-[40px] rounded-md bg-accent'}>
+                        <button type={'button'} className={'center w-[165px] h-[40px] rounded-md bg-accent'}>
                             Create Component
-                        </div>
-                    </Button>
+                        </button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[325px] md:max-w-[450px]">
                     <DialogHeader>
-                        <DialogTitle>Edit profile</DialogTitle>
+                        <DialogTitle>Edit Component</DialogTitle>
                         <DialogDescription>
                             Make changes to your profile here. Click save when you&apos;re
                             done.
@@ -33,19 +48,21 @@ export function DialogBtn() {
                     </DialogHeader>
                     <div className="grid gap-4">
                         <div className="grid gap-3">
-                            <Label htmlFor="name-1">Name</Label>
-                            <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+                            <Label htmlFor="name-1">title</Label>
+                            <Input id="name-1" name="name" value={formData.name} onChange={handleChange} />
                         </div>
                         <div className="grid gap-3">
-                            <Label htmlFor="username-1">Username</Label>
-                            <Input id="username-1" name="username" defaultValue="@peduarte" />
+                            <Label htmlFor="username-1">File Name</Label>
+                            <Input id="username-1" name="fileName" value={formData.fileName} onChange={handleChange} />
                         </div>
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
+                            <Button variant="ghost">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit">Save changes</Button>
+                        <Button onClick={createComponent} className={'bg-accent'} type="submit" disabled={loading}>
+                            {loading ? 'Creating...' : 'Save changes'}
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </form>
