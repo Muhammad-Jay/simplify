@@ -1,9 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "@liveblocks/react-ui/styles.css";
-@import "@liveblocks/react-lexical/styles.css";
+@import './styles/reactflow.css';
 
 @custom-variant dark (&:is(.dark *));
+/*@plugin './hero.ts';*/
+/*@source '../../node_modules/@heroui/theme/dist!**!*.{js,ts,jsx,tsx}';*/
 
 /*@tailwind base;*/
 /*@tailwind components;*/
@@ -87,6 +88,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --vscode-menu-background: rgba(26, 17, 44, 0.6);
+  --vscode-editorWidget-background: rgba(44, 44, 44, 0.61);
+  --vscode-editorWidget-border: rgba(59, 184, 230, 0.55);
+  backdrop-filter: blur(10px);
 }
 
 .dark {
@@ -122,7 +127,6 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-
 
 @keyframes moveHorizontal {
   0% {
@@ -186,22 +190,37 @@
     @apply bg-zinc-900;
   }
   .gradient{
-    @apply bg-gradient-to-r from-black via-cyan-400/30 via-black via-cyan-400/33 to-transparent;
+    @apply bg-gradient-to-r from-cyan-400 via-black via-cyan-600 to-transparent;
   }
   .bg-accent{
-    @apply bg-gradient-to-br from-[#00BBC2] to-[#00BBC2]/60;
+    @apply bg-gradient-to-br from-cyan-300 to-cyan-400;
+  }
+  .bg-active{
+    @apply bg-[#d0ff00];
+  }
+  .border-active{
+    @apply border-[#d0ff00];
   }
   .button-accent{
-    @apply bg-gradient-to-br from-[#00BBC2] to-[#00BBC2]/40;
+    @apply bg-gradient-to-br from-[#00BBC2] to-[#00BBC2];
   }
   .button-light{
-    @apply bg-[#00BBC2]/70;
+    @apply bg-[#00BBC2];
+  }
+  .button-neutral{
+    @apply bg-neutral-700 hover:bg-cyan-500 text-white hover:text-black;
   }
   .wrapper-grid{
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-start items-center gap-4;
   }
   .bd{
-    @apply border-1 border-[#00BBC2]/30;
+    @apply border-1 border-[#00BBC2];
+  }
+  .bg-cyan{
+    @apply bg-cyan-500;
+  }
+  .text-cyan{
+    @apply text-cyan-500;
   }
   .transition-500{
     @apply transition-all duration-500;
@@ -210,8 +229,14 @@
     @apply transition-all duration-300;
   }
   .page {
-    @apply flex items-center justify-center w-full h-full bg-black;
+    @apply flex items-center justify-center w-full h-full bg-transparent;
   }
+  /*.margin{*/
+  /*  @apply backdrop-blur-sm bg-neutral-800/20 !important;*/
+  /*}*/
+  /*.overflow-guard {*/
+  /*  @apply backdrop-blur-sm bg-neutral-800/20 !important;*/
+  /*}*/
 }
 
 @layer base {
@@ -222,7 +247,6 @@
     @apply bg-background text-foreground;
   }
 }
-
 
 #no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -248,6 +272,11 @@ html{
   scroll-behavior: smooth;
 }
 
+#node-svg{
+  overflow: hidden;
+  clip-path: path('M10 1H87.75C92.5825 1 96.5 4.91751 96.5 9.75C96.5 15.6871 101.313 20.5 107.25 20.5H494.75C500.687 20.5 505.5 15.6871 505.5 9.75C505.5 4.91751 509.418 1 514.25 1H590C594.971 1 599 5.02944 599 10V74.75C599 79.0302 595.53 82.5 591.25 82.5C585.865 82.5 581.5 86.8652 581.5 92.25V302.25C581.5 307.635 585.865 312 591.25 312C595.53 312 599 315.47 599 319.75V390C599 394.971 594.971 399 590 399H513.25C508.97 399 505.5 395.53 505.5 391.25C505.5 385.865 501.135 381.5 495.75 381.5H106.25C100.865 381.5 96.5 385.865 96.5 391.25C96.5 395.53 93.0302 399 88.75 399H10C5.02944 399 1 394.971 1 390V319.25C1 315.246 4.24594 312 8.25 312C13.3586 312 17.5 307.859 17.5 302.75V91.75C17.5 86.6414 13.3586 82.5 8.25 82.5C4.24594 82.5 1 79.2541 1 75.25V10C1 5.02944 5.02944 1 10 1Z');
+}
+
 #card {
   overflow: hidden;
   stroke-opacity: .97;
@@ -264,10 +293,106 @@ html{
   animation: pulse 3s infinite ease-in-out;
 }
 
-
-
-
-
-.lb-root .lb-button{
-  margin: 0 1.7px;
+#scrollable::-webkit-scrollbar-thumb {
+  background: #00BBC2 !important;
+  border-radius: 6px !important;
 }
+
+#scrollable::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+  scrollbar-width: thin !important;
+}
+
+.quick-input-widget{
+  background: #222222 !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.overflow-guard .monaco-scrollable-area{
+  border-radius: 30px !important;
+  margin-left: 5px !important;
+  padding: 10px !important;
+}
+
+.overflow-guard {
+  gap: 7px !important;
+}
+
+.monaco-menu{
+  background-color: rgba(44, 44, 44, 0.61) !important;
+}
+
+.cm-scroller{
+  border: none !important;
+  height: 100%;
+  width: 100%;
+  background-color: black !important;
+}
+
+#cm-editor-simplify::-webkit-scrollbar-thumb {
+  background: #00BBC2 !important;
+  border-radius: 7px !important;
+}
+
+#cm-editor-simplify::-webkit-scrollbar {
+  width: 7px !important;
+  height: 7px !important;
+  scrollbar-width: thin !important;
+}
+
+.cm-scroller::-webkit-scrollbar {
+  width: 7px !important;
+  height: 7px !important;
+  scrollbar-width: thin !important;
+}
+
+.cm-scroller::-webkit-scrollbar-thumb {
+  background: #00BBC2 !important;
+  border-radius: 7px !important;
+}
+
+.cm-gutter{
+  background: black !important;
+  border: none !important;
+}
+
+.cm-gutterElement{
+   color: #3ef2fa !important;
+}
+
+.cm-tooltip{
+  background-color: rgba(87, 87, 87, 0.24) !important;
+  backdrop-filter: blur(12px) !important;
+  border-radius: 5px !important;
+  border: 2px solid rgba(87, 87, 87, 1) !important;
+  outline: none !important;
+  box-shadow: 20px 20px 20px black !important;
+  padding: 3px !important;
+}
+
+.cm-tooltip .cm-tooltip-autocomplete li {
+  background: rgb(80, 80, 80) !important;
+  color: white !important;
+  overflow: hidden !important;
+}
+
+.cm-autocompletion-item{
+  background: rgb(80, 80, 80) !important;
+  color: white !important;
+  overflow: hidden !important;
+}
+
+.cm-autocompletion-item .cm-active{
+  background-color: rgba(59, 198, 248, 0.17) !important;
+  backdrop-filter: blur(12px) !important;
+  border-radius: 3px !important;
+  border: 2px solid rgba(87, 87, 87, 1) !important;
+  outline: none !important;
+}
+/*.overflow-guard .margin{*/
+/*  border-radius: 10px !important;*/
+/*  background: transparent !important;*/
+/*  padding: 5px !important;*/
+/*  margin-right: 5px !important;*/
+/*}*/

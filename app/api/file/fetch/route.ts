@@ -7,14 +7,15 @@ export async function GET(){
 }
 
 export async function POST(req: Request){
-    const {id} = await req.json()
+    const {id, template} = await req.json()
     const supabase = await createClient()
     const user = await getCurrentUserFromDB()
 
     try {
         const {data, error} = await supabase.from('files').select("id, path, code").match({
             author_id: user.email,
-            file_id: id
+            file_id: id,
+            template
         })
         if (error){
             console.log(error)

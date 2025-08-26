@@ -1,0 +1,54 @@
+/* Base ReactFlow styles */
+@import 'reactflow/dist/style.css';
+
+/* Custom node styling */
+.react-flow__node.sandpack-file-node {
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: #1a1a1a; /* Dark background for the node */
+    color: #f0f0f0; /* Light text color */
+    padding: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    width: 300px; /* Fixed width for consistency */
+    min-height: 150px; /* Minimum height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Hide overflow from editor */
+}
+
+.sandpack-file-node h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    color: #61dafb; /* Cyan accent for filename */
+    font-weight: bold;
+}
+
+.sandpack-file-node .sandpack-editor-container {
+    flex-grow: 1;
+    border-radius: 4px;
+    overflow: hidden; /* Ensure editor content stays within bounds */
+}
+
+/* Handle styling */
+.react-flow__handle {
+    background: #61dafb; /* Cyan handles */
+    border: 1px solid #333;
+    width: 10px;
+    height: 10px;
+}
+
+/* Remove default Sandpack padding/margin to fit better in node */
+.sp-editor {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Adjust Sandpack editor height within the node */
+.sp-editor-wrapper {
+    height: 100% !important; /* Make editor take full height of its container */
+}
+
+.sp-cm-editor {
+    height: 100% !important;
+}

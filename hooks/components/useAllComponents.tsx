@@ -7,22 +7,22 @@ const useAllComponents = () => {
     const [isFetching, setIsFetching] = useState(false)
 
     const fetchComponents = async () => {
-         const data = await fetchAllComponents()
-        if (data){
-            setAllComponents(data)
-        }
-        console.log("no components found")
-    }
-
-    useEffect(() => {
         try {
             setIsFetching(true)
-            fetchComponents().catch(e => console.log(e))
+            const data = await fetchAllComponents()
+            if (data){
+                setAllComponents(data)
+            }
+            console.log("no components found")
         }catch (e) {
             console.log(e)
         }finally {
             setIsFetching(false)
         }
+    }
+
+    useEffect(() => {
+        fetchComponents().catch(e => console.log(e))
     }, []);
 
     return {

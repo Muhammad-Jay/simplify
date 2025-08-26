@@ -7,7 +7,7 @@ export async function GET(){
 }
 
 export async function POST(req: Request){
-    const {id, code, path} = await req.json()
+    const {id, code, path, template} = await req.json()
     const supabase = await createClient()
     const user = await getCurrentUserFromDB()
     try {
@@ -15,15 +15,17 @@ export async function POST(req: Request){
             const {data: existingFile, error} = await supabase.from('files').select().match({
                 path: path,
                 file_id: id,
-                author_id: user.email
+                author_id: user.email,
+                template
             })
             if (existingFile.length > 0){
                 const {error: err} = await supabase.from("files").update({
                     code
                 }).match({
-                    path: path,
+                    path,
                     file_id: id,
-                    author_id: user.email
+                    author_id: user.email,
+                    template
                 })
                 if (err){
                     console.log("error saving files to  database: ",err)
@@ -35,7 +37,8 @@ export async function POST(req: Request){
                     code,
                     path,
                     file_id: id,
-                    author_id: user.email
+                    author_id: user.email,
+                    template
                 })
                 if (saveError){
                     console.log("error saving files to  database:", saveError)

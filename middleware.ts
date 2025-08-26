@@ -3,11 +3,11 @@ import {createClient} from "@/utils/supabase/server";
 import { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-    const supabase = await createClient()
-    const { data, error } = await supabase.auth.getUser()
-    if (error || !data?.user) {
-        console.log(error)
-    }
+    // const supabase = await createClient()
+    // const { data, error } = await supabase.auth.getUser()
+    // if (error || !data?.user) {
+    //     console.log(error)
+    // }
 
     return await updateSession(request)
 }

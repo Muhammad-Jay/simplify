@@ -1,16 +1,17 @@
 'use client'
 import React, {useEffect, useState} from 'react'
 
-const useComponent = (id: string) => {
+const useComponent = (id: string, template: string) => {
     const [files, setFiles] = useState<Record<string, { code: string }>>({})
     const [isFetching, setIsFetching] = useState(false)
 
     const fetchComponent = async () => {
         try {
+            const endpoint = process.env.ENDPOINT!
             setIsFetching(true)
-            const response = await fetch('http://localhost:3000/api/file/fetch',{
+            const response = await fetch(`${endpoint}/api/file/fetch`,{
                 method: 'POST',
-                body: JSON.stringify({id})
+                body: JSON.stringify({id, template})
             })
             const data = await response.json()
             console.log("fetched files: ", data)
@@ -28,10 +29,22 @@ const useComponent = (id: string) => {
         }
     }
 
+    const updateFile = (value: string) => {
+        const actualFiles = Object.entries(files).map(([path, code])=> ({path, code}))
+        const newFiles = [...actualFiles, {path: value ,code: `//......`}]
+        const formatedFiles = Object.fromEntries(
+            newFiles.map(({path, code}) => [path, {code}])
+        )
+        // @ts-ignore
+        setFiles(formatedFiles)
+    }
+
     return{
         isFetching,
         files,
-        fetchComponent
+        setFiles,
+        fetchComponent,
+        updateFile
     }
 }
 export default useComponent

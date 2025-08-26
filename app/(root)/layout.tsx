@@ -7,7 +7,7 @@ export default function  Layout({
     children: React.ReactNode;
 }) {
     return (
-        <div className={cn(`screen relative bd center container-full overflow-hidden`)}>
+        <div className={cn(`screen relative center container-full overflow-hidden`)}>
             {children}
         </div>
     )

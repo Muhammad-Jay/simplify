@@ -1,0 +1,9 @@
+node_modules
+.env.local
+.env
+.git
+.next
+.idea
+.gitignore
+.simplify_ignore
+tsconfig.tsbuildinfo'

@@ -1,12 +1,22 @@
 
 import React from 'react'
-import CreateRoomBtn from "../liveblocks/CreateRoomBtn";
 import {DocumentCard} from "@/components/layouts/DocumentCard";
 import TitleCard from "@/components/layouts/TitleCard";
 import {DialogBtn} from "@/components/CreateComponentBtn";
-
+import Skeleton from "@/components/ui/skeleton";
 
 const DocumentWrapper = ({documents, isFetching, type}) => {
+
+    if(isFetching){
+       return(
+           <div className={'wrapper-grid p-[10px] rounded-md absolute inset-0 h-full w-full flex-col !justify-start !items-start overflow-y-scroll'} id={'no-scrollbar'}>
+               {[1,2,3,4].map(num => (
+                   <Skeleton key={num}/>
+               ))}
+           </div>
+       )
+    }
+
     return (
         <div className={'container-full relative p-[5px] pt-0 md:p-[10px] !pb-0 flex-col center gap-[10px]'}>
             <div className={'container-full sticky top-0 mx-auto !h-[75px] between'}>
@@ -21,7 +31,7 @@ const DocumentWrapper = ({documents, isFetching, type}) => {
             <div className={'relative center container-full !p-0'}>
                 <div className={'wrapper-grid p-[10px] rounded-md absolute inset-0 h-full w-full flex-col !justify-start !items-start overflow-y-scroll'} id={'no-scrollbar'}>
                     {documents?.length > 0 && documents.map((doc, index) => (
-                        <DocumentCard key={doc.id} doc={doc} index={index}/>
+                            <DocumentCard key={doc.id} doc={doc} index={index}/>
                     ))}
                 </div>
             </div>

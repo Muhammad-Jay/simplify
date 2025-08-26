@@ -11,9 +11,9 @@ export async function GET(
         const supabase = await createClient();
 
         const { data, error } = await supabase
-            .from('components_slug')
+            .from('components')
             .select('*')
-            .match('slug'=== slug)
+            .match('name'=== slug)
             // .maybeSingle();
 
         if (error) {

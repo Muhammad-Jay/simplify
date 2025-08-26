@@ -1,8 +1,8 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, memo, useState } from "react";
 
-export const BackgroundGradientAnimation = ({
+const BackgroundGradientAnimation = ({
   gradientBackgroundStart = "rgb(108, 0, 162)",
   gradientBackgroundEnd = "rgb(0, 17, 82)",
   firstColor = "1, 51, 59",
@@ -12,7 +12,7 @@ export const BackgroundGradientAnimation = ({
   fifthColor = "1, 51, 59",
   pointerColor = "140, 100, 255",
   size = "80%",
-  blendingValue = "hard-light",
+  blendingValue = "hard",
   children,
   className,
   interactive = true,
@@ -114,7 +114,7 @@ export const BackgroundGradientAnimation = ({
       <div className={cn("", className)}>{children}</div>
       <div
         className={cn(
-          "gradients-container h-full w-full blur-lg",
+          "gradients-container h-full w-full blur-md",
           isSafari ? "blur-2xl" : "[filter:url(#blurMe)_blur(40px)]"
         )}
       >
@@ -179,3 +179,5 @@ export const BackgroundGradientAnimation = ({
     </div>
   );
 };
+
+export default memo(BackgroundGradientAnimation)

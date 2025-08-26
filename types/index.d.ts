@@ -5,40 +5,11 @@ type children = {
     children?: React.ReactNode
 }
 
-export type CALLSTATUSTYPE = {
-    ACTIVE: 'active',
-    INACTIVE: 'inactive',
-    LOADING: 'loading'
-}
-
-export type Messages = {
-    role: string,
-    parts: object[]
-}
-
 export type MetadataTypes = {
     name: string,
     description: string,
     tags: string[],
-    dependencies: Record<string, string>[] | undefined,
-}
-
-export type TranscriptMessages = {
-    role: string,
-    message: string
-}
-
-export type ConversationCardType = {
-    isSpeechActive: boolean,
-    callStatus: string,
-    name: string,
-    user?: USER
-    transcript: {
-        role: string,
-        message: string
-    },
-    handleCall?: () => void,
-
+    dependencies: []
 }
 
 export type sidebarLinkProps = {
@@ -70,6 +41,8 @@ export type USER = {
     history?: string | null
 }
 
+export type EditorFilesTypes = Record<string, { code: string }>
+
 /**
  * This is the main type of your Documents.
  * Make sure to edit /lib/server/utils/buildDocuments.ts when adding new
@@ -100,6 +73,8 @@ export type Document = {
     // The type of document e.g. "canvas"
     type: DocumentType;
 };
+
+export type TemplateType = "react-ts"|"react"|"angular"|"vue"|"vanilla"|"vanilla-ts"|"nextjs"|"node"|"astro"
 
 export type DocumentType = "text" | "whiteboard" | "canvas" | "note";
 

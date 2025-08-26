@@ -1,5 +1,5 @@
-import React from 'react'
-import {BackgroundGradientAnimation} from "@/components/ui/background-gradient-animation";
+import React, {memo} from 'react'
+import BackgroundGradientAnimation from "@/components/ui/background-gradient-animation";
 import {cn} from "@/lib/utils";
 
 const BackgroundGradient = ({
@@ -18,4 +18,4 @@ const BackgroundGradient = ({
         </BackgroundGradientAnimation>
     )
 }
-export default BackgroundGradient
+export default memo(BackgroundGradient)

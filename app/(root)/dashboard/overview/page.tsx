@@ -1,15 +1,13 @@
-import React, {ReactNode} from 'react'
-import CreateRoomBtn from "@/components/liveblocks/CreateRoomBtn";
-import DocumentWrapper from "@/components/layouts/DocumentWrapper";
-import {domeDocuments} from "@/constants";
-import {getDocuments} from "@/lib/liveblocks/getDocument";
+"use client"
+import React, {memo} from 'react'
 import Header from "@/components/layouts/overview/Header";
-import RecentComponents from "@/components/layouts/overview/RecentComponents";
-import TrendingCreators from "@/components/layouts/overview/TrendingCreators";
+import dynamic from 'next/dynamic';
 import {cn} from "@/lib/utils";
 
-const Draft = async () => {
-    const data = await getDocuments()
+const RecentComponents = dynamic(()=> import("@/components/layouts/overview/RecentComponents"), {ssr: false})
+const TrendingCreators = dynamic(()=> import("@/components/layouts/overview/TrendingCreators"), {ssr: false})
+
+const Draft = () => {
 
     return (
         <main className={`page rounded-lg !bg-transparent relative !justify-start gap-[10px] pt-[30px] px-[20px] !flex-col`}>
@@ -22,4 +20,4 @@ const Draft = async () => {
         </main>
     )
 }
-export default Draft
+export default memo(Draft)

@@ -1,11 +1,13 @@
-import React from 'react'
-import EditorWrapper from "@/components/sandpack/EditorWrapper";
+import React, {memo} from 'react'
+import CodeEditor from "@/components/EditorFlow/Monoco/Editor";
+
 
 const Page = async ({params}: {params: {slug_id: string}}) => {
     const {slug_id} = await params;
 
     return (
-       <EditorWrapper id={slug_id}/>
+       <div className={"center container-full"}>
+       </div>
     )
 }
-export default Page
+export default memo(Page)

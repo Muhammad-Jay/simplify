@@ -5,15 +5,15 @@ import BackgroundGradient from "@/components/BackgroundGradient";
 
 const Layout = ({children} : { children : React.ReactNode }) => {
     return (
-            <main className={'screen relative !bg-transparent between flex-row p-[5px]'}>
-                {/*<BackgroundGradient className={"absolute inset-0 w-full h-full"}>*/}
-                {/*    <div className={"w-full h-full bg-black/70 z-[3]"}/>*/}
-                {/*</BackgroundGradient>*/}
-                <div className={'center w-fit h-full'}>
+            <main className={'screen relative !bg-transparent between flex-row !p-0'}>
+                <BackgroundGradient className={"absolute inset-0 w-full h-full"}>
+                    <div className={"w-full h-full bg-cyan z-[3]"}/>
+                </BackgroundGradient>
+                <div className={'center w-fit p-[5px] h-full'}>
                     <Sidebar/>
                 </div>
-                <div className={'between !bg-transparent z-[5] page flex-col p-[5px]'}>
-                    <section className={'center w-full h-fit'}>
+                <div className={'between !bg-transparent z-[5] page !p-0 flex-col'}>
+                    <section className={'center bg-zinc-300/10 backdrop-blur-lg w-full h-fit'}>
                         <Navbar></Navbar>
                     </section>
                     <section className={'container-full !bg-transparent relative rounded-lg'}>

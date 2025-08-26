@@ -24,15 +24,15 @@ export async function getCurrentUserFromDB(){
     return data[0]
 }
 
-export async function createNewComponent(formData: {name: string, fileName: string}, author_id : string){
+export async function createNewComponent(formData: {name: string, template: string}, author_id : string){
     try {
         const user = await getCurrentUserFromDB()
         console.log(user)
         const supabase = await createClient()
         const {data, error} = await supabase.from('components').insert({
-            slug: formData.name,
+            name: formData.name,
+            template: formData.template,
             author_id: user.email
-                // "jsync4172004@gmail.com"
         }).select("*").single()
         console.log(" the data: ", data)
         if (error){
@@ -87,6 +87,31 @@ export async function fetchAllComponents(){
             }
             return data;
         }else console.log("no current user found")
+    }catch (e) {
+        console.log(e)
+    }
+}
+
+export async function getMetadataById(id: string){
+    try {
+        const supabase = await createClient()
+        const {data, error} = await supabase.from('components').select("name, description, template, tags, dependencies").eq("slug_id", id).single()
+        if (error) console.log(error)
+        return data
+    }catch (e) {
+        console.log(e)
+    }
+}
+
+export async function updateMetadata(key: string, value: any, id: string){
+    try {
+        const supabase = await createClient()
+        const {error} = await supabase.from("components").update({
+            [key]: value
+        }).match({
+            slug_id: id
+        })
+        if (error) console.log(error)
     }catch (e) {
         console.log(e)
     }

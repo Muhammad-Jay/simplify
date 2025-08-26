@@ -12,7 +12,8 @@ type InputProps = {
     id?: string,
     onChange?: (e?:any)=> void,
     defaultValue?: string,
-    name?: string
+    name?: string,
+    onKeyDown?: (e: any) => void
 }
 
 function Input({
@@ -24,6 +25,7 @@ function Input({
                    value,
                    onChange,
                    defaultValue,
+                   onKeyDown,
                    ...props
                } : InputProps) {
     return (
@@ -33,6 +35,8 @@ function Input({
                placeholder={placeholder}
                value={value}
                onChange={onChange}
+               onKeyDown={onKeyDown}
+               aria-autocomplete={'none'}
                className={cn(
                    "file:text-foreground placeholder:text-muted-foreground placeholder:text-sm placeholder:font-regular  dark:bg-input/30 flex h-9 w-full min-w-0 rounded-full border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                    "focus-visible:border-[#279397] focus-visible:border-2",

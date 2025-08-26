@@ -7,7 +7,7 @@ import useAuthClient from "@/hooks/supabase-auth/useAuthClient";
 
 export type FormDataType = {
     name: string,
-    fileName: string
+    template: string
 }
 
 const UseCreateComponent = (formData: FormDataType) => {

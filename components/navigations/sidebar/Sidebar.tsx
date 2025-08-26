@@ -2,8 +2,7 @@
 import React, {useState} from 'react'
 import SidebarLinks from "@/components/navigations/sidebar/SidebarLinks";
 import {cn} from "@/lib/utils";
-import Link from "next/link";
-import {ChevronDown, ChevronRight, File, LogOut, Settings} from "lucide-react";
+import {ChevronDown, ChevronRight, File, LogOut, Settings, ChartPie, FileCode2} from "lucide-react";
 import SidebarGroupLinks from "@/components/navigations/sidebar/SidebarGroupLinks";
 import SidebarLogoutBtn from "@/components/navigations/sidebar/SidebarLogoutBtn";
 import SidebarHeader from "@/components/navigations/sidebar/SidebarHeader";
@@ -46,8 +45,7 @@ const SidebarGroup = () => {
 const Sidebar = () => {
 
     return (
-        <GlassCard className={"w-fit h-full"}>
-            <aside className={`between !justify-start w-fit h-full gap-[10px] flex-col rounded-lg mr-2 p-[10px] px-0 !pt-0`}>
+            <aside className={`between bd !justify-start w-fit h-full z-10  gap-[10px] !bg-zinc-900 flex-col rounded-lg p-[10px] px-0 !pt-0`}>
                 <div className={`center w-full h-[50px] rounded-md`}>
                     <SidebarHeader/>
                 </div>
@@ -63,15 +61,15 @@ const Sidebar = () => {
                         href={'/dashboard/components'}
                         title={'My Components'}
                         icon={
-                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20x" fill="#e3e3e3"><path d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z"/></svg>
+                            <FileCode2 size={16}/>
                         }/>
 
                     <SidebarLinks
                         href={'/dashboard/analytics'}
                         title={'Analytics'}
                         icon={
-                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20x" fill="#e3e3e3"><path d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z"/></svg>
-                        }/>
+                        <ChartPie size={16}/>
+                    }/>
 
                     {/*<SidebarLinks*/}
                     {/*    href={'/dashboard/conversation'}*/}
@@ -98,7 +96,6 @@ const Sidebar = () => {
                         }/>
                 </div>
             </aside>
-        </GlassCard>
     )
 }
 export default Sidebar
