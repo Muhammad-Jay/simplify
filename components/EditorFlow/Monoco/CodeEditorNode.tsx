@@ -82,7 +82,7 @@ const CodeEditorNode = ({
             isVisible={isVisible}
             isInteractive={isInteractive}
             selected={selected}
-            stroke={selected ? "#d0ff00" : "#00C8FF"}>
+            stroke={ selected ? "#d0ff00" : data.color }>
             <div
                 className={cn(`rounded-2xl relative container-full`,
                     isInteractive && "nodrag nowheel")}>
@@ -113,6 +113,11 @@ const CodeEditorNode = ({
 
                 </div>
             </div>
+            <div
+                style={{
+                    backgroundColor: data.name === 'package.json' ? '#4f5a00' : data.name.startsWith('.env') ? "#00a139" : "#00C8FF"
+                }}
+                className={cn('w-[65%] !mb-[15px] center h-[7px] rounded-full',)}></div>
         </NodeCard>
     );
 };

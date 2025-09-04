@@ -22,17 +22,17 @@ const LeftSidebarRenderer = () => {
             <div
                 className={cn(`container-full center rounded-md center bg-transparent`)}>
                 {leftSidebarState === sidebarState.file && (
-                    <div className={'container-full center rounded-lg rounded-md !h-full'}>
+                    <div className={'container-full center rounded-lg !h-full'}>
                         <Tools/>
                     </div>
                 )}
                 {leftSidebarState === sidebarState.dependencies && (
-                    <div className={'container-full center rounded-lg rounded-md !h-full'}>
+                    <div className={'container-full center rounded-lg !h-full'}>
                         <Dependencies/>
                     </div>
                 )}
                 {leftSidebarState === sidebarState.metadata && (
-                    <div className={'container-full center rounded-lg rounded-md !h-full'}>
+                    <div className={'container-full center rounded-lg !h-full'}>
                         {leftSidebarState}
                     </div>
                 )}

@@ -1,6 +1,7 @@
 import path from 'path'
 import {mockFilesDataTypes} from "@/constants";
 import {nanoid} from 'nanoid'
+import {MarkerType} from 'reactflow'
 
 
 export function generateEdges(nodes: mockFilesDataTypes[]){
@@ -23,10 +24,13 @@ export function generateEdges(nodes: mockFilesDataTypes[]){
                 id: nanoid(),
                 source: parentId,
                 target: node.fullPath,
-                type: 'simplebezier',
+                type: 'customEdge',
+                markerEnd: {
+                    type: MarkerType.ArrowClosed
+                },
                 style: {
-                    stroke: 'white',
-                    opacity: 2,
+                    stroke: '#ffffff',
+                    opacity: 1,
                     strokeWidth: 3
                 },
                 data: {

@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import {Dexie} from "dexie"
-import {Liveblocks} from "@liveblocks/node";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -31,3 +30,5 @@ export function indexDb({DBNAME, template, id}: {DBNAME: string, template: strin
 
   return db;
 }
+
+

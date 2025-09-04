@@ -226,7 +226,7 @@ export function EditorProvider({
     }
 
     const highlightSubChildrenEdges = (setFlowEdges: any) => {
-        const folderPath = selectedNode ? selectedNode.data.label : null
+        const folderPath = selectedNode ? selectedNode.data.label : null;
 
         if (folderPath && selectedNode){
             setFlowEdges(prev => prev.map((flowEdge) => ({

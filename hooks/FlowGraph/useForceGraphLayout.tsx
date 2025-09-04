@@ -11,85 +11,58 @@ import {
 import type { Node, Edge } from '@xyflow/react'
 
 type UseForceGraphLayoutProps = {
-    nodes: Node[];
-    edges: Edge[];
-    width?: number;
-    height?: number;
-    iteration?: number;
-    strength?: number;
-    distance?: number;
-    collideRadius?: number
+    nodesData: Node[] | any;
+    linksData: Edge[];
+    containerRef: any
 }
 
 export function useForceGraphLayout({
-                                        nodes,
-                                        edges,
-                                        width = 1000,
-                                        height = 800,
-                                        iteration = 300,
-                                        strength = -500,
-                                        distance = 120,
-                                        collideRadius = 50
-                                    }: UseForceGraphLayoutProps, setNodes?: any){
-    const [positionedNodes, setPositionedNodes] = useState<Node[]>([])
+                                        nodesData,
+                                        linksData,
+                                        containerRef
+                                    }: UseForceGraphLayoutProps,){
+    const [nodes, setNodes] = useState([]);
+    const [links, setLinks] = useState([]);
+    const [dimentions, setDimentions] = useState({width: 0, height: 0});
 
-    const { simNodes, simLinks } = useMemo(() : any => {
-        const simNodes = nodes.map((node) => ({
-            ...node,
-            x: Math.random() * width,
-            y: Math.random() * height,
-            fx: null,
-            fy: null
-        }))
-
-        const simLinks = edges.map((edge) => ({
-            source: edge.source,
-            target: edge.target
-        }))
-
-        return { simNodes, simLinks }
-    }, [nodes, edges, width, height])
-
-    const runSimulation = () => {
-        if (!simNodes.length){
-            setPositionedNodes([])
-            console.log('no nodes')
+    useEffect(() => {
+        if (!containerRef.current){
             return;
         }
 
-        let simulation;
-        let animationFromId: number;
-
-        simulation = forceSimulation(simNodes)
-            .force('charge', forceManyBody().strength(strength))
-            .force('link', forceLink(simLinks)
-                .id((d: any) => d.id)
-                .distance(distance))
-            .force('center', forceCenter(width / 2, height / 2))
-            .force('collide', forceCollide(collideRadius))
-            .stop()
-
-        for (let i = 0; i < iteration; i++){
-            simulation.tick();
-        }
-
-        animationFromId = requestAnimationFrame(() => {
-            setPositionedNodes(
-                simNodes.map(({ x = 0, y = 0, ...nodes}) => ({
-                    ...nodes,
-                    position: { x, y }
-                }))
-            )
+        const observer = new ResizeObserver((entries) => {
+            for (let entry of entries){
+                setDimentions({
+                    width: entry.contentRect.width,
+                    height: entry.contentRect.height
+                });
+            }
         })
-    }
 
-    // useEffect(() => {
-    //
-    //     // return () => {
-    //     //     if (simulation) simulation.stop()
-    //     //     if (animationFromId) cancelAnimationFrame(animationFromId)
-    //     }
-    // }, [simNodes, simLinks, width, height, strength, distance, iteration, collideRadius]);
+        observer.observe(containerRef.current);
 
-    return { positionedNodes, runSimulation }
+        return () => observer.disconnect();
+    }, [containerRef]);
+
+    useEffect((): any => {
+        if (dimentions.width === 0 || dimentions.height === 0) return;
+
+       const simulation = forceSimulation(nodesData)
+            .force('link', forceLink(linksData)
+                .id((d: any) => d.id)
+                .distance(150))
+            .force('charge', forceManyBody().strength(-300))
+            .force('center', forceCenter(dimentions.width / 2, dimentions.height / 2))
+           .on('end', () => {
+               const layoutedNodes = nodesData.map(nds => ({
+                   ...nds,
+               }))
+               setNodes([...layoutedNodes])
+               setLinks({...linksData})
+           })
+
+        return () => simulation.stop();
+    }, []);
+
+    return { nodes, links }
 }

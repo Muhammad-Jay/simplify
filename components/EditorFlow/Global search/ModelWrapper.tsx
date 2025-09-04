@@ -8,15 +8,20 @@ import {cn} from "@/lib/utils";
 import {Input} from "@/components/ui/input";
 import Loader from "@/components/Loader";
 import {useFileState} from "@/context/FileContext";
+import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area";
 
 const ModelWrapper = () => {
     const { setOpen, open, setCurrentNode, } = useEditorState()
-    const { query, setQuery, isSearching, setIsOnQuery, searchResults } = useFileState()
+    const { query, setQuery, setNodes, setSelectedNode, isSearching, setSelectedFileNode, setIsOnQuery, searchResults } = useFileState()
 
 
     const handleChange = (e) => {
         setQuery(e.target.value)
     }
+
+    // const handleNodeSelection = (nodeId) => {
+    //     setNodes(nds => nds.map(n => ({...n, selected: n.id === nodeId})))
+    // }
 
     return open && (
         <>
@@ -29,7 +34,7 @@ const ModelWrapper = () => {
                 className={'absolute !screen inset-0 center z-[7] bg-black/30'}/>
                 <Panel
                     position={'top-right'}
-                    className={'!w-[500px] translate-y-[8%] transition-300 !my-auto ml-[25%] !h-[470px] !z-[9] p-0 !backdrop-blur-sm center rounded-lg !bg-neutral-800/20 border-2 border border-input'}>
+                    className={'!w-[500px] translate-y-[8%] transition-300 !my-auto ml-[25%] !h-[470px] !z-[9] p-0 !backdrop-blur-sm center rounded-lg !bg-neutral-800/20 border-2 border-input'}>
                     <div className={'container-full p-[15px] center flex-col !items-start'}>
                         <div className={'w-full center mt-[10px] !justify-start mb-[5px]'}>
                             <h1 className={'text-lg text-white center !justify-start'}>search files</h1>
@@ -42,38 +47,44 @@ const ModelWrapper = () => {
                                     onChange={handleChange}
                                     value={query}
                                     name={'search'}
-                                    className={'w-full h-[30px] text-xs !z-[10] text-white p-[10px] outline-none border-[1px] outline-zinc-600 !border-zinc-600 bg-neutral-900 rounded-sm'}
+                                    className={'w-full h-[30px] text-xs font-regular !z-[10] text-white p-[10px] outline-none border-[1px] outline-zinc-600 !border-zinc-600 bg-neutral-900 rounded-sm'}
                                 />
                             </div>
-                            <div className={'center container-full !h-[300px] overflow-y-auto p-[10px]'} id={'no-scrollbar'}>
+                            <div className={'center container-full !h-[300px] overflow-y-auto p-[10px] px-0'} id={'no-scrollbar'}>
                                 {isSearching ? (
                                     <div className={'container-full center'}>
                                         <Loader size={16} className={'animate-spin text-white'}/>
                                     </div>
                                 ) : (
-                                    <ul className={'container-full center flex-col !justify-start gap-[10px]'}>
-                                        {searchResults && searchResults.map((result) => (
-                                            <li
-                                                key={result.data.name}
-                                                className={'w-full hover:bg-cyan-500/10 rounded-md center'}
+                                    <ScrollArea className={'container-full center flex-col !justify-start space-y-[10px]'}>
+                                        {searchResults && searchResults.map((result: any, index: number) => (
+                                            <div
+                                                key={`${result.data.name}:${index}`}
+                                                className={'w-full hover:bg-cyan-500/15 transition-300 pr-[10px] px-[5px] !my-[3px] p-[3px] rounded-md center'}
                                             >
                                                 <div onClick={()=> {
-                                                    setCurrentNode(result)
-                                                    setIsOnQuery(true)
-                                                    setOpen(false)
+                                                    setCurrentNode(result);
+                                                    setIsOnQuery(true);
+                                                    setOpen(false);
+                                                    setSelectedNode({...result});
+                                                    setTimeout(() => setSelectedNode({}), 400)
+                                                    if (result.type === 'codeEditor'){
+                                                        setSelectedFileNode({...result});
+                                                    }
                                                 }}
                                                     className={'w-full h-[22px] center !justify-start gap-[5px] p-[3px]'}>
-                                                    <h1 className={'text-xs text-semibold text-white'}>{result.data.name}</h1>
-                                                    <p className={'text-xs text-yellow-500 font-light flex-nowrap'}>{result.data.label || ''}</p>
+                                                    <h1 className={'text-xs text-semibold text-foreground/90'}>{result.data.name}</h1>
+                                                    <p className={'text-xs text-yellow-300 font-light flex-nowrap'}>{result.data.label || ''}</p>
                                                     <div className={'w-full h-full center !justify-end'}>
                                                         {result.type === 'codeEditor' && (
-                                                            <h1 className={'text-xs font-light text-white flex-nowrap center truncate'}>{result.data?.code?.slice(0, 30)}</h1>
+                                                            <h1 className={'text-xs font-light text-foreground/80 flex-nowrap center truncate'}>{result.data?.code?.slice(0, 30)}</h1>
                                                         )}
                                                     </div>
                                                 </div>
-                                            </li>
+                                            </div>
                                         ))}
-                                    </ul>
+                                        <ScrollBar/>
+                                    </ScrollArea>
                                 )}
                             </div>
                         </div>

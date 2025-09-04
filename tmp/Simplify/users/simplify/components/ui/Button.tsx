@@ -6,6 +6,8 @@ import {
     addEdge,
     Background,
     Controls,
+    useNodesState,
+    useEdgesState,
     Connection,
     Edge,
     Panel,
@@ -13,27 +15,37 @@ import {
     useReactFlow,
     applyNodeChanges,
     applyEdgeChanges,
-    useOnSelectionChange,
-    ConnectionMode,
+    useOnSelectionChange
 } from 'reactflow';
+// import { useReactFlow } from '@xyflow/react'
+import { SandpackProvider, SandpackPreview, useSandpack } from '@codesandbox/sandpack-react'
 import dynamic from 'next/dynamic';
 import {cn} from "@/lib/utils";
 import FlowSidebarWrapper from "@/components/EditorFlow/ui/FlowSidebarWrapper";
 import EditorSidebar from "@/components/EditorFlow/ui/left-sidebar/EditorSidebar";
+import Navbar from "@/components/navigations/Navbar";
+import mockSandpackFiles, {mockFileData, mockFilesDataTypes, ToolNodes} from "@/constants";
 import FolderNode from "@/components/EditorFlow/Monoco/FolderNode";
 import Loader from "@/components/Loader";
 import {useEditorState} from "@/context/EditorContext";
+import {useFileTreeGraph} from "@/hooks/FlowGraph/useFileTreeGraph";
+import CustomStepEdge from "@/components/EditorFlow/Edge/CustomStepEdge";
+import {useForceGraphLayout} from "@/hooks/FlowGraph/useForceGraphLayout";
+import {Button} from "@/components/ui/button";
 import FlowNavbar from "@/components/EditorFlow/ui/FlowNavbar";
 import LeftSidebarRenderer from "@/components/EditorFlow/ui/left-sidebar/LeftSidebarRenderer";
 import {LeftBottomPanel, RightBottomPanel} from "@/components/EditorFlow/ui/bottom-tabs/BottomPanel";
 import RightSidebarRenderer, {RightEditorSidebar} from "@/components/EditorFlow/ui/right-sidebar/RightSidebarRenderer";
+import selectedNode from "@/components/EditorFlow/ui/right-sidebar/SelectedNode";
 import ModelWrapper from "@/components/EditorFlow/Global search/ModelWrapper";
+import TopMiddleTap from "@/components/EditorFlow/ui/top middle tab/TopMiddleTap";
+import {get} from "@/lib/github.test";
 import HttpNode from "@/components/EditorFlow/nodes/HttpNode";
 import CodeEditor from "@/components/EditorFlow/Monoco/Editor";
+import SpiralLoader from '../ui/PageLoader';
+import {useUserState} from "@/context/UserContext";
 import {useFileState} from "@/context/FileContext";
-import {useForceGraphLayout} from "@/hooks/FlowGraph/useForceGraphLayout";
-import {initializeBuildProcess} from "@/lib/podman_actions/init";
-import PanContextMenu from "@/components/EditorFlow/ui/pan/PanContextMenu";
+import {generateEdges} from "@/utils/flow/edge";
 
 const CodeEditorNode = dynamic(() => import('@/components/EditorFlow/Monoco/CodeEditorNode'), {
     ssr: false
@@ -47,21 +59,15 @@ const nodeTypes = {
 };
 
 const edgeType = {
-    customEdge: 'default'
+    customStep: CustomStepEdge
 }
 
 export const getLayoutedElements = (nodes, edges, options: any) => {
     const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
-
-    const graphRankSep = nodes.lenght > 30 ? 700 : nodes.lenght > 20 ? 500 : nodes.lenght > 10 ? 300 : 350;
-    const graphNodeSep = nodes.lenght > 30 ? 450 : nodes.lenght > 20 ? 350 : nodes.lenght > 10 ? 350 : 200
-    const calc = graphRankSep
     g.setGraph({
         rankdir: options.direction,
-        ranksep: calc,
-        nodesep: graphNodeSep,
-        edgesep: 50,
-        ranker: 'tight-tree',
+        ranksep: 200,
+        nodesep: 50,
     });
 
     edges.forEach((edge) => g.setEdge(edge.source, edge.target));
@@ -137,6 +143,11 @@ const FlowWithCodeEditor = () => {
     //     return () => clearTimeout(timeout)
     // }, [nodes, files]);
     //
+    // useEffect(() => {
+    //     if (fold.path){
+    //         toggleFolder(nodes, setNodes, setEdges)
+    //     }
+    // }, [fold.fold]);
     //
     // const onLayout = useCallback((direction: any) => {
     //     const layouted = getLayoutedElements(nodes, edges, { direction })
@@ -190,14 +201,13 @@ const FlowWithCodeEditor = () => {
         edges,
         setEdges,
         isLoaded,
+        projectDir,
         setSelectedFileNode,
         handleNodeDelete,
         handleEdgeDelete,
+        changedDir,
         setCurrentEditorNode,
         setSelectedNode,
-        handlePanClick,
-        setPanContextMenuOpen,
-        highlightSubChildrenEdgesAndNodes,
     } = useFileState();
 
     useOnSelectionChange({
@@ -221,37 +231,43 @@ const FlowWithCodeEditor = () => {
     });
 
     useEffect(() => {
-            const socket = new WebSocket('ws://localhost:3000')
+        // const layoutedNodes = getLayoutedElements(nodes, edges, { direction: 'TB' });
+        // const timeout = setTimeout(() => {
+        //     setNodes([...layoutedNodes.nodes])
+        //     setEdges([...layoutedNodes.edges])
+        // }, 400);
+        //
+        // return () => clearTimeout(timeout);
+        // get()
+    }, []);
 
-        const formatedNodes = nodes.map(nds => {
-            if (nds.type === "codeEditor"){
-                return {
-                    name: nds.data.name,
-                    fullPath: nds.data.label,
-                    type: 'file',
-                    content: nds.data.code
-                }
-            }else {
-                return {
-                    name: nds.data.name,
-                    fullPath: nds.data.label,
-                    type: 'folder',
-                }
-            }
-        })
+    // useEffect(() => {
+    //    let timeout = setTimeout(() => {
+    //        setNodes((nod: any) => projectDir.map((file: mockFilesDataTypes) => {
+    //            if (nod.type === 'codeEditor'){
+    //                return {
+    //                    ...nod,
+    //                    data: {
+    //                        ...nod.data,
+    //                        code: file.content
+    //                    }
+    //                };
+    //            }
+    //            return nod
+    //        }))
+    //        // setNodes(nod => ({...nod}))
+    //        console.log(nodes)
+    //        setFileStateNodes(nodes)
+    //    }, 50);
+    //
+    //     return () => clearTimeout(timeout);
+    // }, [projectDir]);
 
-        const initBuildParams = {
-            projectId: 'c15acf41-1bd7-4899-be74-7f70551e644c',
-            projectName: 'my-next-app',
-            tree: formatedNodes
-        }
-
-       const timer = setTimeout(() => {
-           initializeBuildProcess(initBuildParams).then(() => console.log('build complete'))
-       }, 500)
-
-        return () => clearTimeout(timer)
-    }, [nodes]);
+    // useEffect(() => {
+    //     const layoutedNodes = getLayoutedElements(nodes, edges, { direction: 'TB' })
+    //         setNodes([...layoutedNodes.nodes])
+    //         setEdges([...layoutedNodes.edges])
+    // }, [projectDir]);
 
     const onNodesChange = useCallback((changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)), [nodes]);
 
@@ -295,22 +311,8 @@ const FlowWithCodeEditor = () => {
                             edges={edges}
                             onNodesChange={onNodesChange}
                             onEdgesChange={onEdgesChange}
-                            onNodeDoubleClick={highlightSubChildrenEdgesAndNodes}
-                            onEdgeClick={() => console.log('edge clicked') }
-                            onNodeContextMenu={(e) => {
-                                e.preventDefault()
-                                alert('node content')
-                            }}
-                            onPaneClick={handlePanClick}
-                            onPaneContextMenu={(e) => {
-                                e.preventDefault()
-                                setPanContextMenuOpen(true)
-                            }}
                             onConnect={onConnect}
                             nodeTypes={nodeTypes}
-                            // @ts-ignore
-                            // edgeTypes={edgeType}
-                            connectOnClick={true}
                             // TODO: implement edges and nodes delete functions
                             onNodesDelete={onNodesDelete}
                             onEdgesDelete={onEdgesDelete}
@@ -322,17 +324,12 @@ const FlowWithCodeEditor = () => {
                             // snapToGrid={true}
                             // snapGrid={[15, 15]}
                             fitView
-                            elevateEdgesOnSelect={true}
-                            reconnectRadius={20}
-                            onError={(err) => console.log('react flow error', err)}
-                            connectionMode={ConnectionMode.Loose}
                         >
                             <LeftSidebarRenderer/>
                             <RightSidebarRenderer/>
                             <EventListener/>
                             <CodeEditor/>
                             <ModelWrapper/>
-                            {nodes.length === 0 && <PanContextMenu/>}
                             {/*//@ts-ignore*/}
                             <Background variant="dots" gap={12} size={1} color="#444" />
                             <Controls className={'rounded-sm bg-black text-white mb-[50px]'}
@@ -375,6 +372,7 @@ const EventListener = () => {
         edges,
         setSearchResults,
         selectedNode,
+        selectedFileNode,
     } = useFileState()
 
     useEffect(() => {
@@ -382,16 +380,9 @@ const EventListener = () => {
         const timer = setTimeout(() => {
             if (query){
                 const searches = results.map((search) => nodes.filter((node) => node.data.label.startsWith(search['obj'].path))[0])
+                console.log(searches)
                 setSearchResults(searches)
-                fitView({
-                    nodes: [{ id: searches[0]?.id }],
-                    duration: 800,
-                    padding: 0.10,
-                    maxZoom: 1,
-                    minZoom: .5
-                })
             }
-
         }, 500)
 
         return () => clearTimeout(timer)

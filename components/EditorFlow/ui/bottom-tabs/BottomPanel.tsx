@@ -2,15 +2,18 @@
 import React, {useMemo} from 'react'
 import {Panel} from 'reactflow'
 import {useEditorState} from "@/context/EditorContext";
+import {useFileState} from "@/context/FileContext";
+import {cn} from "@/lib/utils";
 
 export const LeftBottomPanel = () => {
-    const { selectedNode, setCurrentNode, nodes, files, setIsOnFitView, setIsOnQuery } = useEditorState()
+    const { setIsOnFitView } = useEditorState()
+    const { selectedNode, setSelectedNode, nodes, setIsOnQuery} = useFileState()
 
     const fullPath = useMemo(() => {
         return selectedNode && selectedNode.data?.label.split('/').filter(Boolean).map((path) => {
             return nodes.filter((node: any) => node.data.name === path)[0]
         }) || []
-    }, [selectedNode, files])
+    }, [selectedNode, nodes])
 
     return (
         <Panel position={'bottom-left'} className={'ml-[40px] mb-[3px]'}>
@@ -21,11 +24,13 @@ export const LeftBottomPanel = () => {
                           <button
                               type={'button'}
                               onClick={() => {
-                                  setCurrentNode(node)
+                                  setSelectedNode(node)
                                   setIsOnFitView(true)
                                   setIsOnQuery(true)
                               }}
-                              className={'text-xs bg-transparent hover:text-cyan-500 rounded-xs transition-300 container-fit p-[2px] text-white/80'}>{node?.data?.name || ''}
+                              className={cn('text-xs bg-transparent hover:text-cyan-500 rounded-xs transition-300 container-fit p-[2px] text-white/80',
+                              node?.data?.name === selectedNode?.data?.name && 'text-[#d0ff00]'
+                              )}>{node?.data?.name || ''}
                           </button>
                           <p className={'text-cyan-500/90  text-xs'}>
                               {index === fullPath.length - 1 ? '' : '>'}

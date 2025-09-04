@@ -12,12 +12,15 @@ import {
 import { Panel, applyNodeChanges } from 'reactflow'
 import { SandpackProvider, SandpackCodeEditor, Sandpack, useSandpack } from '@codesandbox/sandpack-react'
 import { cn } from '@/lib/utils';
+import { parseScript, parseModule } from 'esprima';
 // import io from 'socket.io';
 import {oneDarkTheme} from '@codemirror/theme-one-dark'
+import {Linter} from 'eslint-linter-browserify'
 import { tags as t } from '@lezer/highlight';
 import {dracula} from '@uiw/codemirror-theme-dracula'
 import {basicSetup} from 'codemirror'
 import {autocompletion} from '@codemirror/autocomplete'
+import { linter, Diagnostic } from '@codemirror/lint'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { EditorView } from '@codemirror/view'
 import { EditorState } from '@codemirror/state'
@@ -36,7 +39,7 @@ const CodeEditor = () => {
     } = useEditorState()
     const { selectedFileNode: selectedNode, setSelectedFileNode, isFileUpdating, setNodes } = useFileState()
 
-    if (!selectedNode) return;
+    if (!selectedNode.id) return;
 
     return openEditor && (
         <>
@@ -201,6 +204,25 @@ const Div = memo(({selectedNode, containerRef }: { containerRef?: any, editorRef
             },
         });
 
+        // const myEslintLinter = linter((view) => {
+        //     let diagnostics = []
+        //     const code = view.state.doc.toJSON();
+        //
+        //     const lint = new Linter();
+        //     const messages = lint.verify(code);
+        //     console.log(messages)
+        //
+        //     // for (let message of messages){
+        //     //     diagnostics.push({
+        //     //         from: view.state.doc.line(message.line).from + message.column - 1,
+        //     //         to: view.state.doc.line(message.line).from + message.column - 1,
+        //     //         message: message.message,
+        //     //         severity: message.severity === 2 ? 'error' : 'warning'
+        //     //     })
+        //     // }
+        //     return diagnostics;
+        // })
+
         const state = EditorState.create({
             doc: selectedNode?.data?.code,
             extensions: [
@@ -210,11 +232,42 @@ const Div = memo(({selectedNode, containerRef }: { containerRef?: any, editorRef
                 // dracula,
                 oneDarkTheme,
                 basicSetup,
+                // myEslintLinter,
                 syntaxHighlighting(amethystHighlightStyle),
                 EditorView.updateListener.of((update) => {
                     const newCode = update.state.doc.toString();
+                    // const ast = parseModule(newCode, {
+                    //     jsx: true,
+                    //     range: true,
+                    //     loc: true,
+                    //     tolerant: true,
+                    // });
                     if (update.docChanged){
+
                         fileTimeout = setTimeout(() => {
+                            const imports = [];
+                            const exports = [];
+                            const variables = [];
+                            const lint = new Linter();
+                            const messages = lint.verify(newCode);
+                            console.log(messages)
+
+                            // ast.body.forEach(node => {
+                            //     if (node.type === 'ImportDeclaration') {
+                            //         // Extract imported names and source
+                            //         node.specifiers.forEach(specifier => imports.push(specifier.local.name));
+                            //     } else if (node.type === 'ExportNamedDeclaration' && node.declaration) {
+                            //         // Extract exported names
+                            //         node.declaration.declarations.forEach(declaration => exports.push(declaration.id.name));
+                            //     } else if (node.type === 'VariableDeclaration') {
+                            //         // Extract variable names
+                            //         node.declarations.forEach(declaration => variables.push(declaration.id.name));
+                            //     }
+                            // });
+                            //
+                            // console.log('Imports:', imports);
+                            // console.log('Exports:', exports);
+                            // console.log('Variables:', variables);
                             setIsFileUpdating(true);
                             setCurrentEditorNode(selectedNds => ({...selectedNds, data: {...selectedNds.data, code: editorCode }}));
                             setNodes(nds => nds.map((nd) => nd.data.label === selectedNode?.data?.label ? ({...nd, data: {...nd.data, code: newCode}}) : nd))

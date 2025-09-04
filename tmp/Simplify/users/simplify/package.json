@@ -2,25 +2,17 @@
   "name": "simplify-col",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "node socket/server.js",
-    "dev:next": "next dev --turbo",
+    "dev": "next dev",
+    "dev:next": "next dev",
     "dev:ws": "concurrently \"npm run dev:next\" \"npm run start:ws\"",
     "start:ws": "ts-node ./server/ws-server.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lintl"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.3",
-    "@codemirror/lang-css": "^6.3.1",
-    "@codemirror/lang-javascript": "^6.2.4",
-    "@codemirror/lang-json": "^6.0.2",
-    "@codemirror/lint": "^6.8.5",
-    "@codemirror/state": "^6.5.2",
-    "@codemirror/theme-one-dark": "^6.1.3",
-    "@codemirror/view": "^6.38.1",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@dagrejs/dagre": "github:dagrejs/dagre",
@@ -29,7 +21,6 @@
     "@google/generative-ai": "^0.24.1",
     "@heroui/react": "^2.8.0",
     "@hookform/resolvers": "^5.0.1",
-    "@lezer/highlight": "^1.2.1",
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-context-menu": "^2.2.15",
     "@radix-ui/react-dialog": "^1.1.14",
@@ -47,13 +38,11 @@
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.9",
     "@tailwindcss/postcss": "^4.1.8",
-    "@uiw/codemirror-theme-dracula": "^4.25.1",
     "@xyflow/react": "^12.8.2",
     "ai": "^4.3.16",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^1.2.1",
-    "codemirror": "^6.0.2",
     "d3-force": "^3.0.0",
     "d3-hierarchy": "^3.1.2",
     "dagrejs": "^0.2.1",
@@ -61,11 +50,8 @@
     "dexie": "^4.0.11",
     "dockerode": "^4.0.7",
     "elkjs": "^0.10.0",
-    "embla-carousel-react": "^8.6.0",
     "es-module-lexer": "^1.7.0",
     "eslint-linter-browserify": "^9.33.0",
-    "esprima": "^4.0.1",
-    "express": "^5.1.0",
     "framer-motion": "^12.23.5",
     "fuzzysort": "^3.1.0",
     "gsap": "^3.13.0",
@@ -82,7 +68,6 @@
     "react-dom": "19.1.0",
     "react-hook-form": "^7.56.4",
     "reactflow": "^11.11.4",
-    "socket.io": "^4.8.1",
     "sonner": "^2.0.4",
     "swr": "^2.3.3",
     "tailwind-merge": "^3.3.0",
@@ -90,8 +75,6 @@
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
     "ws": "^8.18.3",
-    "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27",
     "zod": "^3.25.46"
   },
   "devDependencies": {
@@ -118,7 +101,7 @@
     "tailwindcss": "^4.1.8",
     "ts-node": "^10.9.2",
     "tw-animate-css": "^1.3.3",
-    "typescript": "^5.9.2"
+    "typescript": "^5.8.3"
   },
   "overrides": {
     "@types/react": "19.0.12"
