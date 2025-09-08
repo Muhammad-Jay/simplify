@@ -94,7 +94,7 @@ export function useFileTreeGraph(files: SandpackFiles, options?: Options){
                         target: child,
                         type: 'simplebezier',
                         style: {
-                            stroke: 'white',
+                            stroke: '#ffffff',
                             opacity: 2,
                             strokeWidth: 3
                         },

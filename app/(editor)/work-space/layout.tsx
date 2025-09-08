@@ -3,6 +3,7 @@ import {cn} from "@/lib/utils";
 import {EditorProvider} from "@/context/EditorContext";
 import {GlobalUserProvider} from "@/context/UserContext";
 import {GlobalFileProvider} from "@/context/FileContext";
+import {WorkSpaceProvider} from "@/context/WorkSpaceContext";
 
 export default function  Layout({
                                     children
@@ -11,13 +12,15 @@ export default function  Layout({
 }) {
     return (
         <div className={cn(`screen relative center container-full overflow-hidden`)}>
-            <EditorProvider>
-                <GlobalFileProvider>
-                    <GlobalUserProvider>
-                        {children}
-                    </GlobalUserProvider>
-                </GlobalFileProvider>
-            </EditorProvider>
+            <WorkSpaceProvider>
+                <EditorProvider>
+                    <GlobalFileProvider>
+                        <GlobalUserProvider>
+                            {children}
+                        </GlobalUserProvider>
+                    </GlobalFileProvider>
+                </EditorProvider>
+            </WorkSpaceProvider>
         </div>
     )
 }

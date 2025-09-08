@@ -1,12 +1,21 @@
 import Dexie, { Table } from 'dexie'
 
+export interface WorkSpaceProjectInterface {
+    id: string;
+    name: string;
+    project_id: string | any;
+    author_id: string;
+    created_At?: string | number;
+    updated_At: string | number;
+}
+
 export interface FileInterface {
     id: string;
     path: string;
     code: string;
     type: string;
     name: string;
-    project_id: string;
+    project_id: string | any;
     author_id: string;
     created_At?: string | number;
     updated_At: string | number;
@@ -14,7 +23,7 @@ export interface FileInterface {
 
 export interface RecentActiveNodes {
     pathName: string;
-    project_id: string;
+    project_id: string | any;
     author_id: string;
     name: string;
     created_At?: string | number;
@@ -24,7 +33,7 @@ export interface RecentActiveNodes {
 export interface Nodes {
     id: string;
     node: any;
-    project_id: string;
+    project_id: string | any;
     author_id: string;
     created_At?: string | number;
     updated_At: string | number;
@@ -33,7 +42,7 @@ export interface Nodes {
 export interface Edges {
     id: string;
     edge: any;
-    project_id: string;
+    project_id: string | any;
     author_id: string;
     created_At?: string | number;
     updated_At: string | number;
@@ -47,6 +56,7 @@ export class FlowDB extends Dexie {
     nodes: Table<Nodes>;
     edges: Table<Edges>;
     userEdges: Table<Edges>;
+    workSpaceProjects: Table<WorkSpaceProjectInterface>;
 
     constructor() {
         super(DN_NAME);
@@ -66,8 +76,12 @@ export class FlowDB extends Dexie {
             edges: '&id, edge, project_id, author_id, created_At, updated_At'
         });
 
-        this.version(4).stores({
+        this.version(5).stores({
             userEdges: '&id, edge, project_id, author_id, created_At, updated_At'
+        });
+
+        this.version(5).stores({
+            workSpaceProjects: '&id, name, project_id, author_id, created_At, updated_At'
         });
     }
 }

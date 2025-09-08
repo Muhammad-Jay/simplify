@@ -9,7 +9,7 @@ import { amethyst } from '@codesandbox/sandpack-themes'
 
 const EditorContext = createContext<any| undefined>(undefined)
 
-export type LeftSidebarStateType = 'File' | 'Dependencies' | 'Metadata' | ''
+export type LeftSidebarStateType = 'File' | 'Dependencies' | 'Metadata' | 'WorkSpaceProjects' | ''
 
 export type RightSidebarStateType = 'Preview' | 'Selected' | 'Documentation' | ''
 

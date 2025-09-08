@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 import fs from 'fs'
 import path from 'path'
 
-export async function runContainer(projectTmpDir: string){
+export async function runContainer(projectTmpDir: string, running: boolean){
     const args = [
         'build',
         '-t',
@@ -33,7 +33,7 @@ export async function runContainer(projectTmpDir: string){
                 // fs.rmSync(projectTmpDir, { recursive: true });
                 console.log(`successfully delete ${projectTmpDir}`);
             }
-
+            running = false
             if(code === 0){
                 console.log(`command successful \n code: ${code}`)
             }else {

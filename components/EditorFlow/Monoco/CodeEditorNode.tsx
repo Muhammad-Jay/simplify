@@ -79,6 +79,7 @@ const CodeEditorNode = ({
     // @ts-ignore
     return (
         <NodeCard
+            type={'file'}
             isVisible={isVisible}
             isInteractive={isInteractive}
             selected={selected}

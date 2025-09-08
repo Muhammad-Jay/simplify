@@ -4,7 +4,7 @@ import {motion} from 'framer-motion'
 import { Handle, Position } from 'reactflow'
 import {cn} from "@/lib/utils";
 
-const NodeCard = ({children, isVisible, selected, stroke = '#855200', isInteractive}: {children: React.ReactNode, isVisible?: boolean, isInteractive?: boolean, selected?: boolean, stroke?: string}) => {
+const NodeCard = ({children, type, isVisible, selected, stroke = '#855200', isInteractive}: {children: React.ReactNode, type: string, isVisible?: boolean, isInteractive?: boolean, selected?: boolean, stroke?: string}) => {
     const [isCollapsed, setIsCollapsed] = React.useState(selected)
 
     return (
@@ -47,34 +47,71 @@ const NodeCard = ({children, isVisible, selected, stroke = '#855200', isInteract
             </div>
 
             {/* Node Handles */}
-            <Handle
-                type="target"
-                position={Position.Top}
-                className={cn("!size-[15px] center !bg-white",
-                !isVisible && '!hidden transition-500',
-                )}
-            />
-            <Handle
-                type="source"
-                position={Position.Right}
-                className={cn("!size-[15px] center !bg-white",
-                !isVisible && '!hidden transition-500',
-                )}
-            />
-            <Handle
-                type="source"
-                position={Position.Left}
-                className={cn("!size-[15px] center !bg-white",
-                !isVisible && '!hidden transition-500',
-                )}
-            />
-            <Handle
-                type="source"
-                position={Position.Bottom}
-                className={cn("!size-[15px] center !bg-white",
-                !isVisible && '!hidden transition-500',
-                )}
-            />
+            {type === 'file' ? (
+                <>
+                    <Handle
+                        type="target"
+                        position={Position.Top}
+                        className={cn("!size-[15px] center !bg-white",
+                            !isVisible && '!hidden transition-500',
+                        )}
+                    />
+                    <Handle
+                        type="source"
+                        position={Position.Right}
+                        className={cn("!size-[15px] center !bg-white",
+                            !isVisible && '!hidden transition-500',
+                        )}
+                    />
+                    <Handle
+                        type="source"
+                        position={Position.Left}
+                        className={cn("!size-[15px] center !bg-white",
+                            !isVisible && '!hidden transition-500',
+                        )}
+                    />
+                    <Handle
+                        type="source"
+                        position={Position.Bottom}
+                        className={cn("!size-[15px] center !bg-white",
+                            !isVisible && '!hidden transition-500',
+                        )}
+                    />
+                </>
+            ) : (
+                <>
+                    <Handle
+                        id={'target-handle'}
+                        type="target"
+                        position={Position.Top}
+                        className={cn("!size-[15px] center !bg-white",
+                            !isVisible && '!hidden transition-500',
+                        )}
+                    />
+                    {/*<Handle*/}
+                    {/*    type="target"*/}
+                    {/*    position={Position.Right}*/}
+                    {/*    className={cn("!size-[15px] center !bg-white",*/}
+                    {/*        !isVisible && '!hidden transition-500',*/}
+                    {/*    )}*/}
+                    {/*/>*/}
+                    {/*<Handle*/}
+                    {/*    type="target"*/}
+                    {/*    position={Position.Left}*/}
+                    {/*    className={cn("!size-[15px] center !bg-white",*/}
+                    {/*        !isVisible && '!hidden transition-500',*/}
+                    {/*    )}*/}
+                    {/*/>*/}
+                    <Handle
+                        id={'source-handle'}
+                        type="source"
+                        position={Position.Bottom}
+                        className={cn("!size-[15px] center !bg-white",
+                            !isVisible && '!hidden transition-500',
+                        )}
+                    />
+                </>
+            )}
         </div>
     )
 }

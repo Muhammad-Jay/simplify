@@ -28,6 +28,22 @@ export type mockFilesDataTypes = {
     content?: string
 }
 
+export type mockWorkSpaceProjectsType = {
+    id: string,
+    projectName: string,
+}
+
+export const mockWorkSpaceProjects: mockWorkSpaceProjectsType[] = [
+    {
+        id: 'c15acf41-1bd7-4899-be74-7f70551e644c',
+        projectName: 'my-next-app'
+    },
+    {
+        id: 'da334acf41-1bd7-4899-be74-1234567890',
+        projectName: 'server'
+    }
+]
+
 export const mockFileDatas: mockFilesDataTypes[] = [
     {
         fullPath: 'simplify/App.ts',
@@ -288,14 +304,14 @@ export default function Header() {
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.1.0",
-    "react": "^18",
-    "react-dom": "^18"
+    "next": "15.2.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^18.11.9",
+    "@types/react": "19.0.12",
+    "@types/react-dom": "^19",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
@@ -343,6 +359,13 @@ export default function Header() {
         name: 'next.config.mjs',
         content: `/** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+    typescript: {
+        ignoreBuildErrors: true,
+    },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
   // Set output to 'standalone' for optimized Docker builds
   output: 'standalone',
   experimental: {

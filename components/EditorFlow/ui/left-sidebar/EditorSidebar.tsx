@@ -16,7 +16,7 @@ const EditorSidebar = () => {
             <LeftSidebarActionButton state={'Dependencies'} />
             <LeftSidebarActionButton state={'Metadata'} />
             <Button
-                onClick={() => setOpen(true)}
+                onClick={() => setOpen(prev => !prev)}
                 className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
                 <SearchCode size={11} className={'text-black'}/>
             </Button>

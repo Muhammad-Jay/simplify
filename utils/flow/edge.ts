@@ -25,9 +25,6 @@ export function generateEdges(nodes: mockFilesDataTypes[]){
                 source: parentId,
                 target: node.fullPath,
                 type: 'customEdge',
-                markerEnd: {
-                    type: MarkerType.ArrowClosed
-                },
                 style: {
                     stroke: '#ffffff',
                     opacity: 1,

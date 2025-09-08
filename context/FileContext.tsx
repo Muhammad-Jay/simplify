@@ -5,14 +5,17 @@ import Fuss from 'fuzzysort'
 import {db, FileInterface} from "@/lib/dexie/index.dexie";
 import {mockFileData, mockFilesDataTypes} from "@/constants";
 import {generateEdges} from "@/utils/flow/edge";
-import {getLayoutedElements} from "@/components/EditorFlow/EditorFlow";
+import Dagre from '@dagrejs/dagre'
+import {useRouter} from 'next/navigation'
+import { useParams } from 'next/navigation'
+import {useWorkFlowState} from "@/context/WorkSpaceContext";
 
 const FileContext = createContext<any| undefined>(undefined)
 
 const author_id = 'jsync4172004@gmail.com'
-const project_id = 'c15acf41-1bd7-4899-be74-7f70551e644c'
+// const project_id = 'c15acf41-1bd7-4899-be74-7f70551e644c'
 const defaultNodeColor = '#00bcff'
-const defaultFolderNodeColor = '#0d86b1'
+const defaultFolderNodeColor = '#00bcff'
 
 export type GlobalMessageType = {
     type: 'error' | 'success' | 'warning' | '',
@@ -24,10 +27,22 @@ export function GlobalFileProvider({
                                    }: {
     children: React.ReactNode;
 }){
+    const { project_id } = useParams()
+    const params = useParams()
+
+    const { selectedWorkFlowNode } = useWorkFlowState();
+
     const [projectDir, setProjectDir] = useState([]);
+    const [projectId, setProjectId] = useState('')
+    const [currentProjectId, setCurrentProjectId] = useState({
+        id: '',
+        name: '',
+        workSpaceName: ''
+    })
     const [rootFolder, setRootFolder] = useState('simplify');
     const [changedDir, setChangedDir] = useState([]);
     const [query, setQuery] = useState('');
+    const [openBottomTabControlPanel, setOpenBottomTabControlPanel] = useState(false)
     const [isFileUpdating, setIsFileUpdating] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -35,6 +50,10 @@ export function GlobalFileProvider({
     const [isLoaded, setIsLoaded] = useState(false);
     const [edges, setEdges] = useState([]);
     const [nodes, setNodes] = useState([]);
+    const [layoutConfig, setLayoutConfig] = useState({
+        nodeSep: 150,
+        rankSep: 300
+    })
     const [selectedNode, setSelectedNode] = useState<any>({});
     const [selectedFileNode, setSelectedFileNode] = useState<any>({});
     const [currentEditorNode, setCurrentEditorNode] = useState<any>({});
@@ -47,41 +66,30 @@ export function GlobalFileProvider({
         path: ''
     });
 
-    useEffect(() => {
-        mockFileData.map(async (file) => {
-            await db.files.put({
-                id: file.fullPath,
-                path: file.fullPath,
-                code: file.content,
-                type: file.type === 'file' ? 'codeEditor' : 'folderNode',
-                name: file.name,
-                project_id,
-                author_id,
-                created_At: Date.now(),
-                updated_At: Date.now()
-            })
-        })
-        // const formatedNodes = mockFileData.map((file) => {
-        //     return {
-        //         id: file.fullPath,
-        //         type: file.type === 'file' ? 'codeEditor' : 'folderNode',
-        //         position: {x: Math.random() * 600, y: Math.random() * 600},
-        //         data: {
-        //             label: file.fullPath,
-        //             name: file.name,
-        //             isVisible: true,
-        //             code: file.type === 'file' ? file.content : undefined,
-        //             language: 'typescript',
-        //             isActive: true,
-        //             onCodeChange: (nodeId: string, newCode: string) =>
-        //                 console.log(`${nodeId} updated:`, newCode)
-        //         }
-        //     };
-        // })
+    const router = useRouter();
 
-        loadFiles()
+    useEffect(() => {
+        // mockFileData.map(async (file) => {
+        //     await db.files.put({
+        //         id: file.fullPath,
+        //         path: file.fullPath,
+        //         code: file.content,
+        //         type: file.type === 'file' ? 'codeEditor' : 'folderNode',
+        //         name: file.name,
+        //         project_id: currentProjectId.id,
+        //         author_id,
+        //         created_At: Date.now(),
+        //         updated_At: Date.now()
+        //     })
+        // })
         // return () => clearTimeout(timeout);
     }, []);
+
+    useEffect(() => {
+        setProjectId(currentProjectId.id);
+        loadFiles(currentProjectId.id)
+        console.log(currentProjectId.id)
+    }, [currentProjectId]);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -155,10 +163,12 @@ export function GlobalFileProvider({
         }
     }, [nodes, query])
 
-    const loadFiles = useCallback(async () => {
-        // formatFiles()
+    const loadFiles = useCallback(async (id) => {
+        //TODO: Make actual request to database for files and save to indexDB
+        // () => {}
+        setIsLoaded(false)
         try {
-            const dbFiles: FileInterface[] = await db.files.where('project_id').equals(project_id).toArray()
+            const dbFiles: FileInterface[] = await db.files.where('project_id').equals(id).toArray()
             if (!dbFiles) {
                 console.log('no files from local storage, fetching files from database')
                 // setFiles({})
@@ -213,7 +223,7 @@ export function GlobalFileProvider({
                 code,
                 type,
                 name,
-                project_id,
+                project_id: currentProjectId.id,
                 author_id,
                 created_At: Date.now(),
                 updated_At: Date.now()
@@ -259,7 +269,7 @@ export function GlobalFileProvider({
                         code: '',
                         type: 'folderNode',
                         name: nsf.name,
-                        project_id,
+                        project_id: currentProjectId.id,
                         author_id,
                         created_At: Date.now(),
                         updated_At: Date.now()
@@ -292,7 +302,7 @@ export function GlobalFileProvider({
                 code: '',
                 type: isFile ? 'codeEditor' : 'folderNode',
                 name: pathName,
-                project_id,
+                project_id: currentProjectId.id,
                 author_id,
                 created_At: Date.now(),
                 updated_At: Date.now()
@@ -304,7 +314,7 @@ export function GlobalFileProvider({
         }
     }
 
-    const addRootFolder = useCallback(async (name: string) => {
+    const addRootFolder = useCallback(async (name: string, id: string) => {
         setRootFolder(name)
         setNodes([{
             id: name,
@@ -329,7 +339,7 @@ export function GlobalFileProvider({
             code: '',
             type: 'folderNode',
             name: name,
-            project_id,
+            project_id: id,
             author_id,
             created_At: Date.now(),
             updated_At: Date.now()
@@ -340,15 +350,11 @@ export function GlobalFileProvider({
         try {
             setIsDeleting(true)
             for (const nds of param) {
-                nodes.filter(nd => nd.id.startsWith(nds.id + '/')).map(n => {
-                    setTimeout(async () => {
-                        setNodes(nods => nods.filter(ns => ns.id !== n.id))
-                        await db.files.delete(n.id)
-                    }, 300)
+                nodes.filter(nd => nd.id.startsWith(nds.id + '/')).map(async n => {
+                    setNodes(nods => nods.filter(ns => ns.id !== n.id))
+                    await db.files.delete(n.id)
                 })
-                setTimeout(async () => {
-                    await db.files.delete(nds.id)
-                }, 500)
+                await db.files.delete(nds.id)
             }
         }catch (e) {
             console.log(e)
@@ -395,6 +401,8 @@ export function GlobalFileProvider({
     }, [nodes])
 
     const handlePanClick = useCallback(() => {
+        setOpenBottomTabControlPanel(false);
+
         setNodes(nds => nds.map(nd => ({
             ...nd,
             data: {
@@ -402,7 +410,7 @@ export function GlobalFileProvider({
                 color: nd.type === 'folderNode' ? defaultFolderNodeColor : defaultNodeColor,
             },
             selected: false
-        })))
+        })));
         setEdges(edgs => edgs.map(edg => ({
             ...edg,
             animated: false,
@@ -413,8 +421,8 @@ export function GlobalFileProvider({
                 strokeDasharray: '0',
             },
             selected: false
-        })))
-        setSelectedNode({})
+        })));
+        setSelectedNode({});
     }, [nodes])
 
     const collapseSubFolder = () => {
@@ -463,11 +471,52 @@ export function GlobalFileProvider({
         }
     }
 
+    const getLayoutedElements = useCallback((layoutNodes: any, layoutEdges: any, options: any) => {
+        const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
+
+        const graphRankSep = layoutNodes.length > 30 ? 800 : layoutNodes.length > 20 ? 500 : layoutNodes.length > 10 ? 300 : 150;
+        const graphNodeSep = layoutNodes.length > 30 ? 350 : layoutNodes.length > 20 ? 250 : layoutNodes.length > 10 ? 150 : 60
+        const calc = graphRankSep
+        g.setGraph({
+            rankdir: options.direction,
+            ranksep: layoutConfig.rankSep,
+            nodesep: layoutConfig.nodeSep,
+            edgesep: 50,
+            ranker: 'tight-tree',
+        });
+
+        layoutEdges.forEach((edge) => g.setEdge(edge.source, edge.target));
+        layoutNodes.forEach((node) => g.setNode(node.id, {
+            ...node,
+            width: node.measured?.width ?? 300,
+            height: node.measured?.height ?? 150
+        }))
+
+        Dagre.layout(g)
+
+        return {
+            nodes: layoutNodes.map((node) => {
+                const position = g.node(node.id)
+                const x = position.x + (node.measured?.width ?? 100) / 2;
+                const y = position.y + (node.measured?.height ?? 200) / 2;
+
+                return { ...node, position: { x, y}};
+            }),
+            edges: layoutEdges,
+        }
+    }, [nodes, edges])
+
+    const resetNodeState = useCallback(() => {
+        setNodes(nds => nds.map(nd => ({...nd, selected: false })));
+    }, [nodes])
+
     return (
         <FileContext.Provider value={{
             nodes,
             setNodes,
             edges,
+            currentProjectId,
+            setCurrentProjectId,
             setEdges,
             isLoaded,
             projectDir,
@@ -484,8 +533,11 @@ export function GlobalFileProvider({
             setIsFileUpdating,
             updateFileContent,
             addNewFile,
+            loadFiles,
             editorContent,
             setEditorContent,
+            projectId,
+            setProjectId,
             query,
             setQuery,
             isSearching,
@@ -502,13 +554,19 @@ export function GlobalFileProvider({
             collapseSubFolder,
             fold,
             setFold,
+            layoutConfig,
+            setLayoutConfig,
             rootFolder,
             setRootFolder,
             panContextMenuOpen,
             setPanContextMenuOpen,
             addRootFolder,
             globalMessage,
+            getLayoutedElements,
             setGlobalMessage,
+            openBottomTabControlPanel,
+            setOpenBottomTabControlPanel,
+            resetNodeState,
         }}>
             {children}
         </FileContext.Provider>

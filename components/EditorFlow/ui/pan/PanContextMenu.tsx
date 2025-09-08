@@ -17,14 +17,15 @@ const PanContextMenu = () => {
     const {
         addRootFolder,
         panContextMenuOpen,
+        currentProjectId,
         setPanContextMenuOpen,
     } = useFileState();
 
     useEffect(() => {
         const timeout = setTimeout(() => {
             if (value){
-                const joinedPath = value.split('/').filter(Boolean)
-                setCompletePath(joinedPath)
+                const joinedPath = value.split('/').filter(Boolean);
+                setCompletePath(joinedPath);
             }
         }, 200);
 
@@ -66,8 +67,7 @@ const PanContextMenu = () => {
                     })
                 }
             }
-            console.log(formatedNestedFolders)
-            addRootFolder(value)
+            addRootFolder(value, currentProjectId.id)
         }
     }
 
@@ -87,8 +87,7 @@ const PanContextMenu = () => {
                 })
             }
         }
-        console.log(formatedNestedFolders)
-        addRootFolder(value)
+        addRootFolder(value, currentProjectId.id)
     }
 
     return panContextMenuOpen && (

@@ -1,6 +1,5 @@
 'use client'
 import React, {useCallback, memo, useMemo, useEffect, useState} from 'react';
-import Dagre from '@dagrejs/dagre'
 import {
     ReactFlow,
     addEdge,
@@ -50,108 +49,10 @@ const edgeType = {
     customEdge: 'default'
 }
 
-export const getLayoutedElements = (nodes, edges, options: any) => {
-    const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
-
-    const graphRankSep = nodes.lenght > 30 ? 700 : nodes.lenght > 20 ? 500 : nodes.lenght > 10 ? 300 : 350;
-    const graphNodeSep = nodes.lenght > 30 ? 450 : nodes.lenght > 20 ? 350 : nodes.lenght > 10 ? 350 : 200
-    const calc = graphRankSep
-    g.setGraph({
-        rankdir: options.direction,
-        ranksep: calc,
-        nodesep: graphNodeSep,
-        edgesep: 50,
-        ranker: 'tight-tree',
-    });
-
-    edges.forEach((edge) => g.setEdge(edge.source, edge.target));
-    nodes.forEach((node) => g.setNode(node.id, {
-        ...node,
-        width: node.measured?.width ?? 300,
-        height: node.measured?.height ?? 150
-    }))
-
-    Dagre.layout(g)
-
-    return {
-        nodes: nodes.map((node) => {
-            const position = g.node(node.id)
-            const x = position.x + (node.measured?.width ?? 100) / 2;
-            const y = position.y + (node.measured?.height ?? 200) / 2;
-
-            return { ...node, position: { x, y}};
-        }),
-        edges,
-    }
-}
-
 // Initial edges data
 const initialEdges: Edge[] = [];
 
-const FlowWithCodeEditor = () => {
-    // const { fitView } = useReactFlow()
-    // const { files, loadFiles, selectedNode, highlightSubChildrenEdges, handleEdgeDelete, handleNodeDelete, setNodes: setHookNodes, fold, toggleFolder, loaded, updateNode } = useEditorState()
-    // const { updateEdge, loadEdges } = useUserState()
-    // // const { nodes: hookNodes, edges: hookEdges } = useFileTreeGraph(files)
-    // const { nodes: fileNode , formatFiles } = useFileState()
-    //
-    // const [nodes, setNodes, onNodesChange] = useNodesState([]);
-    // const [ edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-    //
-    // useEffect(() => {
-    //     formatFiles()
-    //     setHookNodes(fileNode);
-    //     loadEdges().then(r => {
-    //         setEdges(prev => ([...prev, ...r]))
-    //     })
-    // }, []);
-    //
-    // useEffect(() => {
-    //     const layoutedNodes = getLayoutedElements(fileNode, edges, { direction: 'TB' })
-    //     loadFiles();
-    //     setNodes([...layoutedNodes.nodes]);
-    //     setEdges(prev => ([...prev,...layoutedNodes.edges]));
-    // }, []);
-    //
-    // useEffect(() => {
-    //     if (selectedNode){
-    //         if (selectedNode.type === 'folderNode'){
-    //             highlightSubChildrenEdges(setEdges)
-    //         }
-    //     }
-    // }, [selectedNode]);
-    //
-    // useEffect(() => {
-    //     const layoutedNodes = getLayoutedElements(fileNode, edges, { direction: 'TB' })
-    //     const timeout = setTimeout(() => {
-    //         setNodes([...layoutedNodes.nodes])
-    //         setEdges([...layoutedNodes.edges])
-    //     }, 400)
-    //     return() => clearTimeout(timeout)
-    // }, [files]);
-    //
-    // useEffect(() => {
-    //     const timeout = setTimeout(() => {
-    //         setHookNodes(nodes)
-    //     }, 400)
-    //     return () => clearTimeout(timeout)
-    // }, [nodes, files]);
-    //
-    //
-    // const onLayout = useCallback((direction: any) => {
-    //     const layouted = getLayoutedElements(nodes, edges, { direction })
-    //
-    //     setNodes([...layouted.nodes]);
-    //     setEdges([...layouted.edges]);
-    // }, [nodes, edges, files])
-    //
-    // // Connection handler
-    // const onConnect = useCallback((params: Connection) => {
-    //     console.log(params)
-    //     setEdges((eds) => addEdge(params, eds))
-    //     updateEdge(params)
-    // }, []);
-    //
+const ProjectFlow = ({workSpaceId, projectId: id}) => {
     // const onDrop = (event: React.DragEvent) => {
     //     event.preventDefault();
     //     const toolId = event.dataTransfer.getData('application/reactflow')
@@ -190,13 +91,18 @@ const FlowWithCodeEditor = () => {
         edges,
         setEdges,
         isLoaded,
+        loadFiles,
+        projectId,
+        setProjectId,
         setSelectedFileNode,
         handleNodeDelete,
         handleEdgeDelete,
+        resetNodeState,
         setCurrentEditorNode,
         setSelectedNode,
         handlePanClick,
         setPanContextMenuOpen,
+        getLayoutedElements,
         highlightSubChildrenEdgesAndNodes,
     } = useFileState();
 
@@ -221,37 +127,9 @@ const FlowWithCodeEditor = () => {
     });
 
     useEffect(() => {
-            const socket = new WebSocket('ws://localhost:3000')
-
-        const formatedNodes = nodes.map(nds => {
-            if (nds.type === "codeEditor"){
-                return {
-                    name: nds.data.name,
-                    fullPath: nds.data.label,
-                    type: 'file',
-                    content: nds.data.code
-                }
-            }else {
-                return {
-                    name: nds.data.name,
-                    fullPath: nds.data.label,
-                    type: 'folder',
-                }
-            }
-        })
-
-        const initBuildParams = {
-            projectId: 'c15acf41-1bd7-4899-be74-7f70551e644c',
-            projectName: 'my-next-app',
-            tree: formatedNodes
-        }
-
-       const timer = setTimeout(() => {
-           initializeBuildProcess(initBuildParams).then(() => console.log('build complete'))
-       }, 500)
-
-        return () => clearTimeout(timer)
-    }, [nodes]);
+        loadFiles(id)
+        setProjectId(id);
+    }, [])
 
     const onNodesChange = useCallback((changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)), [nodes]);
 
@@ -276,14 +154,18 @@ const FlowWithCodeEditor = () => {
         setEdges([...layouted.edges]);
     }, [nodes, edges])
 
-    if (!isLoaded) return (<div className={'container-full center bg-neutral-900'}>
-        <Loader size={20} className={'animate-spin text-white'}/>
-        {/*<SpiralLoader/>*/}
-    </div>);
+    // if (!isLoaded) return (<div
+    //     style={{
+    //         background: 'transparent'
+    //     }}
+    //     className={'container-full center'}>
+    //     <Loader size={20} className={'animate-spin text-white'}/>
+    //     {/*<SpiralLoader/>*/}
+    // </div>);
 
     return (
         <div className={cn(`between bg-zinc-900 flex-col gap-[3px]`)} style={{ width: '100vw', height: '100vh' }}>
-            <FlowNavbar onLayout={onLayout}/>
+            <FlowNavbar id={id}/>
 
             <div className={"container-full relative between p-[3px] gap-[3px]"}>
                 <FlowSidebarWrapper className={"h-full center pt-[6px] rounded-sm bg-black"}>
@@ -304,6 +186,7 @@ const FlowWithCodeEditor = () => {
                             onPaneClick={handlePanClick}
                             onPaneContextMenu={(e) => {
                                 e.preventDefault()
+                                resetNodeState()
                                 setPanContextMenuOpen(true)
                             }}
                             onConnect={onConnect}
@@ -334,12 +217,9 @@ const FlowWithCodeEditor = () => {
                             <ModelWrapper/>
                             {nodes.length === 0 && <PanContextMenu/>}
                             {/*//@ts-ignore*/}
-                            <Background variant="dots" gap={12} size={1} color="#444" />
-                            <Controls className={'rounded-sm bg-black text-white mb-[50px]'}
-                                      style={{
-                                          borderRadius: 10
-                                      }}
-                            />
+                            <Background variant="dots" gap={20} size={2} color="#444" />
+
+
                             <LeftBottomPanel/>
                             <RightBottomPanel/>
                         </ReactFlow>
@@ -352,7 +232,7 @@ const FlowWithCodeEditor = () => {
     );
 };
 
-export default FlowWithCodeEditor;
+export default ProjectFlow;
 
 const EventListener = () => {
     const { fitView } = useReactFlow()
@@ -375,6 +255,8 @@ const EventListener = () => {
         edges,
         setSearchResults,
         selectedNode,
+        getLayoutedElements,
+        resetNodeState,
     } = useFileState()
 
     useEffect(() => {
@@ -418,11 +300,13 @@ const EventListener = () => {
             }
             if ((e.ctrlKey || e.metaKey) && e.key === 'k'){
                 e.preventDefault()
-                setOpen(true)
+                resetNodeState()
+                setOpen(prev => !prev);
             }
             if ((e.ctrlKey || e.metaKey) && e.key === 'e' && selectedNode){
                 e.preventDefault()
-                setOpenEditor(true)
+                resetNodeState()
+                setOpenEditor(prev => !prev)
             }
             if ((e.ctrlKey || e.metaKey) && e.key === 'l'){
                 e.preventDefault()
