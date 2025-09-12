@@ -85,8 +85,7 @@ const CodeEditorNode = ({
             selected={selected}
             stroke={ selected ? "#d0ff00" : data.color }>
             <div
-                className={cn(`rounded-2xl relative container-full`,
-                    isInteractive && "nodrag nowheel")}>
+                className={cn(`rounded-2xl relative container-full`)}>
 
                 {data.label && (
                     <div className={"px-[0px] !items-start py-2 w-full pt-[10px] h-fit between"}>

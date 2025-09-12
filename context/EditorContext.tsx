@@ -11,7 +11,7 @@ const EditorContext = createContext<any| undefined>(undefined)
 
 export type LeftSidebarStateType = 'File' | 'Dependencies' | 'Metadata' | 'WorkSpaceProjects' | ''
 
-export type RightSidebarStateType = 'Preview' | 'Selected' | 'Documentation' | ''
+export type RightSidebarStateType = 'Preview' | 'Selected' | 'Documentation' | 'Run' | 'Build' | ''
 
 export type ActualFile = {
     path: string,

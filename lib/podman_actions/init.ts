@@ -4,7 +4,7 @@ import path from 'path'
 import fs from 'fs'
 import os from 'os'
 import {runContainer} from "@/lib/podman_actions/run_podman";
-import { simpleContainerFile} from "@/lib/podman_actions/constants";
+import {containerFileWithWS, simpleContainerFile} from "@/lib/podman_actions/constants";
 
 const fileName = 'Dockerfile'
 const DIR_PATH = path.join(os.tmpdir(),'Simplify/users/projects')
@@ -19,7 +19,8 @@ export type TreeType = {
 export type InitializeBuildProcessType = {
     projectId: string,
     tree: TreeType[],
-    projectName: string
+    projectName: string,
+    containerName: string
 }
 
 function createTmpDir(dir: string){
@@ -35,7 +36,7 @@ function createTmpDir(dir: string){
 }
 
 
-export async function initializeBuildProcess({projectId, projectName, tree}: InitializeBuildProcessType, running?: boolean){
+export async function initializeBuildProcess({projectId, containerName, projectName, tree}: InitializeBuildProcessType){
     if (!projectId || !tree) return;
 
     console.clear();
@@ -43,13 +44,12 @@ export async function initializeBuildProcess({projectId, projectName, tree}: Ini
     const projectTmpDir = path.join(DIR_PATH, projectId);
     const formatedTree = [...tree, {
         type: 'file',
-        content: simpleContainerFile,
+        content: containerFileWithWS,
         name: fileName,
         fullPath: `${projectName}/${fileName}`
     }]
 
     try {
-        running = true;
         createTmpDir(projectTmpDir)
             console.log(projectTmpDir)
             // Write files and folders to temporary directory
@@ -75,7 +75,7 @@ export async function initializeBuildProcess({projectId, projectName, tree}: Ini
             })
 
         // Run podman build command
-        await runContainer(projectTmpDir, running)
+        await runContainer(projectTmpDir, projectName, containerName)
 
     }catch (e) {
         console.error('Build Error', e)

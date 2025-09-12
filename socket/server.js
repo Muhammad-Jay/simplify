@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 import { parse } from 'url'
 import next from 'next';
-import { WebSocketServer } from 'ws';
+import Websocket from 'ws';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
@@ -16,11 +16,14 @@ app.prepare().then(() => {
         handle(req, res, parsedUrl);
     })
 
-    const wss = new WebSocketServer({server})
+    const wss = new Websocket.Server({server})
 
     wss.on("connection",(ws) => {
-        console.log('server is open')
         ws.emit('success')
+
+        ws.on("message", (data) => {
+            const parseData = JSON.parse(data)
+        })
     })
 
     server.listen(port, (err) => {

@@ -3,6 +3,7 @@
 import React, {useEffect} from 'react'
 import { Handle, Position, NodeProps, useNodesState } from 'reactflow';
 import {Menu, Folder, FolderPlus } from 'lucide-react'
+import { motion } from 'framer-motion';
 import {cn} from "@/lib/utils";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
@@ -29,7 +30,12 @@ const FolderNode = ({id, selected, data}: FolderNodeType) => {
     }
 
     return (
-        <div className={cn(`group relative flex-col rounded-xl gap-[5px] transition-300 w-[230px] h-fit center p-[5px]`,
+        <motion.div
+            initial={{opacity: 0, scale: .5}}
+            whileHover={{scale: 1.05, duration: .3}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 1}}
+            className={cn(`group relative flex-col rounded-xl gap-[5px] transition-300 w-[230px] h-fit center p-[5px]`,
             !isVisible && '!hidden')}>
             <div className={'container-full center'}>
                 <div
@@ -100,7 +106,7 @@ const FolderNode = ({id, selected, data}: FolderNodeType) => {
                 className="!size-[15px] center !bg-foreground"
             >
             </Handle>
-        </div>
+        </motion.div>
     )
 }
 export default FolderNode

@@ -1,17 +1,39 @@
 "use client"
-import React from 'react'
+import React, {useRef, useEffect } from 'react'
 import {motion} from 'framer-motion'
 import { Handle, Position } from 'reactflow'
+import gsap from 'gsap'
 import {cn} from "@/lib/utils";
 
 const NodeCard = ({children, type, isVisible, selected, stroke = '#855200', isInteractive}: {children: React.ReactNode, type: string, isVisible?: boolean, isInteractive?: boolean, selected?: boolean, stroke?: string}) => {
-    const [isCollapsed, setIsCollapsed] = React.useState(selected)
+    const nodeRef = useRef(null);
+
+    // useEffect(() => {
+    //     const tl = gsap.timeline()
+    //
+    //     tl.from(nodeRef.current, {
+    //         duration: .3,
+    //         scale: .5,
+    //         opacity: .5
+    //     }).to(nodeRef.current, {
+    //
+    //     })
+    // }, []);
 
     return (
         <div
+            // initial={{opacity: 0, scale: .5}}
+            // animate={{opacity: 1, scale: 1}}
+            // whileHover={{scale: 1.05}}
+            // transition={{duration: .3}}
+            ref={nodeRef}
             className={cn('container-fit transition-300 center',
                 )}>
-            <div style={{
+            <motion.div
+                initial={{opacity: 0, scale: .5}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: .3}}
+                style={{
                 backgroundColor: "black",
                 borderColor: stroke
             }}
@@ -44,8 +66,8 @@ const NodeCard = ({children, type, isVisible, selected, stroke = '#855200', isIn
                     }}
                     className={cn(`absolute w-[120px] h-[80px] rounded-3xl border-transparent -bottom-[15px] -right-[15px] -z-[2] !border-b-[7px] !border-r-[7px] !border-b-[${stroke}] !border-r-[${stroke}]`, selected && `-bottom-[20px] -right-[20px] transition-300 !border-[#d0ff00]`, `group-hover:!border-b-[#d0ff00] group-hover:!border-r-[#d0ff00]`)}/>
                     {children}
-            </div>
 
+            </motion.div>
             {/* Node Handles */}
             {type === 'file' ? (
                 <>
@@ -56,27 +78,27 @@ const NodeCard = ({children, type, isVisible, selected, stroke = '#855200', isIn
                             !isVisible && '!hidden transition-500',
                         )}
                     />
-                    <Handle
-                        type="source"
-                        position={Position.Right}
-                        className={cn("!size-[15px] center !bg-white",
-                            !isVisible && '!hidden transition-500',
-                        )}
-                    />
-                    <Handle
-                        type="source"
-                        position={Position.Left}
-                        className={cn("!size-[15px] center !bg-white",
-                            !isVisible && '!hidden transition-500',
-                        )}
-                    />
-                    <Handle
-                        type="source"
-                        position={Position.Bottom}
-                        className={cn("!size-[15px] center !bg-white",
-                            !isVisible && '!hidden transition-500',
-                        )}
-                    />
+                    {/*<Handle*/}
+                    {/*    type="source"*/}
+                    {/*    position={Position.Right}*/}
+                    {/*    className={cn("!size-[15px] center !bg-white",*/}
+                    {/*        !isVisible && '!hidden transition-500',*/}
+                    {/*    )}*/}
+                    {/*/>*/}
+                    {/*<Handle*/}
+                    {/*    type="source"*/}
+                    {/*    position={Position.Left}*/}
+                    {/*    className={cn("!size-[15px] center !bg-white",*/}
+                    {/*        !isVisible && '!hidden transition-500',*/}
+                    {/*    )}*/}
+                    {/*/>*/}
+                    {/*<Handle*/}
+                    {/*    type="source"*/}
+                    {/*    position={Position.Bottom}*/}
+                    {/*    className={cn("!size-[15px] center !bg-white",*/}
+                    {/*        !isVisible && '!hidden transition-500',*/}
+                    {/*    )}*/}
+                    {/*/>*/}
                 </>
             ) : (
                 <>

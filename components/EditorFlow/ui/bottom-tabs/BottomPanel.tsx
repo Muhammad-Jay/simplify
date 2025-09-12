@@ -4,6 +4,7 @@ import {Panel, useReactFlow} from 'reactflow'
 import {useEditorState} from "@/context/EditorContext";
 import {useFileState} from "@/context/FileContext";
 import {cn} from "@/lib/utils";
+import {useWorkFlowState} from "@/context/WorkSpaceContext";
 
 export const LeftBottomPanel = () => {
     const { setIsOnFitView } = useEditorState()
@@ -43,7 +44,7 @@ export const LeftBottomPanel = () => {
     )
 }
 
-export const RightBottomPanel = () => {
+export const RightBottomPanel = ({id}) => {
     const [rvalue, setRvalue] = useState(20);
     const [nValue, setNValue] = useState(20);
     const {
@@ -57,6 +58,12 @@ export const RightBottomPanel = () => {
         setLayoutConfig,
         getLayoutedElements,
     } = useFileState()
+    const {
+        setNodes: setFlowNodes,
+        setEdges: setFlowEdges,
+        nodes: flowNodes,
+        edges: flowEdges,
+    } = useWorkFlowState();
     const {fitView} = useReactFlow()
 
     // useEffect(() => {
@@ -87,16 +94,22 @@ export const RightBottomPanel = () => {
 
     const onLayout = useCallback((direction: any) => {
         fitView({
-            nodes: nodes,
+            nodes: id ? nodes : flowNodes,
             duration: 800,
             padding: 0.05,
             maxZoom: 1.1,
             minZoom: .28
         })
-        const layouted = getLayoutedElements(nodes, edges, { direction })
-        setNodes([...layouted.nodes]);
-        setEdges([...layouted.edges]);
-    }, [nodes, edges])
+        if (id){
+            const layouted = getLayoutedElements(nodes, edges, { direction })
+            setNodes([...layouted.nodes]);
+            setEdges([...layouted.edges]);
+        }else {
+            const layouted = getLayoutedElements(flowNodes, flowEdges, { direction })
+            setFlowNodes([...layouted.nodes]);
+            setFlowEdges([...layouted.edges]);
+        }
+    }, [nodes, edges, flowEdges, flowNodes])
 
     return (
         <Panel position={'bottom-right'} className={cn('!mr-[10px] !z-[10] flex-col border-[3px] transition-300 border-neutral-800 w-[320px] !items-end between gap-[5px]  bg-zinc-800/30 backdrop-blur-sm rounded-sm !mb-[8px]',

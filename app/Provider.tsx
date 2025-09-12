@@ -1,18 +1,13 @@
+'use client'
 import React from 'react'
 import {HeroUIProvider, ToastProvider} from "@heroui/react"
+import {SocketProvider} from "@/context/SocketContext";
 
 const Provider = ({children} : { children : React.ReactNode }) => {
     return (
-        <HeroUIProvider>
+        <SocketProvider>
             {children}
-            <div className={"center w-[330px] h-fit"}>
-                <ToastProvider placement={"bottom-right"} toastProps={{
-                    variant: "bordered",
-                    radius: "sm",
-                    timeout: 2000
-                }} maxVisibleToasts={3}/>
-            </div>
-        </HeroUIProvider>
+        </SocketProvider>
     )
 }
 export default Provider

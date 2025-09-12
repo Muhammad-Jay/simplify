@@ -36,7 +36,7 @@ const AddNewProjectModel = () => {
     }
 
     const handleClick = () => {
-        addNewProjectNode(name, currentProjectId.workSpaceName);
+        addNewProjectNode(name, currentProjectId.workSpaceName ? currentProjectId.workSpaceName : work_space_id );
         console.log(work_space_id, currentProjectId.workSpaceName)
         setIsDialogOpen(false);
     }

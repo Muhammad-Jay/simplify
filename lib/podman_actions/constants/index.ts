@@ -43,16 +43,39 @@ export const simpleContainerFile = `
     
     WORKDIR /app
   
-    COPY package.json yarn.lock* package-lock.json* pnpm-lock.json* ./
+   # COPY package.json yarn.lock* package-lock.json* pnpm-lock.json* ./
   
-    RUN npm install
+   # RUN npm install
     
     COPY . .
     
-    EXPOSE 3001
+    EXPOSE 8000
   
-    RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-    USER appuser
+    # RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+    # USER appuser
+  
+    # CMD ["npm", "run", "dev"]
+    
+    CMD ["node", "index.js"]
+`
+
+export const containerFileWithWS = `
+    FROM node:18-alpine AS base
+    
+    WORKDIR /app
+  
+   COPY package.json yarn.lock* package-lock.json* pnpm-lock.json* ./
+  
+   RUN npm install
+    
+   COPY . .
+    
+   EXPOSE 8000
+  
+   RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+   USER appuser
   
     CMD ["npm", "run", "dev"]
+    
+   # CMD ["node", "index.js"]
 `

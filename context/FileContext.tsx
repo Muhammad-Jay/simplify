@@ -68,27 +68,26 @@ export function GlobalFileProvider({
 
     const router = useRouter();
 
-    useEffect(() => {
-        // mockFileData.map(async (file) => {
-        //     await db.files.put({
-        //         id: file.fullPath,
-        //         path: file.fullPath,
-        //         code: file.content,
-        //         type: file.type === 'file' ? 'codeEditor' : 'folderNode',
-        //         name: file.name,
-        //         project_id: currentProjectId.id,
-        //         author_id,
-        //         created_At: Date.now(),
-        //         updated_At: Date.now()
-        //     })
-        // })
-        // return () => clearTimeout(timeout);
-    }, []);
+    // useEffect(() => {
+    //     // mockFileData.map(async (file) => {
+    //     //     await db.files.put({
+    //     //         id: file.fullPath,
+    //     //         path: file.fullPath,
+    //     //         code: file.content,
+    //     //         type: file.type === 'file' ? 'codeEditor' : 'folderNode',
+    //     //         name: file.name,
+    //     //         project_id: currentProjectId.id,
+    //     //         author_id,
+    //     //         created_At: Date.now(),
+    //     //         updated_At: Date.now()
+    //     //     })
+    //     // })
+    //     // return () => clearTimeout(timeout);
+    // }, []);
 
     useEffect(() => {
         setProjectId(currentProjectId.id);
         loadFiles(currentProjectId.id)
-        console.log(currentProjectId.id)
     }, [currentProjectId]);
 
     useEffect(() => {
@@ -108,10 +107,9 @@ export function GlobalFileProvider({
                     fullPath: nds.data.label
                 }
             }) as mockFilesDataTypes[]
-            console.log(formatedFileData);
             const generatedEdges = generateEdges(formatedFileData)
             setEdges([...generatedEdges])
-        }, 500)
+        }, 1000)
 
         return () => clearTimeout(timeout);
     }, [nodes.length]);
@@ -204,7 +202,9 @@ export function GlobalFileProvider({
                 const layoutedNodes = getLayoutedElements(formatedNodes, generatedEdges, { direction: 'TB' });
                 // const timeout = setTimeout(() => {
                 setNodes([...layoutedNodes.nodes])
-                setEdges([...layoutedNodes.edges])
+                setTimeout(() => {
+                    setEdges([...layoutedNodes.edges])
+                }, 600);
                 // }, 400);
                 setIsLoaded(true)
             }
@@ -213,7 +213,7 @@ export function GlobalFileProvider({
         } finally {
             setIsLoaded(true)
         }
-    }, [])
+    }, [nodes,edges,currentProjectId])
 
     const updateFileContent = async (filePath: string, code: string, type: string, name: string, )=> {
         try {
@@ -474,13 +474,12 @@ export function GlobalFileProvider({
     const getLayoutedElements = useCallback((layoutNodes: any, layoutEdges: any, options: any) => {
         const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
 
-        const graphRankSep = layoutNodes.length > 30 ? 800 : layoutNodes.length > 20 ? 500 : layoutNodes.length > 10 ? 300 : 150;
-        const graphNodeSep = layoutNodes.length > 30 ? 350 : layoutNodes.length > 20 ? 250 : layoutNodes.length > 10 ? 150 : 60
-        const calc = graphRankSep
+        const graphRankSep = layoutNodes.length > 30 ? 800 : layoutNodes.length > 20 ? 500 : layoutNodes.length > 10 ? 300 : 400;
+        const graphNodeSep = layoutNodes.length > 30 ? 350 : layoutNodes.length > 20 ? 250 : layoutNodes.length > 10 ? 150 : 150
         g.setGraph({
             rankdir: options.direction,
-            ranksep: layoutConfig.rankSep,
-            nodesep: layoutConfig.nodeSep,
+            ranksep: graphRankSep,
+            nodesep: graphNodeSep,
             edgesep: 50,
             ranker: 'tight-tree',
         });

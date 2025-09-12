@@ -33,6 +33,7 @@ import {useFileState} from "@/context/FileContext";
 import {useForceGraphLayout} from "@/hooks/FlowGraph/useForceGraphLayout";
 import {initializeBuildProcess} from "@/lib/podman_actions/init";
 import PanContextMenu from "@/components/EditorFlow/ui/pan/PanContextMenu";
+import CustomStepEdge from "@/components/EditorFlow/Edge/CustomStepEdge";
 
 const CodeEditorNode = dynamic(() => import('@/components/EditorFlow/Monoco/CodeEditorNode'), {
     ssr: false
@@ -46,7 +47,7 @@ const nodeTypes = {
 };
 
 const edgeType = {
-    customEdge: 'default'
+    customEdge: CustomStepEdge
 }
 
 // Initial edges data
@@ -127,8 +128,27 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
     });
 
     useEffect(() => {
-        loadFiles(id)
-        setProjectId(id);
+        // loadFiles(id)
+        // setProjectId(id);
+        // const wss = new WebSocket('ws://localhost:8080/')
+        //
+        // wss.onopen = () => {
+        //     console.log('socket connected.')
+        //     wss.send(JSON.stringify({message: "i'm successfully connected on client side."}))
+        // }
+        //
+        // wss.onmessage = (data) => {
+        //     console.log("message from socket:",data)
+        // }
+        //
+        // wss.onclose = () => {
+        //     console.log('socket disconnected.')
+        // }
+        //
+        // wss.onerror = (err) => {
+        //     console.error(err)
+        // }
+
     }, [])
 
     const onNodesChange = useCallback((changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)), [nodes]);
@@ -154,14 +174,11 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
         setEdges([...layouted.edges]);
     }, [nodes, edges])
 
-    // if (!isLoaded) return (<div
-    //     style={{
-    //         background: 'transparent'
-    //     }}
-    //     className={'container-full center'}>
-    //     <Loader size={20} className={'animate-spin text-white'}/>
-    //     {/*<SpiralLoader/>*/}
-    // </div>);
+    if (!isLoaded) return (<div
+        className={'container-full center'}>
+        <Loader size={20} className={'animate-spin text-white'}/>
+        {/*<SpiralLoader/>*/}
+    </div>);
 
     return (
         <div className={cn(`between bg-zinc-900 flex-col gap-[3px]`)} style={{ width: '100vw', height: '100vh' }}>
@@ -221,7 +238,7 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
 
 
                             <LeftBottomPanel/>
-                            <RightBottomPanel/>
+                            <RightBottomPanel id={projectId}/>
                         </ReactFlow>
                 </div>
                 <FlowSidebarWrapper className={"!h-full center pt-[6px] rounded-sm bg-black"}>

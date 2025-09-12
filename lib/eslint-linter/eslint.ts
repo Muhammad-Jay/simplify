@@ -1,38 +1,31 @@
-import * as eslint from 'eslint-linter-browserify'
-import eslintReactPlugin from 'eslint-plugin-react'
+import { createServer } from 'http';
+import WebSocket, {WebSocketServer} from 'ws';
 
-const linterInstance = new eslint.Linter();
-linterInstance.defineRule('react/jsx-uses-react', eslintReactPlugin.rules['jsx-uses-react'])
-linterInstance.defineRule('react/jsx-uses-vars', eslintReactPlugin.rules['jsx-uses-vars'])
+const hostname = '0.0.0.0';
+const port = 8000;
 
-// const code = `const defaultOptions = {
-//         minimap: { enabled: false },
-//         scrollBeyondLastLine: false,
-//         fontSize: 14,
-//         wordWrap: 'on' as 'on' | 'off' | 'wordWrapColumn' | 'bounded', // Type assertion
-//         automaticLayout: true, // Auto-resizes with parent container
-//         readOnly: readOnly,
-//         lineNumbers: 'on' as 'on' | 'off' | 'relative' | 'interval',
-//         glyphMargin: false,
-//         folding: true,
-//         // contextmenu: false, // You might want to disable the default context menu if you use RadixUI ones
-//         tabSize: 2,
-//         insertSpaces: true,
-//         ...options, // Allow overriding default options
-//     };`
+const wss = new WebSocket.Server({port})
 
-const eslintConfig = {
-    parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: 'module',
-        ecmaFeatures: { jsx: true },
-    },
-    rules: {
-        'no-unused-vars': 'warn',
-        "semi": ["warn", "always"],
-        'react/jsx-uses-react': 'warn',
-        'react/jsx-uses-vars': 'warn',
-    },
-}
+console.log('Websocket server is running. Ready to broadcast messages.')
 
-export { linterInstance, eslintConfig }
+wss.on("connection",(ws) => {
+    console.log('A client connection was made.')
+
+    ws.on("message", (data) => {
+
+        wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                ws.send(data)
+                console.log('sending message to clients.')
+            }
+        })
+    })
+})
+
+wss.on('close', () => {
+    console.log('A client disconnected.');
+})
+
+wss.on('error', (error) => {
+    console.error('Websocket error:', error);
+})
