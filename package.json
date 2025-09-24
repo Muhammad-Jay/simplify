@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node socket/server.js",
+    "dev": "next dev --turbo",
     "dev:next": "next dev --turbo",
     "dev:ws": "concurrently \"npm run dev:next\" \"npm run start:ws\"",
-    "start:ws": "ts-node ./server/ws-server.ts",
+    "start:ws": "ts-node socket/server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -83,6 +83,8 @@
     "react-dom": "19.1.0",
     "react-hook-form": "^7.56.4",
     "reactflow": "^11.11.4",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "sonner": "^2.0.4",
     "swr": "^2.3.3",
     "tailwind-merge": "^3.3.0",

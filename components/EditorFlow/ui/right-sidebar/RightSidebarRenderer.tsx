@@ -8,8 +8,10 @@ import SelectedNode from "@/components/EditorFlow/ui/right-sidebar/SelectedNode"
 import {useFileState} from "@/context/FileContext";
 import Loader from "@/components/Loader";
 import {DevRun, RunOutputs} from "@/components/EditorFlow/ui/right-sidebar/DevRun";
+import {useSocket} from "@/context/SocketContext";
+import Deploy from "@/components/EditorFlow/ui/right-sidebar/Deploy";
 
-const sidebarState = {
+export const sidebarState = {
     preview : 'Preview',
     documentation: 'Documentation',
     selected: 'Selected',
@@ -19,39 +21,36 @@ const sidebarState = {
 }
 
 const RightSidebarRenderer = () => {
-    const [isRunning, setIsRunning] = React.useState(false)
-    const { rightSidebarState, files } = useEditorState()
-    const {nodes, currentProjectId } = useFileState()
+    const { rightSidebarState, setRightSidebarState, files } = useEditorState()
+    const {
+        isRunning
+    } = useFileState()
 
-    const handleDeploy = React.useCallback(() => {
-        let running = false
-
-        setIsRunning(running)
-        }, []);
+    const { message, isConnected, buildMessages, buildProcess } = useSocket();
 
 
     return rightSidebarState !== sidebarState.none && (
         <>
             <div
-                className={cn('!w-[340px] !h-[85%] absolute right-[10px] top-[10px] !space-y-[10px] !m-[0px] !z-[7] rounded-md',
-                    rightSidebarState === sidebarState.buildPanel,
-                    rightSidebarState === sidebarState.runPanel)}>
+                className={cn('!w-[340px] transition-300 absolute right-[10px] top-[10px] !space-y-[10px] !m-[0px] !z-[7] rounded-md',
+                    // rightSidebarState === sidebarState.runPanel && buildProcess.length > 0 ? '!h-[94%]' : '!h-[250px]',
+                    '!h-[94%]',
+                    rightSidebarState === sidebarState.runPanel  && '!w-[340px] !h-[250px]'
+                    )}>
                 <motion.div
                     initial={{opacity: 0, scale: .5, x: 50}}
                     // whileHover={{scale: 1.05, duration: .3}}
                     animate={{opacity: 1, scale: 1, x: 0}}
                     exit={{ opacity: 0 , scale: .5 }}
                     transition={{duration: .1}}
-                    className={cn(`container-full center rounded-md center border-[4px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/25`,
-                        rightSidebarState === sidebarState.buildPanel  && '!w-[340px] !h-[250px]',
-                        rightSidebarState === sidebarState.runPanel  && '!w-[340px] !h-[250px]')}>
+                    className={cn(`container-full transition-300 center rounded-md center border-[4px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/26`,
+                        rightSidebarState === sidebarState.buildPanel && '!w-[340px] !h-[250px]')}>
                     {rightSidebarState === sidebarState.runPanel && (
-                        <DevRun/>
+                        <Deploy/>
                     )}
                     {rightSidebarState === sidebarState.buildPanel && (
                         <div className={'container-full center !justify-end flex-col p-[10px] rounded-lg rounded-md !h-full'}>
                             <Button
-                                onClick={handleDeploy}
                                 type={'button'}
                                 className={'center w-full h-[40px] gap-[5px] rounded-md button-neutral hover:bg-cyan'}
                             >
@@ -69,9 +68,9 @@ const RightSidebarRenderer = () => {
                         </div>
                     )}
                 </motion.div>
-                {rightSidebarState === sidebarState.buildPanel ||  rightSidebarState === sidebarState.runPanel &&
-                    <RunOutputs sidebarState={sidebarState}/>
-                }
+                {/*{rightSidebarState === sidebarState.buildPanel ||  rightSidebarState === sidebarState.runPanel &&*/}
+                {/*    <RunOutputs sidebarState={sidebarState}/>*/}
+                {/*}*/}
             </div>
         </>
     )

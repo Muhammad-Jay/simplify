@@ -53,8 +53,9 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
         loadWorkSpaceProjects,
         updateEdgeConnection,
         handleWorkSpaceEdgeDelete,
+        handleWorkSpaceNodeDelete,
     } = useWorkFlowState()
-    const {setCurrentProjectId, getLayoutedElements} = useFileState();
+    const {setCurrentProjectId, setIsLoaded, loadFiles, getLayoutedElements} = useFileState();
 
     useOnSelectionChange({
         onChange: ({nodes: selectedNodes}) => {
@@ -65,6 +66,10 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
             setSelectedWorkFlowNode(selectedNodes);
         }
     });
+
+    const onNodesDelete = useCallback((no) => {
+        handleWorkSpaceNodeDelete(no)
+    },[nodes.length])
 
     const onNodesChange = useCallback((changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)), [nodes]);
 
@@ -95,7 +100,7 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
                                 setCurrentProjectId({
                                     id: selectedWorkFlowNode[0]?.id,
                                     name: selectedWorkFlowNode[0]?.data.name,
-                                    workSpaceName: work_space_id || ''
+                                    workSpaceName: work_space_id
                                 });
                                 router.push(`/work-space/${work_space_id}/${selectedWorkFlowNode[0]?.id}`);
                                 return;
@@ -118,10 +123,10 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
                         // edgeTypes={edgeType}
                         connectOnClick={true}
                         // TODO: implement edges and nodes delete functions
-                        // onNodesDelete={onNodesDelete}
+                        onNodesDelete={onNodesDelete}
                         onEdgesDelete={handleWorkSpaceEdgeDelete}
                         // edgeTypes={edgeType}
-                        minZoom={.28}
+                        minZoom={.15}
                         //TODO: implement drag and drop functions.
                         // onDrop={onDrop}
                         // onDragOver={onDragOver}
@@ -143,7 +148,8 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
 
 
                         <LeftBottomPanel/>
-                        <RightBottomPanel/>
+                        {/* TODO pass real id! */}
+                        <RightBottomPanel id={''}/>
                     </ReactFlow>
                 </div>
                 <FlowSidebarWrapper className={"!h-full center pt-[6px] rounded-sm bg-black"}>

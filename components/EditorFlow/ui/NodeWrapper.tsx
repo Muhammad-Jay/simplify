@@ -41,6 +41,7 @@ const NodeCard = ({children, type, isVisible, selected, stroke = '#855200', isIn
                      selected && '!border-[#d0ff00] !bg-[#855200]/12 border-[4px]',
                      !isVisible && '!hidden transition-500',
                  )}>
+
                 <div
                     style={{
                         borderTopColor: stroke,
@@ -110,20 +111,6 @@ const NodeCard = ({children, type, isVisible, selected, stroke = '#855200', isIn
                             !isVisible && '!hidden transition-500',
                         )}
                     />
-                    {/*<Handle*/}
-                    {/*    type="target"*/}
-                    {/*    position={Position.Right}*/}
-                    {/*    className={cn("!size-[15px] center !bg-white",*/}
-                    {/*        !isVisible && '!hidden transition-500',*/}
-                    {/*    )}*/}
-                    {/*/>*/}
-                    {/*<Handle*/}
-                    {/*    type="target"*/}
-                    {/*    position={Position.Left}*/}
-                    {/*    className={cn("!size-[15px] center !bg-white",*/}
-                    {/*        !isVisible && '!hidden transition-500',*/}
-                    {/*    )}*/}
-                    {/*/>*/}
                     <Handle
                         id={'source-handle'}
                         type="source"

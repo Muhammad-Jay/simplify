@@ -9,6 +9,10 @@ import Dagre from '@dagrejs/dagre'
 import {useRouter} from 'next/navigation'
 import { useParams } from 'next/navigation'
 import {useWorkFlowState} from "@/context/WorkSpaceContext";
+import {useSocket} from "@/context/SocketContext";
+import {socketEvents} from "@/lib/socket/events";
+
+export type DeployPanelStateTypes = 'environmentVariable' | 'logs' | 'configurations' | 'settings'
 
 const FileContext = createContext<any| undefined>(undefined)
 
@@ -31,6 +35,12 @@ export function GlobalFileProvider({
     const params = useParams()
 
     const { selectedWorkFlowNode } = useWorkFlowState();
+    const {
+        containers,
+        buildStatus,
+        setIsComplete,
+        socket,
+    } = useSocket()
 
     const [projectDir, setProjectDir] = useState([]);
     const [projectId, setProjectId] = useState('')
@@ -41,14 +51,17 @@ export function GlobalFileProvider({
     })
     const [rootFolder, setRootFolder] = useState('simplify');
     const [changedDir, setChangedDir] = useState([]);
+    const [value, setValue] = useState(8000);
     const [query, setQuery] = useState('');
+    const [isRunning, setIsRunning] = useState(false);
     const [openBottomTabControlPanel, setOpenBottomTabControlPanel] = useState(false)
     const [isFileUpdating, setIsFileUpdating] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isOnQuery, setIsOnQuery] = useState(false);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(true);
     const [edges, setEdges] = useState([]);
+    const [deployState, setDeployState] = useState<DeployPanelStateTypes>('configurations')
     const [nodes, setNodes] = useState([]);
     const [layoutConfig, setLayoutConfig] = useState({
         nodeSep: 150,
@@ -61,6 +74,8 @@ export function GlobalFileProvider({
     const [globalMessage, setGlobalMessage] = useState<GlobalMessageType>({ type: '', message: '' })
     const [panContextMenuOpen, setPanContextMenuOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isDeployPanelOpen, setIsDeployPanelOpen] = useState(false);
+    const [currentContainer, setCurrentContainer] = useState<any>({})
     const [fold, setFold] = useState({
         fold: false,
         path: ''
@@ -68,27 +83,33 @@ export function GlobalFileProvider({
 
     const router = useRouter();
 
-    // useEffect(() => {
-    //     // mockFileData.map(async (file) => {
-    //     //     await db.files.put({
-    //     //         id: file.fullPath,
-    //     //         path: file.fullPath,
-    //     //         code: file.content,
-    //     //         type: file.type === 'file' ? 'codeEditor' : 'folderNode',
-    //     //         name: file.name,
-    //     //         project_id: currentProjectId.id,
-    //     //         author_id,
-    //     //         created_At: Date.now(),
-    //     //         updated_At: Date.now()
-    //     //     })
-    //     // })
-    //     // return () => clearTimeout(timeout);
-    // }, []);
-
     useEffect(() => {
         setProjectId(currentProjectId.id);
         loadFiles(currentProjectId.id)
     }, [currentProjectId]);
+
+    useEffect(() => {
+        try {
+            if (currentProjectId.name && containers){
+                const projectContainer = containers.filter(container => container?.Names.includes(currentProjectId?.id.toLowerCase()))
+                if (projectContainer){
+                    setCurrentContainer({...projectContainer[0]});
+                }
+                console.log(projectContainer)
+            }
+        }catch (e) {
+            console.warn(e)
+        }
+    }, [currentProjectId, containers]);
+
+    useEffect(() => {
+        if (currentContainer && currentProjectId){
+            if (currentContainer?.State === 'running'){
+                socket.emit(socketEvents.startContainerOutput, currentProjectId?.id)
+                return;
+            }
+        }
+    }, [currentContainer]);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -164,7 +185,7 @@ export function GlobalFileProvider({
     const loadFiles = useCallback(async (id) => {
         //TODO: Make actual request to database for files and save to indexDB
         // () => {}
-        setIsLoaded(false)
+        // setIsLoaded(false)
         try {
             const dbFiles: FileInterface[] = await db.files.where('project_id').equals(id).toArray()
             if (!dbFiles) {
@@ -213,7 +234,7 @@ export function GlobalFileProvider({
         } finally {
             setIsLoaded(true)
         }
-    }, [nodes,edges,currentProjectId])
+    }, [nodes, edges, currentProjectId])
 
     const updateFileContent = async (filePath: string, code: string, type: string, name: string, )=> {
         try {
@@ -403,6 +424,7 @@ export function GlobalFileProvider({
     const handlePanClick = useCallback(() => {
         setOpenBottomTabControlPanel(false);
 
+        setIsDeployPanelOpen(false);
         setNodes(nds => nds.map(nd => ({
             ...nd,
             data: {
@@ -566,6 +588,16 @@ export function GlobalFileProvider({
             openBottomTabControlPanel,
             setOpenBottomTabControlPanel,
             resetNodeState,
+            isRunning,
+            setIsRunning,
+            value,
+            setValue,
+            setIsDeployPanelOpen,
+            isDeployPanelOpen,
+            currentContainer,
+            setCurrentContainer,
+            deployState,
+            setDeployState
         }}>
             {children}
         </FileContext.Provider>

@@ -130,8 +130,8 @@ export function WorkSpaceProvider({
     const getLayoutedWorkSpaceElements = useCallback((layoutNodes: any, layoutEdges: any, options: any) => {
         const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
 
-        const graphRankSep = layoutNodes.length > 30 ? 800 : layoutNodes.length > 20 ? 500 : layoutNodes.length > 10 ? 300 : 400;
-        const graphNodeSep = layoutNodes.length > 30 ? 350 : layoutNodes.length > 20 ? 250 : layoutNodes.length > 10 ? 150 : 150
+        const graphRankSep = layoutNodes.length > 30 ? 800 : layoutNodes.length > 20 ? 500 : layoutNodes.length > 10 ? 300 : 600;
+        const graphNodeSep = layoutNodes.length > 30 ? 350 : layoutNodes.length > 20 ? 250 : layoutNodes.length > 10 ? 150 : 400
         const calc = graphRankSep
         g.setGraph({
             rankdir: options.direction,
@@ -221,6 +221,23 @@ export function WorkSpaceProvider({
         }
     }, [])
 
+    const handleWorkSpaceNodeDelete = useCallback(async (param: any[]) => {
+        try {
+            // setIsDeleting(true)
+            for (const nds of param) {
+                nodes.filter(nd => nd.id.startsWith(nds.id + '/')).map(async n => {
+                    setNodes(nods => nods.filter(ns => ns.id !== n.id))
+                    await db.workSpaceProjects.delete(n.id)
+                })
+                await db.workSpaceProjects.delete(nds.id)
+            }
+        }catch (e) {
+            console.log(e)
+        }finally {
+            // setIsDeleting(false)
+        }
+    }, [nodes])
+
     return (
         <WorkSpaceContext.Provider value={{
             nodes,
@@ -243,6 +260,7 @@ export function WorkSpaceProvider({
             updateEdgeConnection,
             handleWorkSpaceEdgeDelete,
             loadWorkSpaceEdges,
+            handleWorkSpaceNodeDelete,
         }}>
             {children}
         </WorkSpaceContext.Provider>

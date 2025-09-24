@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 import { parse } from 'url'
 import next from 'next';
-import Websocket from 'ws';
+import Websocket, { WebSocketServer } from 'ws';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
@@ -16,14 +16,30 @@ app.prepare().then(() => {
         handle(req, res, parsedUrl);
     })
 
-    const wss = new Websocket.Server({server})
+    const wss = new WebSocketServer({ server })
+
+    console.log('Websocket server is running. Ready to broadcast messages.')
 
     wss.on("connection",(ws) => {
-        ws.emit('success')
+        console.log('A client connection was made.')
 
         ws.on("message", (data) => {
-            const parseData = JSON.parse(data)
+
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    ws.send(data)
+                    console.log('sending message to clients.')
+                }
+            })
         })
+    })
+
+    wss.on('close', () => {
+        console.log('A client disconnected.');
+    })
+
+    wss.on('error', (error) => {
+        console.error('Websocket error:', error);
     })
 
     server.listen(port, (err) => {

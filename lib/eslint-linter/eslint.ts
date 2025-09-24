@@ -1,31 +1,27 @@
-import { createServer } from 'http';
-import WebSocket, {WebSocketServer} from 'ws';
+import { Server } from 'socket.io'
 
-const hostname = '0.0.0.0';
 const port = 8000;
 
-const wss = new WebSocket.Server({port})
+const io = new Server()
 
-console.log('Websocket server is running. Ready to broadcast messages.')
+console.log('Socket server is running. Ready to broadcast messages.')
 
-wss.on("connection",(ws) => {
+io.on("connection",(socket) => {
     console.log('A client connection was made.')
+    socket.send(JSON.stringify({ type: 'build', message: "thanks for connecting." }))
 
-    ws.on("message", (data) => {
-
-        wss.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                ws.send(data)
-                console.log('sending message to clients.')
-            }
-        })
+    socket.on("message", (data) => {
+        console.log("socket server output: \n",data)
     })
 })
 
-wss.on('close', () => {
+io.on('close', () => {
     console.log('A client disconnected.');
 })
 
-wss.on('error', (error) => {
-    console.error('Websocket error:', error);
+io.on('error', (error) => {
+    console.error('Socket error:', error);
 })
+
+io.listen(port);
+

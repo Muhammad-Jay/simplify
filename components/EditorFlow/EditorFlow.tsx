@@ -34,6 +34,7 @@ import {useForceGraphLayout} from "@/hooks/FlowGraph/useForceGraphLayout";
 import {initializeBuildProcess} from "@/lib/podman_actions/init";
 import PanContextMenu from "@/components/EditorFlow/ui/pan/PanContextMenu";
 import CustomStepEdge from "@/components/EditorFlow/Edge/CustomStepEdge";
+import {DevRun} from "@/components/EditorFlow/ui/right-sidebar/DevRun";
 
 const CodeEditorNode = dynamic(() => import('@/components/EditorFlow/Monoco/CodeEditorNode'), {
     ssr: false
@@ -127,30 +128,6 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
         }
     });
 
-    useEffect(() => {
-        // loadFiles(id)
-        // setProjectId(id);
-        // const wss = new WebSocket('ws://localhost:8080/')
-        //
-        // wss.onopen = () => {
-        //     console.log('socket connected.')
-        //     wss.send(JSON.stringify({message: "i'm successfully connected on client side."}))
-        // }
-        //
-        // wss.onmessage = (data) => {
-        //     console.log("message from socket:",data)
-        // }
-        //
-        // wss.onclose = () => {
-        //     console.log('socket disconnected.')
-        // }
-        //
-        // wss.onerror = (err) => {
-        //     console.error(err)
-        // }
-
-    }, [])
-
     const onNodesChange = useCallback((changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)), [nodes]);
 
     const onEdgesChange = useCallback((changes: any) => setEdges((edg) => applyNodeChanges(changes, edg)), [edges])
@@ -232,13 +209,14 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
                             <EventListener/>
                             <CodeEditor/>
                             <ModelWrapper/>
+                            <DevRun/>
                             {nodes.length === 0 && <PanContextMenu/>}
                             {/*//@ts-ignore*/}
-                            <Background variant="dots" gap={20} size={2} color="#444" />
+                            <Background className={'!bg-transparent'} variant="dots" gap={30} size={0} color="#000000"/>
 
 
                             <LeftBottomPanel/>
-                            <RightBottomPanel id={projectId}/>
+                            {/*<RightBottomPanel id={projectId}/>*/}
                         </ReactFlow>
                 </div>
                 <FlowSidebarWrapper className={"!h-full center pt-[6px] rounded-sm bg-black"}>

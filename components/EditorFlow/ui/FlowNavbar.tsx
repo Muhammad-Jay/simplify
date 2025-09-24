@@ -5,15 +5,14 @@ import {Button} from "@/components/ui/button";
 import {useEditorState} from "@/context/EditorContext";
 import {cn} from "@/lib/utils";
 import {useFileState} from "@/context/FileContext";
-import {ScrollArea} from "@/components/ui/scroll-area";
 import {useWorkFlowState} from "@/context/WorkSpaceContext";
 import {useSocket} from "@/context/SocketContext";
 
 const FlowNavbar = ({id}) => {
     const { rightSidebarState, leftSidebarState, handleRightSidebarState, handleLeftSidebarState, recentActiveNodes, nodes, selectedNode, setCurrentNode, setIsOnFitView } = useEditorState()
-    const {currentProjectId} = useFileState();
+    const { currentProjectId, setIsDeployPanelOpen, currentContainer } = useFileState();
     const { handleNavigate } = useWorkFlowState();
-    const { isConnected, error, socket } = useSocket();
+    const { isConnected, error, socket, fetchContainerLoaded } = useSocket();
 
     const fullPath = useMemo(() => {
         return recentActiveNodes && recentActiveNodes.map((recent) => {
@@ -48,14 +47,18 @@ const FlowNavbar = ({id}) => {
                             className={cn('center cursor-pointer hover:!text-cyan-500 transition-300 text-foreground text-xs font-bold',
                             !id && 'text-[#d0ff00]')}>{currentProjectId?.workSpaceName || ''}</span>
                         <span className={'text-cyan-500/90  text-xs'}>{'>'}</span>
-                        {currentProjectId.id === id && (<h2 className={'center text-xs text-[#d0ff00] font-regular'}>{currentProjectId?.name}</h2>)}
+                        {currentProjectId.id === id && (<h2 className={'center text-xs text-[#d0ff00] !gap-[5px] font-regular'}>
+                            <span className={cn('size-[8.5px] rounded-full bg-neutral-700',
+                            currentContainer && 'bg-green-400')}/>
+                            {currentProjectId?.name || id}
+                        </h2>)}
                     </div>
                 )}
 
                 <div className={'center container-fit gap-[10px]'}>
                     <Button
                         onClick={() => {
-                            socket.send(JSON.stringify({type: 'build' ,message: "message sent!. okay?" }))
+                            socket.emit('build_logs_client', {type: 'build' ,message: "message sent!. okay?" })
                         }}
                         type={'button'} className={cn('w-[50px] h-[20px] !p-[0px] cursor-pointer font-semibold text-xs rounded-sm button-neutral text-white')}>
 
@@ -66,22 +69,31 @@ const FlowNavbar = ({id}) => {
                 </div>
             </div>
             <div className={'w-fit h-full rounded-xs center gap-[7px] px-[3px] !justify-end'}>
-                <Button
-                    onClick={() => handleRightSidebarState('Run')}
-                    type={'button'} className={cn('w-[70px] h-[25px] !p-[0px] cursor-pointer font-semibold text-xs rounded-xs button-neutral text-white',
-                    rightSidebarState === 'Run' && 'bg-cyan !text-black')}>
-                    <Play size={5} className={cn('center text-white fill-white',
-                        rightSidebarState === 'Run' && 'fill-black text-black' )}/>
-                    Run
-                </Button>
+                {fetchContainerLoaded && (
+                    <>
+                        <Button
+                            onClick={() => handleRightSidebarState('Run')}
+                            type={'button'} className={cn('w-[70px] h-[25px] !p-[0px] cursor-pointer font-semibold text-xs rounded-xs button-neutral text-white',
+                            rightSidebarState === 'Run' && 'bg-cyan !text-black')}>
+                            <Play size={5} className={cn('center text-white fill-white',
+                                rightSidebarState === 'Run' && 'fill-black text-black' )}/>
+                            Run
+                        </Button>
+                        <Button
+                            type={'button'}
+                            onClick={() => handleRightSidebarState('Build')}
+                            className={cn(`w-[70px] h-[25px] !p-[0px] font-semibold gap-[5px] cursor-pointer center button-neutral !text-white text-xs hover:bg-cyan/80 transition-300 rounded-xs`,
+                                rightSidebarState === 'Build' && 'bg-cyan !text-black')}>
+                            Build
+                        </Button>
+                    </>
+                )}
                 <Button
                     type={'button'}
-                    onClick={() => handleRightSidebarState('Build')}
-                    className={cn(`w-[70px] h-[25px] !p-[0px] font-semibold gap-[5px] cursor-pointer center button-neutral !text-white text-xs hover:bg-cyan/80 transition-300 rounded-xs`,
-                        rightSidebarState === 'Build' && 'bg-cyan !text-black')}>
-                    Build
-                </Button>
-                <Button type={'button'} className={'w-[70px] h-[25px] !p-[0px] cursor-pointer font-light text-xs rounded-xs button-neutral text-white'}>
+                    onClick={() => {
+                        setIsDeployPanelOpen(true);
+                    }}
+                    className={'w-[70px] h-[25px] !p-[0px] cursor-pointer font-light text-xs rounded-xs button-neutral text-white'}>
 
                 </Button>
             </div>

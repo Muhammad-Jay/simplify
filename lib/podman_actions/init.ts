@@ -20,7 +20,8 @@ export type InitializeBuildProcessType = {
     projectId: string,
     tree: TreeType[],
     projectName: string,
-    containerName: string
+    containerName: string,
+    port: number
 }
 
 function createTmpDir(dir: string){
@@ -36,7 +37,7 @@ function createTmpDir(dir: string){
 }
 
 
-export async function initializeBuildProcess({projectId, containerName, projectName, tree}: InitializeBuildProcessType){
+export async function initializeBuildProcess({projectId, containerName, projectName, tree, port}: InitializeBuildProcessType){
     if (!projectId || !tree) return;
 
     console.clear();
@@ -75,7 +76,7 @@ export async function initializeBuildProcess({projectId, containerName, projectN
             })
 
         // Run podman build command
-        await runContainer(projectTmpDir, projectName, containerName)
+        await runContainer(projectTmpDir, projectName, containerName, port)
 
     }catch (e) {
         console.error('Build Error', e)

@@ -8,10 +8,10 @@ type InputProps = {
     required?: string,
     inputType?: string,
     placeholder?: string
-    value?: string,
+    value?: string | number,
     id?: string,
     onChange?: (e?:any)=> void,
-    defaultValue?: string,
+    defaultValue?: string | number,
     name?: string,
     onKeyDown?: (e: any) => void
 }
