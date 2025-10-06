@@ -248,17 +248,17 @@ export function GlobalFileProvider({
     }, [nodes, edges, currentProjectId])
 
     const calculateNodes = (dbNodes: any) => {
-        if (currentFilePath){
-            const firstLevelChildren = dbNodes.map(nd => {
-                const levelChildren = nd.id.startsWith(currentFilePath).split('/').filter(Boolean)
-                if (levelChildren.length < 3){
-                    console.log(nd.id)
-                    return nd
-                }
-            }).filter(f => f !== undefined)
-            console.log(firstLevelChildren);
-            setCurrentNodes([...firstLevelChildren])
-        }
+        // if (currentFilePath){
+        //     const firstLevelChildren = dbNodes.map(nd => {
+        //         const levelChildren = nd.id.startsWith(currentFilePath).split('/').filter(Boolean)
+        //         if (levelChildren.length < 3){
+        //             console.log(nd.id)
+        //             return nd
+        //         }
+        //     }).filter(f => f !== undefined)
+        //     console.log(firstLevelChildren);
+        //     setCurrentNodes([...firstLevelChildren])
+        // }
     }
 
     const updateFileContent = async (filePath: string, code: string, type: string, name: string, )=> {

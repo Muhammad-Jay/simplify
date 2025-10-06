@@ -171,7 +171,7 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
                 </FlowSidebarWrapper>
                 <div className={"container-full center overflow-hidden rounded-lg bg-black"}>
                         <ReactFlow
-                            nodes={currentNodes}
+                            nodes={nodes}
                             edges={edges}
                             onNodesChange={onNodesChange}
                             onEdgesChange={onEdgesChange}
