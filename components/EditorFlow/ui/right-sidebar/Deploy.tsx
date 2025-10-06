@@ -83,7 +83,8 @@ const Deploy = () => {
                 onDeployRequest({
                     projectId: currentProjectId.id,
                     projectName: currentProjectId.name,
-                    tree: formatedNodes
+                    tree: formatedNodes,
+                    workFlowName: currentProjectId?.workSpaceName
                 }, socket)
             }
         }catch (e) {

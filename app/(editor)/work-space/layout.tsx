@@ -12,15 +12,7 @@ export default function  Layout({
 }) {
     return (
         <div className={cn(`screen relative center container-full overflow-hidden`)}>
-            <WorkSpaceProvider>
-                <EditorProvider>
-                    <GlobalFileProvider>
-                        <GlobalUserProvider>
-                            {children}
-                        </GlobalUserProvider>
-                    </GlobalFileProvider>
-                </EditorProvider>
-            </WorkSpaceProvider>
+            {children}
         </div>
     )
 }

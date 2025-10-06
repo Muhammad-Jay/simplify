@@ -8,6 +8,7 @@ import Dependencies from "@/components/EditorFlow/ui/left-sidebar/Dependencies";
 import {Button} from "@/components/ui/button";
 import Loader from "@/components/Loader";
 import Projects from "@/components/EditorFlow/ui/left-sidebar/Projects";
+import SelectedWorkFlowNode from "@/components/EditorFlow/ui/left-sidebar/SelectedWorkFlowNode";
 
 const sidebarState = {
     projects: 'WorkSpaceProjects',
@@ -23,7 +24,7 @@ const LeftSidebarRenderer = () => {
     return (
         <Panel position={'top-left'} className={cn('!w-[270px] !h-[85%] rounded-md border-[3px] !z-[7] !m-[10px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/25',
             leftSidebarState === sidebarState.none && 'hidden',
-            leftSidebarState === sidebarState.projects && '!w-[320px] !h-[280px]')}>
+            leftSidebarState === sidebarState.projects && '!w-[320px]')}>
             <div
                 className={cn(`container-full center rounded-md center bg-transparent`)}>
                 {leftSidebarState === sidebarState.projects && (
@@ -43,7 +44,7 @@ const LeftSidebarRenderer = () => {
                 )}
                 {leftSidebarState === sidebarState.metadata && (
                     <div className={'container-full center rounded-lg !h-full'}>
-                        {leftSidebarState}
+                        <SelectedWorkFlowNode/>
                     </div>
                 )}
             </div>

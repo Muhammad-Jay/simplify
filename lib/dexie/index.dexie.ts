@@ -48,6 +48,14 @@ export interface Edges {
     updated_At: string | number;
 }
 
+export interface WorkFlow {
+    id: string;
+    author_id: string;
+    name: string;
+    created_At?: string | number;
+    updated_At: string | number;
+}
+
 const DN_NAME = 'Simplify'
 
 export class FlowDB extends Dexie {
@@ -57,6 +65,7 @@ export class FlowDB extends Dexie {
     edges: Table<Edges>;
     userEdges: Table<Edges>;
     workSpaceProjects: Table<WorkSpaceProjectInterface>;
+    workFlows: Table<WorkFlow>;
 
     constructor() {
         super(DN_NAME);
@@ -82,6 +91,10 @@ export class FlowDB extends Dexie {
 
         this.version(5).stores({
             workSpaceProjects: '&id, name, project_id, author_id, created_At, updated_At'
+        });
+
+        this.version(5).stores({
+            workFlows: '&id, name, author_id, created_At, updated_At'
         });
     }
 }

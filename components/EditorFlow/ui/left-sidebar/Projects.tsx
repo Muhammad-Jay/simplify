@@ -26,7 +26,7 @@ const Projects = () => {
                 name: nd.data.name,
                 workSpaceName: work_space_id || ''
             });
-            router.push(`/work-space/project_simplify/${nd.id}`);
+            router.push(`/work-space/${work_space_id}/${nd.id}`);
             return;
     }
 

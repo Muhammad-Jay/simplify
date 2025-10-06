@@ -2,7 +2,7 @@ import React from 'react'
 
 const SidebarHeader = () => {
     return (
-        <div className="w-[160px] h-full pb-[5px] center">
+        <div className="w-[160px] h-full pb-[5px] mr-[20px] center">
         <svg width="151" height="35" viewBox="0 0 151 49" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0_186_11)">
                 <path d="M11.1441 28.8626C3.27929 22.8875 7.91719 10.3404 17.7775 10.9171L117.032 16.7222C117.969 16.7771 118.91 16.6996 119.826 16.492L133.79 13.3277C140.046 11.9101 146 16.6659 146 23.0805V31C146 36.5228 141.523 41 136 41H30.4876C28.3027 41 26.1779 40.2844 24.4381 38.9626L11.1441 28.8626Z" fill="url(#paint0_linear_186_11)"/>

@@ -12,6 +12,9 @@ export const socketEvents: SocketEventsTypes = {
     startContainerOutput: 'startContainerOutput',
 
     cLIPush: 'cli:push',
+    projectCliPush: 'projectCli:push',
+    pushComplete: 'push:complete',
+    startPush: 'start:push',
 
     logsStop: 'logs:stop',
     logsRemove: 'logs:remove',

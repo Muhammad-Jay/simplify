@@ -40,6 +40,8 @@ export function GlobalFileProvider({
         buildStatus,
         setIsComplete,
         socket,
+        updateProjectFlow,
+        pushedFiles,
     } = useSocket()
 
     const [projectDir, setProjectDir] = useState([]);
@@ -63,6 +65,8 @@ export function GlobalFileProvider({
     const [edges, setEdges] = useState([]);
     const [deployState, setDeployState] = useState<DeployPanelStateTypes>('configurations')
     const [nodes, setNodes] = useState([]);
+    const [currentNodes, setCurrentNodes] = useState([])
+    const [currentFilePath, setCurrentFilePath] = useState('')
     const [layoutConfig, setLayoutConfig] = useState({
         nodeSep: 150,
         rankSep: 300
@@ -86,7 +90,15 @@ export function GlobalFileProvider({
     useEffect(() => {
         setProjectId(currentProjectId.id);
         loadFiles(currentProjectId.id)
+        calculateNodes(nodes);
     }, [currentProjectId]);
+
+    useEffect(() => {
+        if (pushedFiles && pushedFiles.length > 0){
+            updateProjectFlow(pushedFiles)
+            loadFiles(currentProjectId.id)
+        }
+    }, [pushedFiles]);
 
     useEffect(() => {
         try {
@@ -157,13 +169,6 @@ export function GlobalFileProvider({
         }
     }, [fold]);
 
-    // useEffect(() => {
-    //     if (!selectedNode)return;
-    //     let timeout = setTimeout(() => highlightSubChildrenEdgesAndNodes(), 200);
-    //
-    //     return () => clearTimeout(timeout);
-    // }, [selectedNode]);
-
     const results = useMemo(() => {
         try {
             setIsSearching(true)
@@ -211,6 +216,12 @@ export function GlobalFileProvider({
                     };
                 })
 
+                const projectName = formatedNodes[0]?.id.split('/').filter(Boolean)[0];
+                console.log(projectName)
+                setCurrentFilePath(projectName)
+
+                calculateNodes(formatedNodes)
+
                 const formatedFileData = formatedNodes.map((nds) => ({
                     type: nds.type === 'codeEditor' ? 'file' : 'folder',
                     [nds.type === 'codeEditor' ? 'content' : null]: nds.type === 'codeEditor' && nds.data.code,
@@ -235,6 +246,20 @@ export function GlobalFileProvider({
             setIsLoaded(true)
         }
     }, [nodes, edges, currentProjectId])
+
+    const calculateNodes = (dbNodes: any) => {
+        if (currentFilePath){
+            const firstLevelChildren = dbNodes.map(nd => {
+                const levelChildren = nd.id.startsWith(currentFilePath).split('/').filter(Boolean)
+                if (levelChildren.length < 3){
+                    console.log(nd.id)
+                    return nd
+                }
+            }).filter(f => f !== undefined)
+            console.log(firstLevelChildren);
+            setCurrentNodes([...firstLevelChildren])
+        }
+    }
 
     const updateFileContent = async (filePath: string, code: string, type: string, name: string, )=> {
         try {
@@ -597,7 +622,11 @@ export function GlobalFileProvider({
             currentContainer,
             setCurrentContainer,
             deployState,
-            setDeployState
+            setDeployState,
+            currentNodes,
+            setCurrentNodes,
+            currentFilePath,
+            setCurrentFilePath,
         }}>
             {children}
         </FileContext.Provider>

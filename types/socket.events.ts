@@ -13,6 +13,9 @@ export type SocketEventsTypes = {
     logsRemove: 'logs:remove',
 
     cLIPush: 'cli:push',
+    projectCliPush: 'projectCli:push',
+    pushComplete: 'push:complete',
+    startPush: 'start:push',
 
     logsBuild: 'logs:build',
     logsRun: 'logs:run',

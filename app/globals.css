@@ -228,6 +228,9 @@
   .transition-300{
     @apply transition-all duration-300;
   }
+  .button-gradient{
+    @apply bg-gradient-to-r from-cyan-500 to-cyan-700;
+  }
   .page {
     @apply flex items-center justify-center w-full h-full bg-transparent;
   }

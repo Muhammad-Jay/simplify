@@ -17,68 +17,36 @@ import {Plus} from "lucide-react"
 import useCreateComponent, {FormDataType} from "@/hooks/components/useCreateComponent";
 import {useState, useEffect} from "react";
 import SelectWrapper from "@/components/SelectWrapper";
+import {useWorkFlowState} from "@/context/WorkSpaceContext";
 
 export function DialogBtn() {
     const [formData, setFormData] = useState<FormDataType>({
         name: 'My Component',
         template: "react-ts"
     })
+    const [workFlowName, setWorkFlowName] = useState('')
+
     const [editorTemplate, setEditorTemplate] = useState("")
     const {createComponent, loading} = useCreateComponent(formData)
+    const {
+        createNewWorkFlow,
+        setIsWorkflowsDialogOpen
+    } = useWorkFlowState();
 
-    useEffect(() => {
-        if (editorTemplate) return setFormData(prev => ({...prev, template: editorTemplate}))
-    }, [editorTemplate]);
 
     const handleChange = (e: any) => {
-        const {name, value} = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
+        setWorkFlowName(e.target.value)
     }
     return (
-        <Dialog>
-            <form onSubmit={async (e) => {
-                    e.preventDefault();
-                    await createComponent();
-                }}>
-                <DialogTrigger asChild>
+
                         <button
                             type={'button'}
+                            onClick={() => setIsWorkflowsDialogOpen(true)}
                             disabled={loading}
-                            className={'center gap-[5px] w-[165px] h-[40px] rounded-md text-xs cursor-pointer bg-accent'}>
+                            className={'center gap-[4px] w-[150px] h-[35px] rounded-sm text-sm font-bold flex-nowrap cursor-pointer button-gradient'}>
                            <Plus size={18}/>
-                            Create Component
+                            New Workflow
                         </button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[325px] md:max-w-[450px]">
-                    <DialogHeader>
-                        <DialogTitle>Edit Component</DialogTitle>
-                        <DialogDescription>
-                            Make changes to your profile here. Click save when you&apos;re
-                            done.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4">
-                        <div className="grid gap-3">
-                            <Label htmlFor="name-1">Name</Label>
-                            <Input id="name-1" name="name" value={formData.name} onChange={handleChange} />
-                        </div>
-                        <div className="grid gap-3">
-                            <Label htmlFor="fileName">Template</Label>
-                            <SelectWrapper items={template} setValue={setEditorTemplate} className={"w-full rounded-full center bg-zinc-900"}>
-                                <p>{formData.template}</p>
-                            </SelectWrapper>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <DialogClose asChild>
-                            <Button variant="ghost" className={"text-xs"}>Cancel</Button>
-                        </DialogClose>
-                        <Button onClick={createComponent} className={'bg-accent text-xs'} type="submit" disabled={loading}>
-                            {loading ? 'Creating...' : 'Save changes'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </form>
-        </Dialog>
+
     )
 }

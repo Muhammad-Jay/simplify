@@ -126,7 +126,7 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
                         onNodesDelete={onNodesDelete}
                         onEdgesDelete={handleWorkSpaceEdgeDelete}
                         // edgeTypes={edgeType}
-                        minZoom={.15}
+                        minZoom={.20}
                         //TODO: implement drag and drop functions.
                         // onDrop={onDrop}
                         // onDragOver={onDragOver}

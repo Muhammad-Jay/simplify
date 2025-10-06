@@ -4,7 +4,8 @@ import {socketEvents} from "@/lib/socket/events";
 type DeployRequestDataType = {
     projectId: string;
     projectName: string;
-    tree: TreeType[]
+    tree: TreeType[],
+    workFlowName: string
 }
 
 export const onDeployRequest = (data: DeployRequestDataType, socket: any) => {

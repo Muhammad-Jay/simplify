@@ -5,8 +5,6 @@ import {cn} from "@/lib/utils";
 import {ChevronDown, ChevronRight, File, LogOut, Settings, ChartPie, FileCode2} from "lucide-react";
 import SidebarGroupLinks from "@/components/navigations/sidebar/SidebarGroupLinks";
 import SidebarLogoutBtn from "@/components/navigations/sidebar/SidebarLogoutBtn";
-import SidebarHeader from "@/components/navigations/sidebar/SidebarHeader";
-import GlassCard from "@/components/ui/glass";
 
 const SidebarGroup = () => {
     const [group, setGroup] = useState(["drafts", "notes", 'todos', 'vision', 'market'])
@@ -45,10 +43,7 @@ const SidebarGroup = () => {
 const Sidebar = () => {
 
     return (
-            <aside className={`between bd !justify-start w-fit h-full z-10  gap-[10px] !bg-zinc-900 flex-col rounded-lg p-[10px] px-0 !pt-0`}>
-                <div className={`center w-full h-[50px] rounded-md`}>
-                    <SidebarHeader/>
-                </div>
+            <aside className={`between !justify-start w-fit h-full z-10  gap-[10px] bg-neutral-300/10 backdrop-blur-lg border-r-[1px] border-neutral-800/80 flex-col rounded-lg p-[10px] px-0 !pt-0`}>
                 <div className={'center flex-col container-full !pt-0 !px-[5px] gap-[5px] !h-fit'}>
                     <SidebarLinks
                         href={'/dashboard/overview'}

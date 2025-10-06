@@ -5,6 +5,12 @@ type children = {
     children?: React.ReactNode
 }
 
+export type WorkFlowType = {
+    name: string,
+    id: string | any,
+    createdAt: any
+}
+
 export type MetadataTypes = {
     name: string,
     description: string,

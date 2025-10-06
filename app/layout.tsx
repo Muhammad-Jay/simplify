@@ -4,6 +4,10 @@ import "./globals.css";
 import {Toaster} from "sonner";
 import React from "react";
 import Provider from "@/app/Provider";
+import {EditorProvider} from "@/context/EditorContext";
+import {GlobalFileProvider} from "@/context/FileContext";
+import {GlobalUserProvider} from "@/context/UserContext";
+import {WorkSpaceProvider} from "@/context/WorkSpaceContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +35,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
       <Provider>
-          {children}
+          <WorkSpaceProvider>
+              <EditorProvider>
+                  <GlobalFileProvider>
+                      <GlobalUserProvider>
+                          {children}
+                      </GlobalUserProvider>
+                  </GlobalFileProvider>
+              </EditorProvider>
+          </WorkSpaceProvider>
       </Provider>
       <Toaster theme={"dark"}/>
       </body>

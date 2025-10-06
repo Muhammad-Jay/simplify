@@ -23,18 +23,16 @@ const FlowNavbar = ({id}) => {
     return (
         <div className={'w-full h-[35px] gap-[4px] mt-[3px] between p-[3px] py-[5px] px-[3px] bg-black'}>
             <div className={'w-fit h-full rounded-xs center gap-[7px] px-[3px] !justify-start'}>
+                <Button
+                    type={'button'}
+                    onClick={() => handleLeftSidebarState('WorkSpaceProjects')}
+                    className={cn(`w-[70px] h-[25px] !p-[0px] font-semibold gap-[5px] center button-neutral !text-white text-xs hover:bg-cyan/80 transition-300 rounded-xs`,
+                        leftSidebarState === 'WorkSpaceProjects' && 'bg-cyan !text-black')}>
+                    projects
+                </Button>
                 <Button type={'button'} className={'w-[70px] h-[25px] !p-[0px] font-light text-xs rounded-xs button-neutral text-white'}>
 
                 </Button>
-                {id && (
-                    <Button
-                        type={'button'}
-                        onClick={() => handleLeftSidebarState('WorkSpaceProjects')}
-                        className={cn(`w-[70px] h-[25px] !p-[0px] font-semibold gap-[5px] center button-neutral !text-white text-xs hover:bg-cyan/80 transition-300 rounded-xs`,
-                            leftSidebarState === 'WorkSpaceProjects' && 'bg-cyan !text-black')}>
-                        projects
-                    </Button>
-                )}
                 <Button type={'button'} className={'w-[70px] h-[25px] !p-[0px] font-light text-xs rounded-xs button-neutral text-white'}>
 
                 </Button>

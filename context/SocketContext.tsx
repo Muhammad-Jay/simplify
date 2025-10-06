@@ -5,7 +5,6 @@ import {nanoid} from 'nanoid'
 import {useEditorState} from "@/context/EditorContext";
 // @ts-ignore
 import {io} from 'socket.io-client';
-import {getAllContainers} from "@/lib/podman_actions/getContainers";
 import { useParams } from 'next/navigation'
 import {socketEvents} from "@/lib/socket/events";
 
@@ -13,6 +12,7 @@ const SocketContext = createContext<any| undefined>(undefined)
 
 const WEBSOCKET_URL = 'localhost:8000';
 const RECONNECT_DELAY_MS = 1000
+const author_id = 'jsync4172004@gmail.com'
 
 type BuildMessagesType = {
     type: string,
@@ -30,6 +30,8 @@ export function SocketProvider({
 }){
 
     const { project_id } = useParams()
+    let pushed = []
+    let project_name = ''
 
     const socket_io = useRef(null);
     const reconnectionTimeout = useRef(null);
@@ -41,11 +43,13 @@ export function SocketProvider({
     const [buildMessages, setBuildMessages] = useState<BuildMessagesType[]>([])
     const [socket, setSocket] = useState<any>(null)
     const [isRunning, setIsRunning] = useState(true)
+    const [pushedFiles, setPushedFiles] = useState([])
     const [fetchContainerLoaded, setFetchContainerLoaded] = useState(false);
     const [message, setMessage] = useState<any>('')
     const [containers, setContainers] = useState([])
     const [isComplete, setIsComplete] = useState(true);
     const [deployedUrl, setDeployedUrl] = useState({ });
+    const [pushedProjectId, setPushedProjectId] = useState('')
     const [buildProcess, setBuildProcess] = useState({
         complete: { logs: [], isOpen: false },
         build: { logs: [], isOpen: false },
@@ -54,26 +58,26 @@ export function SocketProvider({
     const [containerOutputs, setContainerOutputs] = useState([])
     const [buildStatus, setBuildStatus] = useState<'build' | 'run' | 'complete' | ''>('');
 
-    const fetchContainers = () => {
-        try {
-            getAllContainers().then((data: any) => {
-                const parsedData = JSON.parse(data);
-                // if (parsedData === containers) {
-                //     setFetchContainerLoaded(true);
-                //     return;
-                // }
-                setContainers(parsedData)
-                setFetchContainerLoaded(true);
-                setIsRunning(false)
-            })
-        }catch (e) {
-            console.log(e);
-            setIsRunning(false)
+    const updateProjectFlow = async (data: any) => {
+        if (!data || !pushedProjectId) {
+            console.warn('missing properties projectId or data.')
+            return;
         }
 
-        containerTimeout.current = setTimeout(fetchContainers, 2500);
+        data.map(async (object: any) => {
+            await db.files.put({
+                id: object.fullPath,
+                path: object.fullPath,
+                code: object.content || "",
+                type: object.type === 'file' ? 'codeEditor' : 'folderNode',
+                name: object.name,
+                project_id: pushedProjectId,
+                author_id,
+                created_At: Date.now(),
+                updated_At: Date.now()
+            })
+        })
     }
-
 
     const connect = useCallback(() => {
         if (reconnectionTimeout.current){
@@ -147,7 +151,6 @@ export function SocketProvider({
         });
 
         socket_io.current.on(socketEvents.allContainer, (data: any) => {
-            console.log(data);
             setContainers(data);
             setFetchContainerLoaded(true);
             setIsRunning(false);
@@ -157,8 +160,24 @@ export function SocketProvider({
             setDeployedUrl({ port, hostname })
         })
 
-        socket_io.current.on(socketEvents.cLIPush, (data: any) => {
-            console.log('cli pushed data', data);
+        socket_io.current.on(socketEvents.startPush, () => {
+            if (pushed){
+                pushed = [];
+                setPushedFiles([])
+                project_name = ''
+                setPushedProjectId('')
+                return;
+            }
+        })
+
+        socket_io.current.on(socketEvents.projectCliPush, (data: any) => {
+            pushed.push(data)
+        })
+
+        socket_io.current.on(socketEvents.pushComplete, async (data: { id: string }) => {
+            setPushedProjectId(data.id);
+            console.log("the project id",data)
+            setPushedFiles(pushed);
         })
 
         socket_io.current.on('disconnect', (event) => {
@@ -180,6 +199,7 @@ export function SocketProvider({
             socket_io.current.disconnect();
         });
     }, [])
+
 
     useEffect(() => {
         connect();
@@ -212,6 +232,10 @@ export function SocketProvider({
             setIsComplete,
             deployedUrl,
             containerOutputs,
+            updateProjectFlow,
+            pushedFiles,
+            setPushedProjectId,
+            pushedProjectId
         }}>
             {children}
         </SocketContext.Provider>
@@ -225,4 +249,4 @@ export const useSocket = ()=> {
         throw new Error('useEditorState() must be wrapped within the provider')
     }
     return context
-}
+};

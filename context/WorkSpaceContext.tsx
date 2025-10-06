@@ -6,8 +6,9 @@ import { nanoid } from 'nanoid'
 import {Position} from 'reactflow';
 import { useParams, useRouter } from 'next/navigation'
 import Dagre from '@dagrejs/dagre'
-import {db, Edges, FileInterface, WorkSpaceProjectInterface} from "@/lib/dexie/index.dexie";
+import {db, Edges, FileInterface, WorkFlow, WorkSpaceProjectInterface} from "@/lib/dexie/index.dexie";
 import {mockWorkSpaceProjects} from "@/constants";
+import {WorkFlowType} from "@/types";
 
 const WorkSpaceContext = createContext<any| undefined>(undefined);
 
@@ -25,9 +26,15 @@ export function WorkSpaceProvider({
 
     const [nodes, setNodes] = useState([])
     const [edges, setEdges] = useState([])
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isWorkflowsDialogOpen, setIsWorkflowsDialogOpen] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isUpdating, setIsUpdating] = useState(false)
+    const [isCreating, setIsCreating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [workFlows, setWorkFlows] = useState<WorkFlowType[]>([])
+    const [isFetching, setIsFetching] = useState(false)
     const [selectedWorkFlowNode, setSelectedWorkFlowNode] = useState([])
 
     useEffect(() => {
@@ -95,6 +102,34 @@ export function WorkSpaceProvider({
         }
     }, [nodes.length])
 
+    const fetchAllWorkFlows = useCallback(async () => {
+
+        const newId = nanoid();
+
+        // await db.workFlows.put({
+        //     id: newId,
+        //     name: 'project_simplify',
+        //     author_id,
+        //     created_At: Date.now(),
+        //     updated_At: Date.now()
+        // })
+        try {
+            setIsFetching(true);
+            const dbWorkFlows: WorkFlow[] = await db.workFlows.where('author_id').equals(author_id).toArray()
+            if (!dbWorkFlows) return;
+
+            setWorkFlows(dbWorkFlows.map(wkFlow => ({
+                name: wkFlow.name,
+                createdAt: wkFlow.created_At,
+                id: wkFlow.id
+            })))
+        }catch (e) {
+            console.log(e)
+        }finally {
+            setIsFetching(false)
+        }
+    }, [])
+
     const addNewProjectNode = async (name: string, project_id: string) => {
         const newId = nanoid()
         try {
@@ -103,7 +138,7 @@ export function WorkSpaceProvider({
             await db.workSpaceProjects.put({
                 id: newId,
                 name,
-                project_id,
+                project_id: work_space_id,
                 author_id,
                 created_At: Date.now(),
                 updated_At: Date.now()
@@ -238,6 +273,58 @@ export function WorkSpaceProvider({
         }
     }, [nodes])
 
+    const createNewWorkFlow = useCallback(async (name: string) => {
+        const newId = nanoid();
+
+        if (!name) return;
+
+        const workflowExists = workFlows.find(flow => flow.name === name)
+
+        if (workflowExists) {
+            console.log('workflow with the same name already exists.')
+            return;
+        }
+        try {
+            setIsCreating(true);
+            await db.workFlows.put({
+                id: newId,
+                name: name.trim().replace('', '_'),
+                author_id,
+                created_At: Date.now(),
+                updated_At: Date.now()
+            })
+
+            router.push(`/work-space/${name}`);
+        }catch (e) {
+            console.log(e);
+        }finally {
+            setIsCreating(false)
+            setIsWorkflowsDialogOpen(false)
+        }
+    }, [workFlows])
+
+    const deleteWorkFlow = useCallback(async (workflowId: string) => {
+        if (!workflowId) return;
+
+        try {
+            setIsDeleting(true);
+
+            await db.workFlows.delete(workflowId);
+            setWorkFlows(flows => flows.filter(flow => flow.id !== workflowId)
+            )
+        }catch (e) {
+            console.log(e);
+        }finally {
+            setIsDeleting(false)
+        }
+    }, [workFlows])
+
+    const getWorkflowProjects = useCallback(async (id: string) => {
+        const dbProjects: WorkSpaceProjectInterface[] = await db.workSpaceProjects.where('project_id').equals(id).toArray()
+
+        return dbProjects || []
+    }, [workFlows])
+
     return (
         <WorkSpaceContext.Provider value={{
             nodes,
@@ -261,6 +348,19 @@ export function WorkSpaceProvider({
             handleWorkSpaceEdgeDelete,
             loadWorkSpaceEdges,
             handleWorkSpaceNodeDelete,
+            createNewWorkFlow,
+            fetchAllWorkFlows,
+            workFlows,
+            isWorkflowsDialogOpen,
+            setIsWorkflowsDialogOpen,
+            isSidebarOpen,
+            setIsSidebarOpen,
+            isCreating,
+            setIsCreating,
+            isDeleting,
+            setIsDeleting,
+            deleteWorkFlow,
+            getWorkflowProjects,
         }}>
             {children}
         </WorkSpaceContext.Provider>
