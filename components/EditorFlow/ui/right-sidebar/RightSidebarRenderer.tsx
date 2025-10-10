@@ -82,26 +82,7 @@ export const RightEditorSidebar = () => {
         <div className={cn(`w-full center flex-col !justify-start gap-[15px] py-[5px] !px-[5px] h-full rounded-xs m-0`)}>
             <RightSidebarActionButton state={'Selected'} />
             <RightSidebarActionButton state={'Documentation'} />
-            <Button
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
 
-            </Button>
-            <Button
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
-
-            </Button>
-            <Button
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
-
-            </Button>
-            <Button
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
-
-            </Button>
-            <Button
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
-
-            </Button>
         </div>
     )
 }

@@ -110,6 +110,7 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
         setCurrentNodes,
         currentFilePath,
         setCurrentFilePath,
+        handleCurrentNode
     } = useFileState();
 
     useOnSelectionChange({
@@ -132,7 +133,7 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
         }
     });
 
-    const onNodesChange = useCallback((changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)), [nodes]);
+    const onNodesChange = useCallback((changes: any) => setCurrentNodes((nds) => applyNodeChanges(changes, nds)), [currentNodes, nodes]);
 
     const onEdgesChange = useCallback((changes: any) => setEdges((edg) => applyNodeChanges(changes, edg)), [edges])
 
@@ -151,9 +152,9 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
 
     const onLayout = useCallback((direction: any) => {
         const layouted = getLayoutedElements(nodes, edges, { direction })
-        setNodes([...layouted.nodes]);
+        setCurrentNodes([...layouted.nodes]);
         setEdges([...layouted.edges]);
-    }, [nodes, edges])
+    }, [nodes, currentNodes, edges])
 
     if (!isLoaded) return (<div
         className={'container-full center'}>
@@ -169,13 +170,16 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
                 <FlowSidebarWrapper className={"h-full center pt-[6px] rounded-sm bg-black"}>
                     <EditorSidebar/>
                 </FlowSidebarWrapper>
-                <div className={"container-full center overflow-hidden rounded-lg bg-black"}>
+                <div className={"container-full center !overflow-hidden rounded-lg bg-black"}>
                         <ReactFlow
-                            nodes={nodes}
+                            nodes={currentNodes}
                             edges={edges}
                             onNodesChange={onNodesChange}
                             onEdgesChange={onEdgesChange}
-                            onNodeDoubleClick={highlightSubChildrenEdgesAndNodes}
+                            onNodeDoubleClick={() => {
+                                handleCurrentNode()
+                                highlightSubChildrenEdgesAndNodes()
+                            }}
                             onEdgeClick={() => console.log('edge clicked') }
                             onNodeContextMenu={(e) => {
                                 e.preventDefault()

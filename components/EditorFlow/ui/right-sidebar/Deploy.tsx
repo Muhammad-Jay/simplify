@@ -1,15 +1,12 @@
 'use client'
 import React from 'react'
-import {DevRun} from "@/components/EditorFlow/ui/right-sidebar/DevRun";
 import {Button} from "@/components/ui/button";
 import Loader from "@/components/Loader";
 import {useSocket} from "@/context/SocketContext";
-import {useEditorState} from "@/context/EditorContext";
-import {socketEvents} from "@/lib/socket/events";
 import {onDeployRequest} from "@/lib/socket/actions";
 import {useFileState} from "@/context/FileContext";
-import {sidebarState} from "@/components/EditorFlow/ui/right-sidebar/RightSidebarRenderer";
 import {cn} from "@/lib/utils";
+import {socketEvents} from "@/lib/socket/events";
 
 const Deploy = () => {
     const {
@@ -93,28 +90,16 @@ const Deploy = () => {
     }
 
     return (
-        <div className={'container-full between flex-col p-[10px] rounded-lg rounded-md !h-full'}>
-            <div className={cn('center w-full h-full !justify-start flex-col gap-[10px] p-[10px]')}>
-                {deployedUrl?.port && (
-                    <a
-                        className={cn('text-xs font-bold text-foreground/90 underline')}
-                        target={'_blank'}
-                        href={`http://${deployedUrl?.hostname}:${deployedUrl?.port}`}>
-                        {`http://${deployedUrl?.hostname}:${deployedUrl?.port}`}
-                    </a>
-                )}
-            </div>
             <Button
                 onClick={handleRun}
                 type={'button'}
                 disabled={!isComplete}
-                className={cn('center w-full !h-[30px] !p-0 !text-xs !transition-400 !font-semibold gap-[5px] !bg-cyan-500 rounded-sm button-neutral hover:bg-cyan',
-                    currentContainer && currentContainer?.State === 'running' && '!bg-red-500 text-black hover:!bg-red-400')}
+                className={cn('center w-[70px] !h-[30px] !p-0 !text-xs !transition-400 !font-semibold gap-[5px] bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-sm button-neutral hover:bg-cyan',
+                    currentContainer && currentContainer?.State === 'running' && '!bg-gradient-to-br from-red-500 to-red-700 text-black hover:!bg-red-400')}
             >
                 {!isComplete && (<Loader size={15} className={'animate-spin text-white'}/>)}
                 {currentContainer && currentContainer?.State === 'running' ? 'Stop' : 'Deploy'}
             </Button>
-        </div>
     )
 }
 export default Deploy

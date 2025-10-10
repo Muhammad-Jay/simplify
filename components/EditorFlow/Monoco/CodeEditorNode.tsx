@@ -75,7 +75,7 @@ const CodeEditorNode = ({
             isVisible={isVisible}
             isInteractive={isInteractive}
             selected={selected}
-            stroke={ selected ? "#d0ff00" : data.color }>
+            stroke={ selected ? "#00fa49" : data.color }>
             <div
                 className={cn(`rounded-2xl relative container-full`)}>
 
@@ -87,9 +87,9 @@ const CodeEditorNode = ({
                         <div className={'center h-full w-fit gap-[10px]'}>
                             <Button
                                 onClick={() => setOpenEditor(true)}
-                                className={cn(`size-[70px] !p-0 bd center rounded-full button-neutral hover:!bg-[#d0ff00]/25 transition-300 !border-[3px] text-xs`,
-                                    selected ? "!border-[#d0ff00]" : "!border-[#00C8FF]",
-                                    'group-hover:!border-[#d0ff00] border-[3px]'
+                                className={cn(`size-[70px] !p-0 bd center rounded-full button-neutral hover:!bg-green-400/25 transition-300 !border-[3px] text-xs`,
+                                    selected ? "!border-green-400" : "!border-[#00C8FF]",
+                                    'group-hover:!border-green-400 border-[3px]'
                                 )}>
                                 <Code size={75} className={'text-white !text-[60px]'}/>
                             </Button>

@@ -9,10 +9,12 @@ import {LogsRenderer} from "@/components/EditorFlow/ui/right-sidebar/LogsRendere
 import {useSocket} from "@/context/SocketContext";
 import ContainerOutputs from "@/components/EditorFlow/ui/ContainerOutputs";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import {Configurations} from "@/components/EditorFlow/ui/top middle tab/Panel_tabs/Configurations";
+import Deploy from "@/components/EditorFlow/ui/right-sidebar/Deploy";
 
 
-const deployPanelState = {
-    configurations: 'configurations',
+export const deployPanelState = {
+    overview: 'overview',
     logs: 'logs',
     environmentVariable: 'environment_Variable',
     settings: 'settings'
@@ -40,8 +42,9 @@ const DeployPanelWrapper = () => {
                 transition={{duration: .1}}
                 className={cn(`container-full transition-300 center rounded-md center flex-col border-[4px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/26`)}
             >
-                <div className={'w-full center h-fit'}>
+                <div className={'w-full between h-fit pr-[15px] pt-[5px]'}>
                     <Tabs setDeployState={setDeployState}/>
+                    <Deploy/>
                 </div>
                 <div className={cn('center container-full !max-h-[90%]')}>
                     {deployState === deployPanelState.environmentVariable && (
@@ -54,10 +57,8 @@ const DeployPanelWrapper = () => {
                             <Logs/>
                         </div>
                     )}
-                    {deployState === deployPanelState.configurations && (
-                        <div className={cn('container-full center flex-col')}>
-                            {deployState}
-                        </div>
+                    {deployState === deployPanelState.overview && (
+                        <Configurations/>
                     )}
                 </div>
             </motion.div>
@@ -90,42 +91,9 @@ const Tabs = ({setDeployState}: { setDeployState: any}) => {
 }
 
 export const Logs = () => {
-    const {
-        currentContainer,
-        setIsDeployPanelOpen,
-        isDeployPanelOpen,
-    } = useFileState();
-
-    const {
-        isComplete,
-    } = useSocket();
 
     return (
         <div className={'container-full between !justify-start !items-start flex-col p-[10px] gap-[10px] rounded-lg rounded-md !h-full'}>
-            <div className={'w-full h-fit center !justify-start !items-start flex-col gap-[7px] mt-[0px]'}>
-                {currentContainer && (
-                    <>
-                        <div className={'w-full between text-foreground/80 text-xs font-semibold'}>
-                            <div className={cn('center !flex-nowrap text-xs capitalize font-semibold',
-                                currentContainer?.State === 'running' ? 'text-green-400' : currentContainer?.State === 'stopping' ? 'text-yellow-300' : 'text-cyan')}>
-                                {currentContainer && currentContainer?.State || 'not_created'}
-                            </div>
-                            <div className={cn('!text-sm font-semibold text-foreground/90')}>
-                            </div>
-                            <Button
-                                onClick={() => {}}
-                                type={'button'}
-                                disabled={!isComplete}
-                                className={cn('center w-[60px] !h-[30px] !p-0 !text-xs !transition-400 !font-semibold gap-[5px] !bg-cyan-500 rounded-sm button-neutral hover:bg-cyan',
-                                    currentContainer && currentContainer?.State === 'running' && '!bg-red-500 text-black hover:!bg-red-400')}
-                            >
-                                {!isComplete && (<Loader size={15} className={'animate-spin text-white'}/>)}
-                                {currentContainer && currentContainer?.State === 'running' ? 'Stop' : 'Run'}
-                            </Button>
-                        </div>
-                    </>
-                )}
-            </div>
             <LogsRenderer/>
             <div className={cn('center w-full h-fit')}>
                 <textarea

@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/select";
 import {cn} from "@/lib/utils";
 
-const SelectWrapper = ({placeholder,isStrict, setIsOpen, isOpen, setValue, children, items, label,className}: {placeholder?: string, setIsOpen?:any, isOpen?: boolean, isStrict?:boolean, setValue?:any, children: React.ReactNode, items?: {value: string, name: string}[], label?: string, className?: string}) => {
+const SelectWrapper = ({placeholder,isStrict, setIsOpen, isOpen, setValue, children, items, label,className}: {placeholder?: string, setIsOpen?:any, isOpen?: boolean, isStrict?:boolean, setValue?:any, children?: React.ReactNode, items?: {value: string, name: string}[], label?: string, className?: string}) => {
 
     return (
-        <Select onValueChange={(value) => {setValue(value)}}>
-            <SelectTrigger className={cn("!outline-none !border-none",className)}>
+        <Select onValueChange={(value) => {setValue(prev => ({...prev, environment: value}))}}>
+            <SelectTrigger className={cn("!outline-none !border-none w-full",className)}>
                 {placeholder ? (
                     <SelectValue placeholder={placeholder} className={"bg-transparent text-white  hover:text-cyan-500 transition-300"}/>
                 ): children}

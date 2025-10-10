@@ -118,9 +118,9 @@ const AddFileModel = ({parentName, color, selected, fullPath, type}: { parentNam
                         style={{
                             borderColor: color
                         }}
-                        className={cn(`size-[50px] !p-0 bd center rounded-full button-neutral hover:!bg-[#d0ff00]/25 transition-300 !border-[3px] text-md`,
-                            selected && "!border-[#d0ff00]",
-                            'group-hover:!border-[#d0ff00] border-[3px]'
+                        className={cn(`size-[50px] !p-0 bd center rounded-full button-neutral hover:!bg-green-400/25 transition-300 !border-[3px] text-md`,
+                            selected && "!border-green-400",
+                            'group-hover:!border-green-400 border-[3px]'
                         )}>
                         +
                     </Button>

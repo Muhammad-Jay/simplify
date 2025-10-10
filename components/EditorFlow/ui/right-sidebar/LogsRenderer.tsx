@@ -8,6 +8,8 @@ import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area";
 import Loader from "@/components/Loader";
 import {nanoid} from 'nanoid'
 import {Button} from "@/components/ui/button";
+import {useFileState} from "@/context/FileContext";
+import {deployPanelState} from "@/components/EditorFlow/ui/DeployPanelWrapper";
 
 export const LogsRenderer = () => {
     const {
@@ -15,10 +17,16 @@ export const LogsRenderer = () => {
         buildStatus,
         setBuildProcess,
     } = useSocket();
+    const {
+        setDeployState,
+    } = useFileState();
 
     const logsRef = useRef(null);
 
     useEffect(() => {
+        if (buildProcess.build.logs?.length === 1){
+            setDeployState(deployPanelState.logs)
+        }
         if (logsRef.current){
             logsRef.current.scrollBottom = logsRef.current.scrollHeight;
         }

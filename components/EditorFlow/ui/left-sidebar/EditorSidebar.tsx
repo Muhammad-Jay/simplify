@@ -20,14 +20,6 @@ const EditorSidebar = () => {
                 className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
                 <SearchCode size={11} className={'text-black'}/>
             </Button>
-            <Button
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
-
-            </Button>
-            <Button
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
-
-            </Button>
         </div>
     )
 }

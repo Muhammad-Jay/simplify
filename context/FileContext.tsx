@@ -12,7 +12,7 @@ import {useWorkFlowState} from "@/context/WorkSpaceContext";
 import {useSocket} from "@/context/SocketContext";
 import {socketEvents} from "@/lib/socket/events";
 
-export type DeployPanelStateTypes = 'environmentVariable' | 'logs' | 'configurations' | 'settings'
+export type DeployPanelStateTypes = 'environmentVariable' | 'logs' | 'overview' | 'settings'
 
 const FileContext = createContext<any| undefined>(undefined)
 
@@ -24,6 +24,14 @@ const defaultFolderNodeColor = '#00bcff'
 export type GlobalMessageType = {
     type: 'error' | 'success' | 'warning' | '',
     message: string
+}
+
+export type ConfigTypes = {
+    useCurrentFlow: boolean;
+    sourceURL?: string;
+    environment: 'Production' | 'Development';
+    ports?: any[];
+    buildCommand: string;
 }
 
 export function GlobalFileProvider({
@@ -63,7 +71,7 @@ export function GlobalFileProvider({
     const [isOnQuery, setIsOnQuery] = useState(false);
     const [isLoaded, setIsLoaded] = useState(true);
     const [edges, setEdges] = useState([]);
-    const [deployState, setDeployState] = useState<DeployPanelStateTypes>('configurations')
+    const [deployState, setDeployState] = useState<DeployPanelStateTypes>('overview')
     const [nodes, setNodes] = useState([]);
     const [currentNodes, setCurrentNodes] = useState([])
     const [currentFilePath, setCurrentFilePath] = useState('')
@@ -78,20 +86,48 @@ export function GlobalFileProvider({
     const [globalMessage, setGlobalMessage] = useState<GlobalMessageType>({ type: '', message: '' })
     const [panContextMenuOpen, setPanContextMenuOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false)
+    const [currentSelectedNode, setCurrentSelectedNode] = useState<any>({})
     const [isDeployPanelOpen, setIsDeployPanelOpen] = useState(false);
     const [currentContainer, setCurrentContainer] = useState<any>({})
     const [fold, setFold] = useState({
         fold: false,
         path: ''
     });
+    const [config, setConfig] = useState<ConfigTypes>({
+        useCurrentFlow: true,
+        sourceURL: '' ,
+        environment: 'Production',
+        ports: [],
+        buildCommand: ''
+    })
 
     const router = useRouter();
 
     useEffect(() => {
+        if (!project_id) return;
+        loadFiles(project_id)
+    }, []);
+
+    useEffect(() => {
         setProjectId(currentProjectId.id);
         loadFiles(currentProjectId.id)
-        calculateNodes(nodes);
     }, [currentProjectId]);
+
+    useEffect(() => {
+        if(!currentSelectedNode || currentSelectedNode?.type !== 'folderNode' || !currentFilePath) return;
+        const calculatedNodes = calculateNodes(nodes, currentFilePath);
+        const formatedFileData = calculatedNodes.map((nds) => ({
+            type: nds.type === 'codeEditor' ? 'file' : 'folder',
+            [nds.type === 'codeEditor' ? 'content' : null]: nds.type === 'codeEditor' && nds.data.code,
+            name: nds.data.name,
+            fullPath: nds.data.label
+        })) as mockFilesDataTypes[]
+        const generatedEdges = generateEdges(formatedFileData)
+        const layoutedNodes = getLayoutedElements(calculatedNodes, generatedEdges, { direction: 'TB' });
+
+        setCurrentNodes([...layoutedNodes.nodes])
+        setEdges([...layoutedNodes.edges])
+    }, [currentFilePath, currentSelectedNode]);
 
     useEffect(() => {
         if (pushedFiles && pushedFiles.length > 0){
@@ -217,10 +253,7 @@ export function GlobalFileProvider({
                 })
 
                 const projectName = formatedNodes[0]?.id.split('/').filter(Boolean)[0];
-                console.log(projectName)
                 setCurrentFilePath(projectName)
-
-                calculateNodes(formatedNodes)
 
                 const formatedFileData = formatedNodes.map((nds) => ({
                     type: nds.type === 'codeEditor' ? 'file' : 'folder',
@@ -234,6 +267,9 @@ export function GlobalFileProvider({
                 const layoutedNodes = getLayoutedElements(formatedNodes, generatedEdges, { direction: 'TB' });
                 // const timeout = setTimeout(() => {
                 setNodes([...layoutedNodes.nodes])
+                const calc = calculateNodes(layoutedNodes.nodes, projectName);
+                console.log('the calc', calc)
+                setCurrentNodes([...calc])
                 setTimeout(() => {
                     setEdges([...layoutedNodes.edges])
                 }, 600);
@@ -247,19 +283,50 @@ export function GlobalFileProvider({
         }
     }, [nodes, edges, currentProjectId])
 
-    const calculateNodes = (dbNodes: any) => {
-        // if (currentFilePath){
-        //     const firstLevelChildren = dbNodes.map(nd => {
-        //         const levelChildren = nd.id.startsWith(currentFilePath).split('/').filter(Boolean)
-        //         if (levelChildren.length < 3){
-        //             console.log(nd.id)
-        //             return nd
-        //         }
-        //     }).filter(f => f !== undefined)
-        //     console.log(firstLevelChildren);
-        //     setCurrentNodes([...firstLevelChildren])
-        // }
-    }
+    const calculateNodes = (oldNodes: any[], selectedPath: any) => {
+        if (!selectedPath || typeof selectedPath !== 'string') {
+            return [];
+        }
+
+        const parentPath = selectedPath;
+
+        const parentNode = oldNodes.find(node => node.data?.label === parentPath);
+
+        if (!parentNode) {
+            return [];
+        }
+
+        const resultNodes = [parentNode];
+
+        const parentDepth = parentPath.split('/').filter(s => s.length > 0).length;
+
+        const childrenPrefix = parentPath.endsWith('/') ? parentPath : parentPath + '/';
+
+        const directChildren = oldNodes.filter(node => {
+            const childPath = node.data.label;
+
+            if (childPath === parentPath) {
+                return false;
+            }
+
+            if (!childPath.startsWith(childrenPrefix)) {
+                return false;
+            }
+
+            const childDepth = childPath.split('/').filter(s => s.length > 0).length;
+
+            return childDepth === parentDepth + 1;
+        });
+
+        directChildren.sort((a, b) => {
+            if (a.type === 'folderNode' && b.type === 'codeEditor') return -1;
+            if (a.type === 'codeEditor' && b.type === 'folderNode') return 1;
+            // Case-insensitive alphabetical sort by name
+            return a.data.name.localeCompare(b.data.name);
+        });
+
+        return resultNodes.concat(directChildren);
+    };
 
     const updateFileContent = async (filePath: string, code: string, type: string, name: string, )=> {
         try {
@@ -420,6 +487,11 @@ export function GlobalFileProvider({
         }
     }
 
+    const handleCurrentNode = useCallback(() => {
+        setCurrentSelectedNode(selectedNode);
+        setCurrentFilePath(selectedNode?.id);
+    }, [nodes, edges, currentFilePath, currentNodes, setCurrentSelectedNode])
+
     const highlightSubChildrenEdgesAndNodes = useCallback(() => {
         const folderPath = selectedNode ? selectedNode?.data?.label : null;
 
@@ -450,7 +522,7 @@ export function GlobalFileProvider({
         setOpenBottomTabControlPanel(false);
 
         setIsDeployPanelOpen(false);
-        setNodes(nds => nds.map(nd => ({
+        setCurrentNodes(nds => nds.map(nd => ({
             ...nd,
             data: {
                 ...nd.data,
@@ -627,6 +699,12 @@ export function GlobalFileProvider({
             setCurrentNodes,
             currentFilePath,
             setCurrentFilePath,
+            currentSelectedNode,
+            setCurrentSelectedNode,
+            calculateNodes,
+            handleCurrentNode,
+            config,
+            setConfig,
         }}>
             {children}
         </FileContext.Provider>

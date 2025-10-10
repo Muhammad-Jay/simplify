@@ -24,7 +24,7 @@ const LeftSidebarRenderer = () => {
     return (
         <Panel position={'top-left'} className={cn('!w-[270px] !h-[85%] rounded-md border-[3px] !z-[7] !m-[10px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/25',
             leftSidebarState === sidebarState.none && 'hidden',
-            leftSidebarState === sidebarState.projects && '!w-[320px]')}>
+        )}>
             <div
                 className={cn(`container-full center rounded-md center bg-transparent`)}>
                 {leftSidebarState === sidebarState.projects && (
