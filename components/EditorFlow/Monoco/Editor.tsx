@@ -104,11 +104,6 @@ const Div = memo(({selectedNode, containerRef }: { containerRef?: any, editorRef
     const [socketConnected, setSocketConnected] = useState(false)
 
     const {
-        updateFile: saveFile,
-        setIsUpdating,
-        setFiles,
-    } = useEditorState()
-    const {
         updateFileContent,
         setIsFileUpdating,
         setEditorContent,
@@ -273,7 +268,7 @@ const Div = memo(({selectedNode, containerRef }: { containerRef?: any, editorRef
                             setNodes(nds => nds.map((nd) => nd.data.label === selectedNode?.data?.label ? ({...nd, data: {...nd.data, code: newCode}}) : nd))
                             updateFileContent(selectedNode.data.label, newCode, selectedNode?.type, selectedNode?.data?.name);
                             setEditorState(update.state)
-                                }, 3000)
+                                }, 3000);
                         setIsFileUpdating(false)
                     }
                 })

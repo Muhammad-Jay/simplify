@@ -77,8 +77,8 @@ export const LogsRenderer = () => {
                                 {value.logs && value.logs.map((log: any, i: number) => (
                                     <div
                                         key={`${key}:${i}`}
-                                        className={cn('center w-full my-[1px] h-fit p-[5px] !py-[1px]')}>
-                                           <pre className={cn('logs_wrapper w-full whitespace-trim overflow-scroll max-h-fit py-[10px] flex !flex-wrap p-[5px] rounded-sm bg-neutral-800/55 backdrop-blur-xs text-xs text-foreground/70 font-regular',
+                                        className={cn('center w-full h-fit')}>
+                                           <pre className={cn('logs_wrapper w-full whitespace-trim overflow-scroll max-h-fit py-[10px] flex !flex-wrap p-[5px] px-[10px] bg-black/90 backdrop-blur-xs text-xs text-foreground/70 font-regular',
                                                !log.message && '!p-0',
                                                log.message.startsWith('Error') && 'bg-red-400/40',
                                                log.message.includes('successful') && 'bg-green-400/40'

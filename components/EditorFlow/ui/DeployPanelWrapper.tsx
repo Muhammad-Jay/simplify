@@ -11,6 +11,7 @@ import ContainerOutputs from "@/components/EditorFlow/ui/ContainerOutputs";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Configurations} from "@/components/EditorFlow/ui/top middle tab/Panel_tabs/Configurations";
 import Deploy from "@/components/EditorFlow/ui/right-sidebar/Deploy";
+import EnvironmentVariables from "@/components/EditorFlow/ui/top middle tab/Panel_tabs/EnvironmentVariables";
 
 
 export const deployPanelState = {
@@ -49,7 +50,7 @@ const DeployPanelWrapper = () => {
                 <div className={cn('center container-full !max-h-[90%]')}>
                     {deployState === deployPanelState.environmentVariable && (
                         <div className={cn('container-full center flex-col')}>
-                            {deployState}
+                            <EnvironmentVariables/>
                         </div>
                     )}
                     {deployState === deployPanelState.logs && (

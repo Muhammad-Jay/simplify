@@ -1,6 +1,6 @@
 'use client'
 import React, {useMemo, useState} from 'react'
-import {Play} from 'lucide-react'
+import {Play, Copy, Check} from 'lucide-react'
 import {Button} from "@/components/ui/button";
 import { useReactFlow } from 'reactflow'
 import {useEditorState} from "@/context/EditorContext";
@@ -122,13 +122,18 @@ const CopyProjectId = ({projectId}: { projectId: string}) => {
     return (
         <div className={cn('w-fit center flex-nowrap gap-[5px] h-fit')}>
                 <span
-                    className={cn('container-fit transition-300 center flex-nowrap text-xs text-foreground/80 font-regular')}
+                    onClick={copyId}
+                    className={cn('container-fit transition-300 center text-nowrap text-xs text-foreground/80 font-regular')}
                 >{projectId && projectId.slice(0, 15)}...</span>
             <span
                 onClick={copyId}
-                className={'size-[20px] center rounded-sm bg-neutral-500'}
+                className={'size-[20px] center rounded-sm transition-300'}
             >
-
+                {
+                    copied ? <Check size={14} className={'text-foreground transition-300 hover:text-cyan-500'}/>
+                        :
+                        <Copy size={14} className={'text-foreground transition-300 hover:text-cyan-500'}/>
+                }
                 </span>
         </div>
     )
@@ -179,14 +184,16 @@ const RenderPath = () => {
                                 })
                                 setIsOnQuery(true)
                             }}
-                            className={cn('text-xs bg-transparent center gap-[5px] flex-nowrap hover:text-cyan-500 rounded-xs transition-300 container-fit p-[2px] text-white/80',
+                            className={cn('text-xs bg-transparent center gap-[5px] text-nowrap hover:text-cyan-500 rounded-xs transition-300 container-fit p-[2px] text-white/80',
                                 node?.data?.name === selectedNode?.data?.name && 'text-[#d0ff00]'
                             )}>{node?.data?.name || ''}
-                            <span className={'text-cyan-500/90'}>|</span>
-                            {node?.data?.name === currentProjectId?.name && (
-                                <CopyProjectId projectId={currentProjectId?.id}/>
-                            )}
                         </button>
+                        {node?.data?.name === currentProjectId?.name && (
+                            <span className={'text-cyan-500/90'}>|</span>
+                        )}
+                        {node?.data?.name === currentProjectId?.name && (
+                            <CopyProjectId projectId={currentProjectId?.id}/>
+                        )}
                         <p className={'text-cyan-500/90  text-xs'}>
                             {index === fullPath.length - 1 ? '' : '>'}
                         </p>

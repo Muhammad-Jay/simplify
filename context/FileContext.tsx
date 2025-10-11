@@ -50,6 +50,7 @@ export function GlobalFileProvider({
         socket,
         updateProjectFlow,
         pushedFiles,
+        setBuildProcess
     } = useSocket()
 
     const [projectDir, setProjectDir] = useState([]);
@@ -130,6 +131,21 @@ export function GlobalFileProvider({
     }, [currentFilePath, currentSelectedNode]);
 
     useEffect(() => {
+        const calculatedNodes = calculateNodes(nodes, currentFilePath);
+        const formatedFileData = calculatedNodes.map((nds) => ({
+            type: nds.type === 'codeEditor' ? 'file' : 'folder',
+            [nds.type === 'codeEditor' ? 'content' : null]: nds.type === 'codeEditor' && nds.data.code,
+            name: nds.data.name,
+            fullPath: nds.data.label
+        })) as mockFilesDataTypes[]
+        const generatedEdges = generateEdges(formatedFileData)
+        const layoutedNodes = getLayoutedElements(calculatedNodes, generatedEdges, { direction: 'TB' });
+
+        setCurrentNodes([...layoutedNodes.nodes])
+        setEdges([...layoutedNodes.edges])
+    }, [nodes]);
+
+    useEffect(() => {
         if (pushedFiles && pushedFiles.length > 0){
             updateProjectFlow(pushedFiles)
             loadFiles(currentProjectId.id)
@@ -154,6 +170,15 @@ export function GlobalFileProvider({
         if (currentContainer && currentProjectId){
             if (currentContainer?.State === 'running'){
                 socket.emit(socketEvents.startContainerOutput, currentProjectId?.id)
+                socket.on(socketEvents.logsRun, (data: any) => {
+                    setBuildProcess(prev => ({
+                        ...prev,
+                        container_outputs: {
+                            ...prev.container_outputs,
+                            logs: [...prev.container_outputs.logs, { message: data }]
+                        }
+                    }))
+                })
                 return;
             }
         }

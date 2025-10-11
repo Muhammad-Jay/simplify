@@ -127,6 +127,7 @@ const SubFolder = ({ id, selected, data }: { id: string, selected: boolean, data
     const contextBtnRef = React.useRef(null);
     const {
         nodes,
+        setCurrentFilePath
     } = useFileState();
 
     useEffect(() => {
@@ -137,13 +138,13 @@ const SubFolder = ({ id, selected, data }: { id: string, selected: boolean, data
         }
     }, [id])
 
-    useEffect(() => {
-        if (contextBtnRef.current && selected){
-            contextBtnRef?.current?.click()
-        }
-    }, [selected]);
-
     const Render = () => {
+        const handleClick = (children: any) => {
+            if (children?.type === 'folderNode'){
+                setCurrentFilePath(children?.id)
+            }
+        }
+
         return (
             <div
                 className={cn('w-[230px] h-fit center !justify-start p-[10px] gap-[10px] mb-[20px] overflow-hidden flex-col border-2 !border-green-400/30 absolute -bottom-[105%] -left-[105%] !bg-neutral-800/30 !backdrop-blur-lg rounded-lg')}
@@ -158,6 +159,7 @@ const SubFolder = ({ id, selected, data }: { id: string, selected: boolean, data
                     {folderChildren && folderChildren.map((children: any, index: any) => (
                         <div
                             key={index}
+                            onClick={() => handleClick(children)}
                             className={cn('w-full h-fit hover:border-cyan-500 border-l-[2px] pl-[4px] transition-300 between p-[5px] text-xs font-regular text-foreground')}
                         >
                             <div className={'container-fit gap-[10px] center'}>

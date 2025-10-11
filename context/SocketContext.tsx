@@ -55,7 +55,7 @@ export function SocketProvider({
         build: { logs: [], isOpen: false },
         container_outputs: { logs: [], isOpen: false },
     })
-    const [containerOutputs, setContainerOutputs] = useState([])
+    const [containerOutputs, setContainerOutputs] = useState<any>([])
     const [buildStatus, setBuildStatus] = useState<'build' | 'run' | 'complete' | ''>('');
 
     const updateProjectFlow = async (data: any) => {
@@ -107,8 +107,6 @@ export function SocketProvider({
 
         socket_io.current.on(socketEvents.logsRun, (data: any) => {
             setBuildStatus('run');
-
-            setContainerOutputs(prev => ([...prev, { message: data }]))
 
             if (isComplete && buildStatus === 'run'){
                 setBuildStatus('complete');

@@ -19,6 +19,7 @@ type InputFieldPropTypes = {
     type?: string;
     isDefault?: boolean;
     htmlFor?: string;
+    disable?: boolean;
     children?: React.ReactNode;
     label?: string
     value?: any;
@@ -68,13 +69,14 @@ export const Configurations = memo(() => {
                     <InputField
                         label={'Source'}
                         name={'source'}
+                        disable={config.useCurrentFlow}
                         value={config.source}
                         onChange={setConfig}
                         placeholder={'GitHub'}
                     />
                     <InputField
                         htmlFor={'use-current-flow'}
-                        label={'use current flow'}
+                        label={'Use Current Flow'}
                         isDefault={false}
                         wrapperClassName={'max-w-fit'}
                     >
@@ -115,7 +117,7 @@ export const Configurations = memo(() => {
     )
 })
 
-const InputField = memo(({
+export const InputField = memo(({
                              labelClassName,
                              type = 'text',
                              children,
@@ -123,6 +125,7 @@ const InputField = memo(({
                              value,
                              name,
                              onChange,
+                             disable,
                              htmlFor,
                              wrapperClassName,
                              inputClassName,
@@ -143,9 +146,10 @@ const InputField = memo(({
                     inputType={type}
                     value={value}
                     name={name}
+                    disable={disable}
                     placeholder={placeholder}
                     onChange={(e) => onChange(prev => ({...prev, [e.target.name]: e.target.value}))}
-                    className={cn('w-full p-[3px] px-[5px] !h-[27px] bg-neutral-800/50 backdrop-blur-md rounded-md border-neutral-800 outline-none border-1 text-xs !font-regular text-foreground/80', inputClassName)}
+                    className={cn('w-full p-[3px] px-[5px] !h-[27px] bg-neutral-800/50 backdrop-blur-md rounded-sm border-neutral-800 outline-none border-1 text-xs !font-regular text-foreground/80', inputClassName)}
                 />
             ) : children}
         </div>
