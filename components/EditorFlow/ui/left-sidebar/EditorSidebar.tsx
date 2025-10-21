@@ -11,13 +11,13 @@ const EditorSidebar = () => {
     const { setOpenModel, setOpen } = useEditorState()
 
     return (
-        <div className={cn(`w-full center flex-col !justify-start gap-[15px] py-[5px] !px-[5px] h-full rounded-xs m-0`)}>
+        <div className={cn(`w-fit center flex-col !justify-start gap-[15px] border-1 border-neutral-800 bg-neutral-800/50 backdrop-blur-md p-[7px] h-fit rounded-md`)}>
             <LeftSidebarActionButton state={'File'} icon={<FolderCode size={11} className={'text-white hover:text-black'}/>} />
             <LeftSidebarActionButton state={'Dependencies'} />
             <LeftSidebarActionButton state={'Metadata'} />
             <Button
                 onClick={() => setOpen(prev => !prev)}
-                className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`)}>
+                className={cn(`size-[25px] !p-0 backdrop-blur-md rounded-md bg-neutral-700 text-xs`)}>
                 <SearchCode size={11} className={'text-black'}/>
             </Button>
         </div>
@@ -31,7 +31,7 @@ const LeftSidebarActionButton = memo(({state, icon, className } : { state: LeftS
     return (
         <Button
             onClick={() => handleLeftSidebarState(state)}
-            className={cn(`size-[20px] !p-0 rounded-xs button-neutral text-xs`,
+            className={cn(`size-[25px] !p-0 backdrop-blur-md rounded-md bg-neutral-700 text-xs`,
                 leftSidebarState === state && 'bg-cyan',
                 className)}>
             {icon}

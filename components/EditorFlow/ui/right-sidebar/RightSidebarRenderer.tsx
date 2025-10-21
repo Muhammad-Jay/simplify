@@ -26,30 +26,27 @@ const RightSidebarRenderer = () => {
         isRunning
     } = useFileState()
 
-    const { message, isConnected, buildMessages, buildProcess } = useSocket();
-
-
     return rightSidebarState !== sidebarState.none && (
         <>
             <div
-                className={cn('!w-[340px] transition-300 absolute right-[10px] top-[10px] !space-y-[10px] !m-[0px] !z-[7] rounded-md',
+                className={cn('!w-[340px] transition-300 absolute right-[50px] top-[10px] !space-y-[10px] !m-[0px] !z-[7] rounded-md',
                     // rightSidebarState === sidebarState.runPanel && buildProcess.length > 0 ? '!h-[94%]' : '!h-[250px]',
                     '!h-[94%]',
                     rightSidebarState === sidebarState.runPanel  && '!w-[340px] !h-[250px]'
                     )}>
                 <motion.div
-                    initial={{opacity: 0, scale: .5, x: 50}}
+                    initial={{opacity: 0, scale: .5, x: 200, y: -200}}
                     // whileHover={{scale: 1.05, duration: .3}}
-                    animate={{opacity: 1, scale: 1, x: 0}}
-                    exit={{ opacity: 0 , scale: .5 }}
-                    transition={{duration: .1}}
+                    animate={{opacity: 1, scale: 1, x: 0, y: 0}}
+                    exit={{ opacity: 0 , scale: .5 , x: 200, y: -200}}
+                    transition={{duration: .1, ease: 'circInOut'}}
                     className={cn(`container-full transition-300 center rounded-md center border-[4px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/26`,
                         rightSidebarState === sidebarState.buildPanel && '!w-[340px] !h-[250px]')}>
                     {rightSidebarState === sidebarState.runPanel && (
                         <Deploy/>
                     )}
                     {rightSidebarState === sidebarState.buildPanel && (
-                        <div className={'container-full center !justify-end flex-col p-[10px] rounded-lg rounded-md !h-full'}>
+                        <div className={'container-full center !justify-end flex-col p-[10px] rounded-lg !h-full'}>
                             <Button
                                 type={'button'}
                                 className={'center w-full h-[40px] gap-[5px] rounded-md button-neutral hover:bg-cyan'}
@@ -79,7 +76,7 @@ export default RightSidebarRenderer
 
 export const RightEditorSidebar = () => {
     return (
-        <div className={cn(`w-full center flex-col !justify-start gap-[15px] py-[5px] !px-[5px] h-full rounded-xs m-0`)}>
+        <div className={cn(`w-fit center flex-col !justify-start gap-[15px] border-1 border-neutral-800 bg-neutral-800/50  backdrop-blur-md z-[5] p-[7px] h-fit rounded-md`)}>
             <RightSidebarActionButton state={'Selected'} />
             <RightSidebarActionButton state={'Documentation'} />
 

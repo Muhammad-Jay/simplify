@@ -3,13 +3,9 @@ import {cn} from "@/lib/utils";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import SelectWrapper from "@/components/SelectWrapper";
-import {Button} from "@/components/ui/button";
-import Loader from "@/components/Loader";
 import {useSocket} from "@/context/SocketContext";
 import {useFileState} from "@/context/FileContext";
-import Deploy from "@/components/EditorFlow/ui/right-sidebar/Deploy";
 import {Switch} from "@/components/ui/switch";
-import {json} from "express";
 
 type InputFieldPropTypes = {
     wrapperClassName?: string;
@@ -64,54 +60,59 @@ export const Configurations = memo(() => {
                     </div>
                 </div>
             </div>
-            <div className={cn('center flex-col !justify-start gap-[20px] container-full')}>
-                <div className={'w-full center flex-col gap-[10px] !items-end'}>
+            <div className={cn('center flex-row gap-[20px] container-full')}>
+                <div className={'center flex-col !justify-start gap-[20px] container-full'}>
+                    <div className={'w-full center flex-col gap-[10px] !items-end'}>
+                        <InputField
+                            label={'Source'}
+                            name={'source'}
+                            disable={config.useCurrentFlow}
+                            value={config.source}
+                            onChange={setConfig}
+                            placeholder={'GitHub'}
+                        />
+                        <InputField
+                            htmlFor={'use-current-flow'}
+                            label={'Use Current Flow'}
+                            isDefault={false}
+                            wrapperClassName={'max-w-fit'}
+                        >
+                            <Switch
+                                defaultChecked={config.useCurrentFlow}
+                                onCheckedChange={(value: boolean) => setConfig(prev => ({...prev, useCurrentFlow: value}))}
+                                id={'use-current-flow'}
+                            />
+                        </InputField>
+                    </div>
                     <InputField
-                        label={'Source'}
-                        name={'source'}
-                        disable={config.useCurrentFlow}
-                        value={config.source}
-                        onChange={setConfig}
-                        placeholder={'GitHub'}
-                    />
-                    <InputField
-                        htmlFor={'use-current-flow'}
-                        label={'Use Current Flow'}
-                        isDefault={false}
-                        wrapperClassName={'max-w-fit'}
-                    >
-                        <Switch
-                            defaultChecked={config.useCurrentFlow}
-                            onCheckedChange={(value: boolean) => setConfig(prev => ({...prev, useCurrentFlow: value}))}
-                            id={'use-current-flow'}
+                        label={'Environment'}
+                        wrapperClassName={'between'}
+                        isDefault={false}>
+                        <SelectWrapper
+                            items={Environments}
+                            setValue={setConfig}
+                            className={'w-full m-0'}
+                            placeholder={config.environment}
                         />
                     </InputField>
-                </div>
-                <InputField
-                    label={'Environment'}
-                    wrapperClassName={'between'}
-                    isDefault={false}>
-                    <SelectWrapper
-                        items={Environments}
-                        setValue={setConfig}
-                        className={'w-full m-0'}
-                        placeholder={config.environment}
+
+                    <InputField
+                        label={'Build Command'}
+                        value={config.buildCommand}
+                        placeholder={'npm run dev'}
+                        name={'buildCommand'}
+                        onChange={setConfig}
                     />
-                </InputField>
+                    <h3 className={'text-xs center my-[10px] !self-start font-bold text-foreground'}>Networking & Access</h3>
 
-                <InputField
-                    label={'Build Command'}
-                    value={config.buildCommand}
-                    placeholder={'npm run dev'}
-                    name={'buildCommand'}
-                    onChange={setConfig}
-                />
-                <h3 className={'text-xs center my-[10px] !self-start font-bold text-foreground'}>Networking & Access</h3>
+                    <InputField
+                        label={'Ports'}
+                        type={'text'}
+                    />
+                </div>
+                <div className={'!w-[400px] center h-full bg-neutral-950/40 backdrop-blur-md rounded-lg'}>
 
-                <InputField
-                    label={'Ports'}
-                    type={'text'}
-                />
+                </div>
             </div>
         </div>
     )

@@ -7,6 +7,7 @@ import {onDeployRequest} from "@/lib/socket/actions";
 import {useFileState} from "@/context/FileContext";
 import {cn} from "@/lib/utils";
 import {socketEvents} from "@/lib/socket/events";
+import {useWorkFlowState} from "@/context/WorkSpaceContext";
 
 const Deploy = () => {
     const {
@@ -26,6 +27,8 @@ const Deploy = () => {
         setCurrentContainer
     } = useFileState();
 
+    const { workFlows } = useWorkFlowState();
+
     React.useEffect(() => {
         try {
             if (currentProjectId.name && containers){
@@ -42,6 +45,7 @@ const Deploy = () => {
             console.warn(e)
         }
     }, [currentProjectId, containers]);
+
 
     const handleRun = async () => {
         setIsDeployPanelOpen(true);
@@ -76,12 +80,22 @@ const Deploy = () => {
             }else {
                 setIsComplete(false)
 
+                const currentWorkFlowNode = workFlows.filter(nd => nd.name === currentProjectId?.workSpaceName);
+
+                console.log('the current workflow node', currentWorkFlowNode[0]?.id)
+
+                if (!currentWorkFlowNode){
+                    setGlobalMessage({ type: 'error', message: 'No workflow ID.' })
+                    return;
+                }
+
                 setGlobalMessage({ type: 'success', message: 'running the container.' })
                 onDeployRequest({
                     projectId: currentProjectId.id,
                     projectName: currentProjectId.name,
                     tree: formatedNodes,
-                    workFlowName: currentProjectId?.workSpaceName
+                    workflowName: currentProjectId?.workSpaceName,
+                    workflowId: currentWorkFlowNode[0]?.id?.toLowerCase()
                 }, socket)
             }
         }catch (e) {

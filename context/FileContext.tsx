@@ -12,7 +12,7 @@ import {useWorkFlowState} from "@/context/WorkSpaceContext";
 import {useSocket} from "@/context/SocketContext";
 import {socketEvents} from "@/lib/socket/events";
 
-export type DeployPanelStateTypes = 'environmentVariable' | 'logs' | 'overview' | 'settings'
+export type DeployPanelStateTypes = 'environmentVariable' | 'logs' | 'overview' | 'settings' | 'advance'
 
 const FileContext = createContext<any| undefined>(undefined)
 
@@ -65,7 +65,7 @@ export function GlobalFileProvider({
     const [value, setValue] = useState(8000);
     const [query, setQuery] = useState('');
     const [isRunning, setIsRunning] = useState(false);
-    const [openBottomTabControlPanel, setOpenBottomTabControlPanel] = useState(false)
+    const [openBottomTabControlPanel, setOpenBottomTabControlPanel] = useState(true)
     const [isFileUpdating, setIsFileUpdating] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -223,12 +223,6 @@ export function GlobalFileProvider({
         return () => clearTimeout(timeout);
     }, [globalMessage]);
 
-    useEffect(() => {
-        if (fold.path){
-            console.log(fold)
-            collapseSubFolder()
-        }
-    }, [fold]);
 
     const results = useMemo(() => {
         try {
@@ -248,7 +242,7 @@ export function GlobalFileProvider({
         }
     }, [nodes, query])
 
-    const loadFiles = useCallback(async (id) => {
+    const loadFiles = useCallback(async (id: any) => {
         //TODO: Make actual request to database for files and save to indexDB
         // () => {}
         // setIsLoaded(false)
@@ -705,6 +699,7 @@ export function GlobalFileProvider({
             setPanContextMenuOpen,
             addRootFolder,
             globalMessage,
+            isDeleting,
             getLayoutedElements,
             setGlobalMessage,
             openBottomTabControlPanel,

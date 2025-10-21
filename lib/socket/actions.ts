@@ -5,7 +5,8 @@ type DeployRequestDataType = {
     projectId: string;
     projectName: string;
     tree: TreeType[],
-    workFlowName: string
+    workflowName: string;
+    workflowId: string
 }
 
 export const onDeployRequest = (data: DeployRequestDataType, socket: any) => {

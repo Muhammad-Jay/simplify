@@ -4,10 +4,7 @@ import {cn} from "@/lib/utils";
 import { motion } from 'framer-motion'
 import {useFileState} from "@/context/FileContext";
 import {Button} from "@/components/ui/button";
-import Loader from "@/components/Loader";
 import {LogsRenderer} from "@/components/EditorFlow/ui/right-sidebar/LogsRenderer";
-import {useSocket} from "@/context/SocketContext";
-import ContainerOutputs from "@/components/EditorFlow/ui/ContainerOutputs";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Configurations} from "@/components/EditorFlow/ui/top middle tab/Panel_tabs/Configurations";
 import Deploy from "@/components/EditorFlow/ui/right-sidebar/Deploy";
@@ -18,7 +15,8 @@ export const deployPanelState = {
     overview: 'overview',
     logs: 'logs',
     environmentVariable: 'environment_Variable',
-    settings: 'settings'
+    settings: 'settings',
+    advance: 'advance',
 }
 
 const DeployPanelWrapper = () => {
@@ -30,10 +28,10 @@ const DeployPanelWrapper = () => {
     } = useFileState();
     return (
         <div
-            className={cn('!w-[340px] transition-300 absolute right-[10px] top-[10px] !space-y-[10px] !m-[0px] !z-[7] rounded-md',
+            className={cn('!w-[340px] transition-300 absolute right-[10px] top-[30px] !space-y-[10px] !m-[0px] !z-[10] rounded-2xl',
                 // rightSidebarState === sidebarState.runPanel && buildProcess.length > 0 ? '!h-[94%]' : '!h-[250px]',
-                '!h-[95%]',
-                'right-[50%] translate-x-[50%] !w-[700px]'
+                '!h-[85%]',
+                'right-[50%] translate-x-[50%] !w-[750px]'
             )}>
             <motion.div
                 initial={{opacity: 0, scale: .5, x: 50}}
@@ -41,7 +39,7 @@ const DeployPanelWrapper = () => {
                 animate={{opacity: 1, scale: 1, x: 0}}
                 exit={{ opacity: 0 , scale: .5 }}
                 transition={{duration: .1}}
-                className={cn(`container-full transition-300 center rounded-md center flex-col border-[4px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/26`)}
+                className={cn(`container-full transition-300 center rounded-2xl center flex-col border-[4px] !z-[10] border-zinc-800 !backdrop-blur-lg !bg-neutral-700/26`)}
             >
                 <div className={'w-full between h-fit pr-[15px] pt-[5px]'}>
                     <Tabs setDeployState={setDeployState}/>
@@ -60,6 +58,9 @@ const DeployPanelWrapper = () => {
                     )}
                     {deployState === deployPanelState.overview && (
                         <Configurations/>
+                    )}
+                    {deployState === deployPanelState.advance && (
+                        <Advance/>
                     )}
                 </div>
             </motion.div>
@@ -94,13 +95,26 @@ const Tabs = ({setDeployState}: { setDeployState: any}) => {
 export const Logs = () => {
 
     return (
-        <div className={'container-full between !justify-start !items-start flex-col p-[10px] gap-[10px] rounded-lg rounded-md !h-full'}>
+        <div className={'container-full between !justify-start !items-start flex-col p-[10px] gap-[10px] rounded-md !h-full'}>
             <LogsRenderer/>
             <div className={cn('center w-full h-fit')}>
                 <textarea
                     className={'w-full min-h-[40px] text-xs p-[5px] rounded-sm text-foreground/90 font-normal border-none outline-none mx-[5px] bg-neutral-900/55'}
                     id={'no-scrollbar'}
                 />
+            </div>
+        </div>
+    )
+}
+
+const Advance = () => {
+    return (
+        <div className={cn('container-full center p-[15px] flex-col gap-[15px]')}>
+            <div className={'w-full h-[40px] rounded-md bg-neutral-700'}>
+
+            </div>
+            <div className={'container-full rounded-lg bg-black'}>
+
             </div>
         </div>
     )

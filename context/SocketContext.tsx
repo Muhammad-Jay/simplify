@@ -169,6 +169,7 @@ export function SocketProvider({
         })
 
         socket_io.current.on(socketEvents.projectCliPush, (data: any) => {
+            console.log(data)
             pushed.push(data)
         })
 

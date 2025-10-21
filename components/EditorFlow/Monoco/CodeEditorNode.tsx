@@ -12,8 +12,6 @@ import {useEditorState} from "@/context/EditorContext";
 import CodeEditor from "@/components/EditorFlow/Monoco/Editor";
 import {Button} from "@/components/ui/button";
 
-const MonocoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false })
-
 export type CodeEditorNodeData = {
     label?: string;
     code: string;

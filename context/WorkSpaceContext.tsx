@@ -7,7 +7,6 @@ import {Position} from 'reactflow';
 import { useParams, useRouter } from 'next/navigation'
 import Dagre from '@dagrejs/dagre'
 import {db, Edges, FileInterface, WorkFlow, WorkSpaceProjectInterface} from "@/lib/dexie/index.dexie";
-import {mockWorkSpaceProjects} from "@/constants";
 import {WorkFlowType} from "@/types";
 
 const WorkSpaceContext = createContext<any| undefined>(undefined);
@@ -49,6 +48,7 @@ export function WorkSpaceProvider({
         //     })
         // })
         loadWorkSpaceProjects(work_space_id);
+        fetchAllWorkFlows()
     }, []);
 
     const loadWorkSpaceProjects = useCallback(async (id: any) => {
@@ -278,7 +278,10 @@ export function WorkSpaceProvider({
 
         if (!name) return;
 
-        const workflowExists = workFlows.find(flow => flow.name === name)
+        const formatedName = name.split(' ').filter(Boolean).join('_');
+        console.log('formated name', formatedName)
+
+        const workflowExists = workFlows.find(flow => flow.name === formatedName)
 
         if (workflowExists) {
             console.log('workflow with the same name already exists.')
@@ -288,13 +291,13 @@ export function WorkSpaceProvider({
             setIsCreating(true);
             await db.workFlows.put({
                 id: newId,
-                name: name.trim().replace('', '_'),
+                name: formatedName,
                 author_id,
                 created_At: Date.now(),
                 updated_At: Date.now()
             })
 
-            router.push(`/work-space/${name}`);
+            router.push(`/work-space/${formatedName}`);
         }catch (e) {
             console.log(e);
         }finally {

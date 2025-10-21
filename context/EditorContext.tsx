@@ -5,7 +5,6 @@ import Fuss from 'fuzzysort'
 import mockSandpackFiles from "@/constants"
 import {db, Edges, FileInterface} from "@/lib/dexie/index.dexie"
 import * as dck from 'dockerode'
-import { amethyst } from '@codesandbox/sandpack-themes'
 
 const EditorContext = createContext<any| undefined>(undefined)
 
@@ -37,7 +36,6 @@ export function EditorProvider({
     const [searchResults, setSearchResults] = useState([])
     const [leftSidebarState, setLeftSidebarState] = useState<LeftSidebarStateType>('')
     const [rightSidebarState, setRightSidebarState] = useState<RightSidebarStateType>('')
-    const [theme, setTheme] = useState<any>(amethyst)
     const [recentActiveNodes, setRecentActiveNodes] = useState([])
     const [files, setFiles] = useState<any>(mockSandpackFiles)
     const [actualFiles, setActualFiles] = useState<ActualFile[]>([])
@@ -352,8 +350,6 @@ export function EditorProvider({
             isOnQuery,
             setIsOnQuery,
             isSearching,
-            theme,
-            setTheme,
             setIsOnFitView,
             isOnFitView,
             updateRecentActiveNodes,

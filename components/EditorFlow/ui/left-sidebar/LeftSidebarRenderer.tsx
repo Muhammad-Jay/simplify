@@ -9,6 +9,7 @@ import {Button} from "@/components/ui/button";
 import Loader from "@/components/Loader";
 import Projects from "@/components/EditorFlow/ui/left-sidebar/Projects";
 import SelectedWorkFlowNode from "@/components/EditorFlow/ui/left-sidebar/SelectedWorkFlowNode";
+import {PanelWrapper} from "@/components/EditorFlow/ui/PanelWrapper";
 
 const sidebarState = {
     projects: 'WorkSpaceProjects',
@@ -21,14 +22,19 @@ const sidebarState = {
 const LeftSidebarRenderer = () => {
     const { leftSidebarState } = useEditorState()
 
-    return (
-        <Panel position={'top-left'} className={cn('!w-[270px] !h-[85%] rounded-md border-[3px] !z-[7] !m-[10px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/25',
-            leftSidebarState === sidebarState.none && 'hidden',
+    return leftSidebarState !== sidebarState.none && (
+        <div
+            className={cn('!w-[270px] center !h-[85dvh] absolute top-[10px] left-[60px] !z-7 rounded-xl',
         )}>
-            <div
-                className={cn(`container-full center rounded-md center bg-transparent`)}>
+            <motion.div
+                initial={{opacity: 0, scale: .5, x: -100, y: -200}}
+                // whileHover={{scale: 1.05, duration: .3}}
+                animate={{opacity: 1, scale: 1, x: 0, y: 0}}
+                exit={{ opacity: 0 , scale: .5 , x: -100, y: -200}}
+                transition={{duration: .1, ease: 'circInOut'}}
+                className={cn(`container-full transition-300 center rounded-md center border-[3px] border-zinc-800 !backdrop-blur-md !bg-neutral-800/35`)}>
                 {leftSidebarState === sidebarState.projects && (
-                    <div className={'container-full center !justify-end flex-col p-[5px] rounded-lg rounded-md !h-full'}>
+                    <div className={'container-full center !justify-end flex-col p-[5px] rounded-lg !h-full'}>
                         <Projects/>
                     </div>
                 )}
@@ -47,8 +53,8 @@ const LeftSidebarRenderer = () => {
                         <SelectedWorkFlowNode/>
                     </div>
                 )}
-            </div>
-        </Panel>
+            </motion.div>
+        </div>
     )
 }
 export default LeftSidebarRenderer

@@ -10,7 +10,6 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog";
 import { Panel, applyNodeChanges } from 'reactflow'
-import { SandpackProvider, SandpackCodeEditor, Sandpack, useSandpack } from '@codesandbox/sandpack-react'
 import { cn } from '@/lib/utils';
 import { parseScript, parseModule } from 'esprima';
 // import io from 'socket.io';
@@ -39,9 +38,7 @@ const CodeEditor = () => {
     } = useEditorState()
     const { selectedFileNode: selectedNode, setSelectedFileNode, isFileUpdating, setNodes } = useFileState()
 
-    if (!selectedNode.id) return;
-
-    return openEditor && (
+    return selectedNode && openEditor && (
         <>
             <div
                 onClick={() => {
@@ -63,7 +60,7 @@ const CodeEditor = () => {
                     className={'!w-[600px] translate-y-[10%] -translate-x-[3%] transition-300 !my-auto !h-[450px] z-[7] p-0 !backdrop-blur-xs center rounded-lg !bg-neutral-800/10 border-2 border border-input'}
                 >
                     <div className={cn(
-                        'rounded-md relative container-full rounded-lg center border border-input'
+                        'relative container-full rounded-lg center border border-input'
                     )}>
                         <div className={'center container-fit !h-[13px] absolute top-[15px] right-[15px]'}>
                             {isFileUpdating ? (
@@ -111,7 +108,10 @@ const Div = memo(({selectedNode, containerRef }: { containerRef?: any, editorRef
         setNodes,
         currentEditorNode,
         setCurrentEditorNode,
+        setSelectedFileNode,
+        setCurrentNodes
     } = useFileState()
+
 
     // useEffect(() => {
     //     const socket = io()
@@ -264,12 +264,12 @@ const Div = memo(({selectedNode, containerRef }: { containerRef?: any, editorRef
                             // console.log('Exports:', exports);
                             // console.log('Variables:', variables);
                             setIsFileUpdating(true);
-                            setCurrentEditorNode(selectedNds => ({...selectedNds, data: {...selectedNds.data, code: editorCode }}));
                             setNodes(nds => nds.map((nd) => nd.data.label === selectedNode?.data?.label ? ({...nd, data: {...nd.data, code: newCode}}) : nd))
                             updateFileContent(selectedNode.data.label, newCode, selectedNode?.type, selectedNode?.data?.name);
                             setEditorState(update.state)
-                                }, 3000);
+                        }, 3000);
                         setIsFileUpdating(false)
+                        setSelectedFileNode(selectedNds => ({...selectedNds, data: {...selectedNds.data, code: newCode }}));
                     }
                 })
             ]
@@ -288,7 +288,7 @@ const Div = memo(({selectedNode, containerRef }: { containerRef?: any, editorRef
                 // clearTimeout(stateTimeout)
             }
         }
-    }, [selectedNode]);
+    }, []);
 
     // const {exports, functions, imports, variables} = useCodeStructure(editorState)
 

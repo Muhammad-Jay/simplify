@@ -1,6 +1,5 @@
 import {LocationEdit, Brain, Gauge, NotebookPen, Network, ChartLine} from 'lucide-react'
 import { DocumentType } from '@/types/index.d';
-import { amethyst, sandpackDark , atomDark, cyberpunk} from "@codesandbox/sandpack-themes";
 
 export const domeDocuments = [
     1,
@@ -33,112 +32,6 @@ export type mockWorkSpaceProjectsType = {
     projectName: string,
 }
 
-export const mockWorkSpaceProjects: mockWorkSpaceProjectsType[] = [
-    {
-        id: 'c15acf41-1bd7-4899-be74-7f70551e644c',
-        projectName: 'my-next-app'
-    },
-    {
-        id: 'da334acf41-1bd7-4899-be74-1234567890',
-        projectName: 'server'
-    }
-]
-
-export const mockFileDatas: mockFilesDataTypes[] = [
-    {
-        fullPath: 'simplify/App.ts',
-        content: `import React, { useState } from 'react';
-import './styles.css';
-
-export default function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div className="app-container">
-      <h1>Hello Sandpack!</h1>
-      <p>You clicked the button {count} times.</p>
-      <button onClick={() => setCount(count + 1)}>
-        Click me
-      </button>
-    </div>
-  );
-}`,
-        type: 'file',
-        name: 'App.ts'
-    },
-    {
-        fullPath: 'simplify/index.html',
-        type: 'file',
-        name: 'index.html',
-        content: `<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hello Sandpack</title>
-    <meta charset="UTF-8" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script src="src/index.js"></script>
-  </body>
-</html>`
-    },
-    {
-        fullPath: 'simplify/package.json',
-        type: 'file',
-        name: 'package.json',
-        content: `{
-  "name": "simplify-col",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "dev:next": "next dev",
-    "dev:ws": "concurrently \\"npm run dev:next\\" \\"npm run start:ws\\"",
-    "start:ws": "ts-node ./server/ws-server.ts",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@ai-sdk/google": "^2.0.3"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcs
-  },
-  "overrides": {
-    "@types/react": "19.0.12"
-  }
-}`
-    },
-    {
-        fullPath: 'simplify/components',
-        type: 'folder',
-        name: 'components',
-    },
-    {
-        fullPath: 'simplify/components/button.tsx',
-        type: 'file',
-        name: 'button.tsx',
-        content: ''
-    },
-    {
-        fullPath: 'simplify/components/Header.tsx',
-        type: 'file',
-        name: 'Header.tsx',
-        content: ''
-    },
-    {
-        fullPath: 'simplify/lib',
-        type: 'folder',
-        name: 'lib',
-    },
-    {
-        fullPath: 'simplify',
-        type: 'folder',
-        name: 'simplify'
-    }
-]
 
 export const mockFileData: mockFilesDataTypes[] = [
     {
@@ -848,29 +741,6 @@ export const ToolNodes = [
             connectionString: '',
             key: ''
         }
-    }
-]
-
-export const themes = [
-    {
-        name: "Dark",
-        value: "dark"
-    },
-    {
-        name: "Amethyst",
-        value: amethyst
-    },
-    {
-        name: "SandpackDark",
-        value: sandpackDark
-    },
-    {
-        name: "CyberPunk",
-        value: cyberpunk
-    },
-    {
-        name: "AtomDark",
-        value: atomDark
     }
 ]
 

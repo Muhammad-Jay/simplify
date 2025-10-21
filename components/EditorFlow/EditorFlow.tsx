@@ -22,7 +22,6 @@ import EditorSidebar from "@/components/EditorFlow/ui/left-sidebar/EditorSidebar
 import FolderNode from "@/components/EditorFlow/Monoco/FolderNode";
 import Loader from "@/components/Loader";
 import {useEditorState} from "@/context/EditorContext";
-import FlowNavbar from "@/components/EditorFlow/ui/FlowNavbar";
 import LeftSidebarRenderer from "@/components/EditorFlow/ui/left-sidebar/LeftSidebarRenderer";
 import {LeftBottomPanel, RightBottomPanel} from "@/components/EditorFlow/ui/bottom-tabs/BottomPanel";
 import RightSidebarRenderer, {RightEditorSidebar} from "@/components/EditorFlow/ui/right-sidebar/RightSidebarRenderer";
@@ -30,11 +29,11 @@ import ModelWrapper from "@/components/EditorFlow/Global search/ModelWrapper";
 import HttpNode from "@/components/EditorFlow/nodes/HttpNode";
 import CodeEditor from "@/components/EditorFlow/Monoco/Editor";
 import {useFileState} from "@/context/FileContext";
-import {useForceGraphLayout} from "@/hooks/FlowGraph/useForceGraphLayout";
-import {initializeBuildProcess} from "@/lib/podman_actions/init";
 import PanContextMenu from "@/components/EditorFlow/ui/pan/PanContextMenu";
 import CustomStepEdge from "@/components/EditorFlow/Edge/CustomStepEdge";
 import {DevRun} from "@/components/EditorFlow/ui/right-sidebar/DevRun";
+import {PanelWrapper} from "@/components/EditorFlow/ui/PanelWrapper";
+import FlowNavbar from "@/components/EditorFlow/layout/FlowNavbar";
 
 const CodeEditorNode = dynamic(() => import('@/components/EditorFlow/Monoco/CodeEditorNode'), {
     ssr: false
@@ -163,14 +162,22 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
     </div>);
 
     return (
-        <div className={cn(`between bg-zinc-900 flex-col gap-[3px]`)} style={{ width: '100vw', height: '100vh' }}>
+        <div className={cn(`between bg-black flex-col gap-[3px]`)} style={{ width: '100vw', height: '100vh' }}>
             <FlowNavbar id={id}/>
+            <div className={"container-full relative between gap-[3px]"}>
 
-            <div className={"container-full relative between p-[3px] gap-[3px]"}>
-                <FlowSidebarWrapper className={"h-full center pt-[6px] rounded-sm bg-black"}>
+                <PanelWrapper position={'Top Left'} className={'center !h-fit p-0 bg-transparent !justify-start !top-[5px] flex-col z-[2] border-none'}>
                     <EditorSidebar/>
-                </FlowSidebarWrapper>
-                <div className={"container-full center !overflow-hidden rounded-lg bg-black"}>
+                </PanelWrapper>
+
+                <PanelWrapper position={'Bottom Left'} className={'center !h-fit p-0 bg-transparent !justify-start !bottom-[15px] flex-col z-[2] border-none'}>
+                    <EditorSidebar/>
+                </PanelWrapper>
+
+                <PanelWrapper position={'Top Right'} className={'center !h-fit p-0 bg-transparent !justify-start !top-[5px] flex-col z-[2] border-none'}>
+                    <RightEditorSidebar/>
+                </PanelWrapper>
+                <div className={"container-full center rounded-lg bg-black"}>
                         <ReactFlow
                             nodes={currentNodes}
                             edges={edges}
@@ -212,8 +219,8 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
                             onError={(err) => console.log('react flow error', err)}
                             connectionMode={ConnectionMode.Loose}
                         >
-                            <LeftSidebarRenderer/>
                             <RightSidebarRenderer/>
+                            <LeftSidebarRenderer/>
                             <EventListener/>
                             <CodeEditor/>
                             <ModelWrapper/>
@@ -223,13 +230,13 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
                             <Background className={'!bg-transparent'} variant="dots" gap={30} size={0} color="#000000"/>
 
 
-                            <LeftBottomPanel/>
-                            {/*<RightBottomPanel id={projectId}/>*/}
+
+                            <RightBottomPanel id={projectId}/>
                         </ReactFlow>
                 </div>
-                <FlowSidebarWrapper className={"!h-full center pt-[6px] rounded-sm bg-black"}>
-                    <RightEditorSidebar/>
-                </FlowSidebarWrapper>
+                {/*<FlowSidebarWrapper className={"!h-full center pt-[6px] rounded-sm bg-black"}>*/}
+                {/*    <RightEditorSidebar/>*/}
+                {/*</FlowSidebarWrapper>*/}
             </div>
         </div>
     );
