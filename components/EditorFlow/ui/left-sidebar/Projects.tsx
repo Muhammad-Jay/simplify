@@ -5,11 +5,13 @@ import {useFileState} from "@/context/FileContext";
 import {cn} from "@/lib/utils";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import { useParams, useRouter } from 'next/navigation'
+import {useEditorState} from "@/context/EditorContext";
 
 const Projects = () => {
     const { work_space_id } = useParams();
     const router = useRouter();
 
+    const { isBottomLogsRendererOpen, } = useEditorState();
     const {
         nodes,
         selectedWorkFlowNode,
@@ -39,7 +41,7 @@ const Projects = () => {
                 className={cn('between cursor-pointer !justify-start w-full h-[30px] bg-neutral-800 text-xs font-semibold text-foreground p-[10px] rounded-sm')}>
                 {currentProjectId ? currentProjectId.workSpaceName : work_space_id }
             </div>
-            <ScrollArea className={cn('center !space-y-[5px] !pl-[10px] !justify-start !w-full !max-h-[240px]')}>
+            <ScrollArea className={cn('center !space-y-[5px] !pl-[10px] !justify-start !w-full h-full')}>
                 {nodes && nodes.map(nd => (
                     <div
                         style={{

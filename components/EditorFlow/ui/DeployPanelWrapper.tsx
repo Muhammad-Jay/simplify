@@ -69,7 +69,7 @@ const DeployPanelWrapper = () => {
 }
 export default DeployPanelWrapper
 
-const Tabs = ({setDeployState}: { setDeployState: any}) => {
+export const Tabs = ({setDeployState}: { setDeployState: any}) => {
     const {
         deployState
     } = useFileState();

@@ -12,6 +12,8 @@ export type LeftSidebarStateType = 'File' | 'Dependencies' | 'Metadata' | 'WorkS
 
 export type RightSidebarStateType = 'Preview' | 'Selected' | 'Documentation' | 'Run' | 'Build' | ''
 
+export type LeftBottomSidebarStateType = 'BottomPanelLogs' | ''
+
 export type ActualFile = {
     path: string,
     code: string
@@ -36,11 +38,13 @@ export function EditorProvider({
     const [searchResults, setSearchResults] = useState([])
     const [leftSidebarState, setLeftSidebarState] = useState<LeftSidebarStateType>('')
     const [rightSidebarState, setRightSidebarState] = useState<RightSidebarStateType>('')
+    const [leftBottomSidebarState, setLeftBottomSidebarState] = useState<LeftBottomSidebarStateType>('')
     const [recentActiveNodes, setRecentActiveNodes] = useState([])
     const [files, setFiles] = useState<any>(mockSandpackFiles)
     const [actualFiles, setActualFiles] = useState<ActualFile[]>([])
     const [projectName, setProjectName] = useState('Untitled')
     const [openEditor, setOpenEditor] = useState(false)
+    const [isBottomLogsRendererOpen, setIsBottomLogsRendererOpen] = useState(false);
     const [open, setOpen] = useState(false)
     const [fold, setFold] = useState({
         fold: false,
@@ -92,25 +96,6 @@ export function EditorProvider({
         }
     }, [])
 
-    // Update file
-    const updateFile = async (filePath: string, code: string, project_id: string)=> {
-        try {
-            // await db.files.put({
-            //     id: filePath,
-            //     path: filePath,
-            //     code,
-            //     project_id,
-            //     author_id,
-            //     created_At: Date.now(),
-            //     updated_At: Date.now()
-            // })
-            setFiles(prev => ({...prev, [filePath]: { code }}))
-        }catch (e) {
-            throw new Error(e)
-        }finally {
-            setIsUpdating(false)
-        }
-    }
 
     // Add file
     const addNewFile = async (filePath: string, pathName: string, project_id: string) => {
@@ -325,7 +310,6 @@ export function EditorProvider({
         <EditorContext.Provider value={{
             loadFiles,
             loadEdges,
-            updateFile,
             addNewFile,
             setCurrentNode,
             selectedNode,
@@ -369,6 +353,10 @@ export function EditorProvider({
             setOpen,
             handleEdgeDelete,
             handleNodeDelete,
+            leftBottomSidebarState,
+            setLeftBottomSidebarState,
+            isBottomLogsRendererOpen,
+            setIsBottomLogsRendererOpen,
         }}>
             {children}
         </EditorContext.Provider>

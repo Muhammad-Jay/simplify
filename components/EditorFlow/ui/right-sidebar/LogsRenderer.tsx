@@ -48,14 +48,14 @@ export const LogsRenderer = () => {
                         <div
                             key={`${index}:${key}`}
                             className={cn('w-full center !justify-start flex-col overflow-y-hidden !gap-[3px] rounded-sm transition-300',
-                                value.isOpen ? 'h-fit' : 'h-fit gap-0')}>
+                                value?.isOpen ? 'h-fit' : 'h-fit gap-0')}>
                             <button
                                 id={key}
                                 type={'button'}
                                 onClick={handleToggle}
                                 className={cn('between !w-full !gap-[8px] px-[10px] text-xs font-semibold rounded-sm transition-300 h-[40px] hover:bg-neutral-800 bg-neutral-800')}>
                                 <div className={cn('w-fit center !gap-[8px] !justify-start flex-row h-full')}>
-                                    {value.isOpen ? (
+                                    {value?.isOpen ? (
                                         <ChevronDown size={20} className={cn('text-foreground/90')}/>
                                     ) : (
                                         <ChevronRight size={20} className={cn('text-foreground/90')}/>
@@ -69,19 +69,21 @@ export const LogsRenderer = () => {
                                 </div>
 
                                 <div className={cn('center transition-300 pr-[10px] text-xs text-foreground/60 font-semibold')}>
-                                    {value.logs.length > 0 && value.logs.length}
+                                    {value?.logs?.length > 0 && value?.logs?.length}
                                 </div>
                             </button>
-                            <ScrollArea className={cn('w-full !transition-300 overflow-hidden !py-[4px] center !justify-start',
-                                value.isOpen ? 'h-fit' : 'h-[0px]')}>
-                                {value.logs && value.logs.map((log: any, i: number) => (
+                            <ScrollArea className={cn('w-full !transition-300 rounded-sm overflow-y-hidden flex-col !overflow-x-scroll !py-[4px] center !justify-start',
+                                value?.isOpen ? value?.logs?.length > 0 && 'max-h-[400px]' : 'h-[0px]')}
+                                        id={'no-scrollbar'}
+                            >
+                                {value?.logs && value?.logs?.map((log: any, i: number) => (
                                     <div
                                         key={`${key}:${i}`}
-                                        className={cn('center w-full h-fit')}>
-                                           <pre className={cn('logs_wrapper w-full whitespace-trim overflow-scroll max-h-fit py-[10px] flex !flex-wrap p-[5px] px-[10px] bg-black/90 backdrop-blur-xs text-xs text-foreground/70 font-regular',
+                                        className={cn('center w-full overflow-x-auto h-fit')} id={'no-scrollbar'}>
+                                           <pre className={cn('logs_wrapper w-full hover:border-green-500 border-transparent border-l-2  transition-300 whitespace-trim max-h-fit py-[10px] flex p-[5px] px-[10px] bg-black/90 backdrop-blur-xs text-xs text-green-500 font-regular',
                                                !log.message && '!p-0',
-                                               log.message.startsWith('Error') && 'bg-red-400/40',
-                                               log.message.includes('successful') && 'bg-green-400/40'
+                                               log.message.includes('Error:') && 'bg-red-400/20',
+                                               log.message.includes('successful') && 'bg-green-400/20',
                                            )}
                                                 id={'no-scrollbar'}
                                            >

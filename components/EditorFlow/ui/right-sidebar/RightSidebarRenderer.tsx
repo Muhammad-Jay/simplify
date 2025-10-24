@@ -29,7 +29,7 @@ const RightSidebarRenderer = () => {
     return rightSidebarState !== sidebarState.none && (
         <>
             <div
-                className={cn('!w-[340px] transition-300 absolute right-[50px] top-[10px] !space-y-[10px] !m-[0px] !z-[7] rounded-md',
+                className={cn('!w-[340px] transition-300 absolute right-[50px] top-[10px] !space-y-[10px] !m-[0px] !z-[7] rounded-2xl',
                     // rightSidebarState === sidebarState.runPanel && buildProcess.length > 0 ? '!h-[94%]' : '!h-[250px]',
                     '!h-[94%]',
                     rightSidebarState === sidebarState.runPanel  && '!w-[340px] !h-[250px]'
@@ -40,7 +40,7 @@ const RightSidebarRenderer = () => {
                     animate={{opacity: 1, scale: 1, x: 0, y: 0}}
                     exit={{ opacity: 0 , scale: .5 , x: 200, y: -200}}
                     transition={{duration: .1, ease: 'circInOut'}}
-                    className={cn(`container-full transition-300 center rounded-md center border-[4px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/26`,
+                    className={cn(`container-full transition-300 center rounded-2xl center border-[4px] border-zinc-800 !backdrop-blur-sm !bg-neutral-800/26`,
                         rightSidebarState === sidebarState.buildPanel && '!w-[340px] !h-[250px]')}>
                     {rightSidebarState === sidebarState.runPanel && (
                         <Deploy/>

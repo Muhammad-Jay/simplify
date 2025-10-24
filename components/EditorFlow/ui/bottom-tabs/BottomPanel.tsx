@@ -58,18 +58,10 @@ export const RightBottomPanel = ({id}) => {
         setLayoutConfig,
         getLayoutedElements,
     } = useFileState()
-    const {
-        setNodes: setFlowNodes,
-        setEdges: setFlowEdges,
-        nodes: flowNodes,
-        edges: flowEdges,
-    } = useWorkFlowState();
-    const {fitView} = useReactFlow()
-
 
     return (
-        <Panel position={'bottom-right'} className={cn('!mr-[10px] !z-[10] flex-col border-[3px] transition-300 border-neutral-800 w-[320px] !items-end between gap-[5px]  bg-zinc-800/30 backdrop-blur-sm rounded-2xl !mb-[8px]',
-            openBottomTabControlPanel ? 'h-[160px]' : 'h-[40px]')}>
+        <Panel position={'bottom-right'} className={cn('!mr-[10px] !z-[6] flex-col border-[3px] transition-300 border-neutral-800 w-[320px] !items-end between gap-[5px]  bg-zinc-800/30 backdrop-blur-sm rounded-2xl !mb-[8px]',
+            openBottomTabControlPanel ? 'h-[160px]' : 'h-[40px] rounded-lg')}>
             <div className={cn('w-full transition-300 overflow-y-hidden px-[10px] gap-[15px] flex-col h-[130px] center',
                 !openBottomTabControlPanel && '!h-[0px]')}>
 

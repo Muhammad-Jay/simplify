@@ -276,9 +276,9 @@ html{
 }
 
 .logs_wrapper{
-  white-space: pre-wrap !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
 }
 
 #workFlow-node{

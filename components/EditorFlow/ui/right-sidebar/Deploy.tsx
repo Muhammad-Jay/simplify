@@ -91,10 +91,10 @@ const Deploy = () => {
 
                 setGlobalMessage({ type: 'success', message: 'running the container.' })
                 onDeployRequest({
-                    projectId: currentProjectId.id,
-                    projectName: currentProjectId.name,
+                    projectId: currentProjectId.id.toLowerCase(),
+                    projectName: currentProjectId.name.toLowerCase(),
                     tree: formatedNodes,
-                    workflowName: currentProjectId?.workSpaceName,
+                    workflowName: currentProjectId?.workSpaceName.toLowerCase(),
                     workflowId: currentWorkFlowNode[0]?.id?.toLowerCase()
                 }, socket)
             }

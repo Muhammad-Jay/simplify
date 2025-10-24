@@ -17,12 +17,13 @@ import {
 } from 'reactflow';
 import dynamic from 'next/dynamic';
 import {cn} from "@/lib/utils";
-import FlowSidebarWrapper from "@/components/EditorFlow/ui/FlowSidebarWrapper";
 import EditorSidebar from "@/components/EditorFlow/ui/left-sidebar/EditorSidebar";
 import FolderNode from "@/components/EditorFlow/Monoco/FolderNode";
 import Loader from "@/components/Loader";
 import {useEditorState} from "@/context/EditorContext";
-import LeftSidebarRenderer from "@/components/EditorFlow/ui/left-sidebar/LeftSidebarRenderer";
+import LeftSidebarRenderer, {
+    LeftBottomSidebarRenderer
+} from "@/components/EditorFlow/ui/left-sidebar/LeftSidebarRenderer";
 import {LeftBottomPanel, RightBottomPanel} from "@/components/EditorFlow/ui/bottom-tabs/BottomPanel";
 import RightSidebarRenderer, {RightEditorSidebar} from "@/components/EditorFlow/ui/right-sidebar/RightSidebarRenderer";
 import ModelWrapper from "@/components/EditorFlow/Global search/ModelWrapper";
@@ -34,6 +35,8 @@ import CustomStepEdge from "@/components/EditorFlow/Edge/CustomStepEdge";
 import {DevRun} from "@/components/EditorFlow/ui/right-sidebar/DevRun";
 import {PanelWrapper} from "@/components/EditorFlow/ui/PanelWrapper";
 import FlowNavbar from "@/components/EditorFlow/layout/FlowNavbar";
+import {BottomEditorSidebar} from "@/components/EditorFlow/ui/left-sidebar/BottomEditorSidebar";
+import {BottomPanelLogsRenderer} from "@/components/EditorFlow/ui/bottom-tabs/BottomPanelLogsRenderer";
 
 const CodeEditorNode = dynamic(() => import('@/components/EditorFlow/Monoco/CodeEditorNode'), {
     ssr: false
@@ -162,7 +165,7 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
     </div>);
 
     return (
-        <div className={cn(`between bg-black flex-col gap-[3px]`)} style={{ width: '100vw', height: '100vh' }}>
+        <div className={cn(`between bg-black flex-col gap-[3px]`)} style={{ width: '100dvw', height: '100dvh' }}>
             <FlowNavbar id={id}/>
             <div className={"container-full relative between gap-[3px]"}>
 
@@ -171,7 +174,7 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
                 </PanelWrapper>
 
                 <PanelWrapper position={'Bottom Left'} className={'center !h-fit p-0 bg-transparent !justify-start !bottom-[15px] flex-col z-[2] border-none'}>
-                    <EditorSidebar/>
+                    <BottomEditorSidebar/>
                 </PanelWrapper>
 
                 <PanelWrapper position={'Top Right'} className={'center !h-fit p-0 bg-transparent !justify-start !top-[5px] flex-col z-[2] border-none'}>
@@ -228,15 +231,10 @@ const ProjectFlow = ({workSpaceId, projectId: id}) => {
                             {nodes.length === 0 && <PanContextMenu/>}
                             {/*//@ts-ignore*/}
                             <Background className={'!bg-transparent'} variant="dots" gap={30} size={0} color="#000000"/>
-
-
-
+                            <BottomPanelLogsRenderer/>
                             <RightBottomPanel id={projectId}/>
                         </ReactFlow>
                 </div>
-                {/*<FlowSidebarWrapper className={"!h-full center pt-[6px] rounded-sm bg-black"}>*/}
-                {/*    <RightEditorSidebar/>*/}
-                {/*</FlowSidebarWrapper>*/}
             </div>
         </div>
     );

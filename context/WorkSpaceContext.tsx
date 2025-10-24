@@ -35,6 +35,7 @@ export function WorkSpaceProvider({
     const [workFlows, setWorkFlows] = useState<WorkFlowType[]>([])
     const [isFetching, setIsFetching] = useState(false)
     const [selectedWorkFlowNode, setSelectedWorkFlowNode] = useState([])
+    const [isConfigurationPanelOpen, setIsConfigurationPanelOpen] = useState(false)
 
     useEffect(() => {
         // mockWorkSpaceProjects.map(async mp => {
@@ -364,6 +365,8 @@ export function WorkSpaceProvider({
             setIsDeleting,
             deleteWorkFlow,
             getWorkflowProjects,
+            isConfigurationPanelOpen,
+            setIsConfigurationPanelOpen,
         }}>
             {children}
         </WorkSpaceContext.Provider>

@@ -13,7 +13,7 @@ import { useReactFlow } from 'reactflow'
 export default function FlowNavbar({id}: {id: any}) {
     const { rightSidebarState, leftSidebarState, handleRightSidebarState, handleLeftSidebarState, recentActiveNodes, nodes, selectedNode, setCurrentNode, setIsOnFitView } = useEditorState()
     const { currentProjectId, setIsDeployPanelOpen, isDeployPanelOpen, currentContainer, setGlobalMessage } = useFileState();
-    const { handleNavigate } = useWorkFlowState();
+    const { handleNavigate, setIsConfigurationPanelOpen } = useWorkFlowState();
     const { isConnected, error, socket, fetchContainerLoaded } = useSocket();
 
     const fullPath = React.useMemo(() => {
@@ -69,7 +69,11 @@ export default function FlowNavbar({id}: {id: any}) {
                 <Button
                     type={'button'}
                     onClick={() => {
-                        setIsDeployPanelOpen(prev => !prev);
+                        if (id){
+                            setIsDeployPanelOpen(prev => !prev);
+                        }else {
+                            setIsConfigurationPanelOpen(prev => !prev);
+                        }
                     }}
                     className={cn('w-[30px] h-[25px] !p-[0px] cursor-pointer bg-gradient-to-br from-cyan-500 to-cyan-700 transition-300 font-semibold text-xs rounded-sm button-neutral text-white',
                         isDeployPanelOpen && 'bg-gradient-to-br from-cyan-500 to-cyan-700')}

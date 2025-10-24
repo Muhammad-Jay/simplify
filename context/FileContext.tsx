@@ -32,6 +32,7 @@ export type ConfigTypes = {
     environment: 'Production' | 'Development';
     ports?: any[];
     buildCommand: string;
+    runTime: string;
 }
 
 export function GlobalFileProvider({
@@ -99,7 +100,8 @@ export function GlobalFileProvider({
         sourceURL: '' ,
         environment: 'Production',
         ports: [],
-        buildCommand: ''
+        buildCommand: '',
+        runTime: ''
     })
 
     const router = useRouter();

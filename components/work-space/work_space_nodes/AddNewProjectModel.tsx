@@ -53,7 +53,7 @@ const AddNewProjectModel = () => {
                 }}
                 className={'absolute !screen inset-0 center z-[6] bg-black/30'}
             />
-            <div className={'!h-[250px] absolute right-[50%] translate-x-[50%] !top-[15%] !w-[500px] !z-[8] !backdrop-blur-sm center rounded-lg !bg-neutral-800/20 border-2'}>
+            <div className={'!h-[250px] absolute right-[50%] translate-x-[50%] !top-[15%] !w-[500px] !z-[8] !backdrop-blur-sm center rounded-2xl !bg-neutral-800/20 border-2'}>
                 <div className={'!h-[250px] !w-[500px] center p-[20px]'}>
                     <div className={'container-full center flex-col !items-start '} >
                         <div className={'w-full'}>

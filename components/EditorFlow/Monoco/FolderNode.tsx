@@ -223,7 +223,7 @@ const SubFolder = ({ id, selected, data }: { id: string, selected: boolean, data
 export const TooltipRenderer = ({children, selected, render, className, id, type, data }: { children: React.ReactNode, selected?: boolean, className?: string, render: any, id?: string, type?: string, data?: any }) => {
 
     return (
-        <Tooltip delayDuration={1000}>
+        <Tooltip open={selected} delayDuration={1000}>
             <TooltipTrigger>
                 {children}
             </TooltipTrigger>

@@ -24,9 +24,9 @@ const NewWorkflowDialog = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: .1 }}
                 onClick={() => setIsWorkflowsDialogOpen(false)}
-                className={'screen bg-black/10 absolute inset-0 backdrop-blur-xs z-[9]'}/>}
+                className={'screen bg-black/10 absolute inset-0 backdrop-blur-xs rounded-2xl z-[9]'}/>}
             <div
-                className={cn('!w-[800px] transition-300 absolute top-[50%] -translate-y-[50%] right-[50%] translate-x-[50%] !space-y-[10px] !m-[0px] !z-[10] rounded-md',
+                className={cn('!w-[800px] transition-300 absolute top-[50%] -translate-y-[50%] right-[50%] translate-x-[50%] !space-y-[10px] !m-[0px] !z-[10] !rounded-2xl',
                     // rightSidebarState === sidebarState.runPanel && buildProcess.length > 0 ? '!h-[94%]' : '!h-[250px]',
                     '!h-[78%]',
                 )}>

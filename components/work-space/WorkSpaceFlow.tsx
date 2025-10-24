@@ -32,6 +32,7 @@ import WorkSpaceNode from "@/components/work-space/work_space_nodes/WorkSpaceNod
 import {generateEdges} from "@/utils/flow/edge";
 import AddNewProjectModel from "@/components/work-space/work_space_nodes/AddNewProjectModel";
 import {PanelWrapper} from "@/components/EditorFlow/ui/PanelWrapper";
+import {ConfigurationPanel} from "@/components/work-space/ConfigurationPanel";
 
 const nodeTypes = {
     workSpaceNode: WorkSpaceNode
@@ -47,12 +48,12 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
         setEdges,
         selectedWorkFlowNode,
         setSelectedWorkFlowNode,
-        defaultNodeColor,
         setIsDialogOpen,
         loadWorkSpaceProjects,
         updateEdgeConnection,
         handleWorkSpaceEdgeDelete,
         handleWorkSpaceNodeDelete,
+        setIsConfigurationPanelOpen,
     } = useWorkFlowState()
     const {setCurrentProjectId, setIsLoaded, loadFiles, getLayoutedElements} = useFileState();
 
@@ -80,7 +81,7 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
     }, []);
 
     return (
-        <div className={cn(`between bg-zinc-900 flex-col gap-[3px]`)} style={{ width: '100vw', height: '100vh' }}>
+        <div className={cn(`between bg-transparent flex-col gap-[3px]`)} style={{ width: '100vw', height: '100vh' }}>
             <FlowNavbar id={projectId}/>
             <div className={"container-full relative between p-[3px] gap-[3px]"}>
                 <AddNewProjectModel/>
@@ -115,7 +116,9 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
                             e.preventDefault()
                             alert('node content')
                         }}
-                        // onPaneClick={}
+                        onPaneClick={() => {
+                            setIsConfigurationPanelOpen(false);
+                        }}
                         onPaneContextMenu={(e) => {
                             e.preventDefault()
                             setIsDialogOpen(true)
@@ -128,7 +131,7 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
                         // TODO: implement edges and nodes delete functions
                         onNodesDelete={onNodesDelete}
                         onEdgesDelete={handleWorkSpaceEdgeDelete}
-                        // edgeTypes={edgeType}
+                        // edgeTypes={edgeType}isConfigurationPanelOpen
                         minZoom={.20}
                         //TODO: implement drag and drop functions.
                         // onDrop={onDrop}
@@ -149,6 +152,7 @@ const WorkSpaceFlow = ({workSpaceId, projectId}) => {
                         {/*//@ts-ignore*/}
                         {/*<Background variant="dots" gap={20} size={2} color="#444" />*/}
 
+                        <ConfigurationPanel/>
 
                         <LeftBottomPanel/>
                         {/* TODO pass real id! */}

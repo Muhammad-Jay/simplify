@@ -1,11 +1,10 @@
 'use client'
-import React, {useState, useEffect, memo} from 'react'
+import React from 'react'
 import {cn} from "@/lib/utils";
-import mockSandpackFiles from "@/constants";
-import { FolderCode, SearchCode } from 'lucide-react'
+import {FolderCode, SearchCode} from 'lucide-react'
 import {Button} from "@/components/ui/button";
-import {LeftSidebarStateType, useEditorState} from "@/context/EditorContext";
-import ModelWrapper from "@/components/EditorFlow/Global search/ModelWrapper";
+import {useEditorState} from "@/context/EditorContext";
+import {LeftSidebarActionButton} from "@/components/EditorFlow/ui/left-sidebar/LeftSidebarActionButton";
 
 const EditorSidebar = () => {
     const { setOpenModel, setOpen } = useEditorState()
@@ -25,16 +24,3 @@ const EditorSidebar = () => {
 }
 export default EditorSidebar
 
-const LeftSidebarActionButton = memo(({state, icon, className } : { state: LeftSidebarStateType, icon?: any, className?: string }) => {
-    const { handleLeftSidebarState, leftSidebarState } = useEditorState()
-
-    return (
-        <Button
-            onClick={() => handleLeftSidebarState(state)}
-            className={cn(`size-[25px] !p-0 backdrop-blur-md rounded-md bg-neutral-700 text-xs`,
-                leftSidebarState === state && 'bg-cyan',
-                className)}>
-            {icon}
-        </Button>
-    )
-})

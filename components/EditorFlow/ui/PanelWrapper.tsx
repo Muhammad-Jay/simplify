@@ -7,6 +7,7 @@ import {motion} from 'framer-motion'
 type PanelWrapperProps = {
     className?: string;
     children?: React.ReactNode;
+    boolean?: boolean;
     position?: 'Top Right' | 'Bottom Right' | 'Top Left' | 'Bottom Left' | 'Bottom Center' | 'Top Center' | 'Left Center' | 'Right Center'
 }
 
@@ -21,7 +22,7 @@ const panelPosition = {
     bottomCenter: 'Bottom Center'
 }
 
-export function PanelWrapper({ children, className, position = 'Top Left' }: PanelWrapperProps) {
+export function PanelWrapper({ children, className, boolean, position = 'Top Left' }: PanelWrapperProps) {
 
     return (
         <motion.div
