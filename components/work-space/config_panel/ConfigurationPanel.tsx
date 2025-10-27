@@ -7,9 +7,11 @@ import {useWorkFlowState} from "@/context/WorkSpaceContext";
 import Deploy from "@/components/EditorFlow/ui/right-sidebar/Deploy";
 import {Tabs} from "@/components/EditorFlow/ui/DeployPanelWrapper";
 import {NodeConfigRenderer} from "@/components/work-space/config_panel/NodeConfigRenderer";
+import {WorkflowLogsRenderer} from "@/components/work-space/config_panel/WorkflowLogsRenderer";
 
 const configurationPanelState = {
     configuration: 'configuration',
+    logs: 'logs',
     advance: 'advance',
     resource: 'resource',
 }
@@ -54,6 +56,9 @@ export const ConfigurationPanel = () => {
                         <div>
 
                         </div>
+                    )}
+                    {configPanelState === configurationPanelState.logs && (
+                        <WorkflowLogsRenderer/>
                     )}
                 </div>
             </motion.div>

@@ -1,5 +1,5 @@
 'use client'
-import React, {useState, useEffect} from 'react'
+import React from 'react';
 import {
     Select,
     SelectContent,
@@ -11,13 +11,28 @@ import {
 } from "@/components/ui/select";
 import {cn} from "@/lib/utils";
 
-const SelectWrapper = ({placeholder,setValue, children, items, label,className}: {placeholder?: string, setValue?:any, children?: React.ReactNode, items?: {value: string, name: string}[], label?: string, className?: string}) => {
+type WorkflowSelectProps = {
+    defaultValue: any,
+    setValue: Function,
+    className?: string,
+    items: { name: string; value: string }[],
+    label?: string,
+    children?: React.ReactNode,
+}
 
+function WorkflowSelect({
+                                   defaultValue,
+                                   setValue,
+                                   className,
+                                   items,
+                                   label,
+                                   children,
+                               }: WorkflowSelectProps) {
     return (
-        <Select defaultValue={placeholder} onValueChange={(value) => {setValue(prev => ({...prev, environment: value}))}}>
+        <Select defaultValue={defaultValue} onValueChange={(value) => {setValue(value)}}>
             <SelectTrigger className={cn("!outline-none p-[10px] text-xs text-foreground/90 !border-none m-o !w-full",className)}>
-                {placeholder ? (
-                    <SelectValue defaultValue={placeholder} className={"bg-transparent text-foreground/90 !text-xs  hover:text-cyan-500 transition-300"}/>
+                {defaultValue ? (
+                    <SelectValue defaultValue={defaultValue} className={"bg-transparent text-foreground/90 !text-xs  hover:text-cyan-500 transition-300"}/>
                 ): children}
             </SelectTrigger>
             <SelectGroup>
@@ -31,4 +46,5 @@ const SelectWrapper = ({placeholder,setValue, children, items, label,className}:
         </Select>
     )
 }
-export default SelectWrapper
+
+export default WorkflowSelect;
