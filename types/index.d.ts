@@ -5,6 +5,8 @@ type children = {
     children?: React.ReactNode
 }
 
+export type ConfigurationPanelStateType = 'configuration' | 'advance' | 'resource'
+
 export type WorkFlowType = {
     name: string,
     id: string | any,

@@ -7,7 +7,7 @@ import {Position} from 'reactflow';
 import { useParams, useRouter } from 'next/navigation'
 import Dagre from '@dagrejs/dagre'
 import {db, Edges, FileInterface, WorkFlow, WorkSpaceProjectInterface} from "@/lib/dexie/index.dexie";
-import {WorkFlowType} from "@/types";
+import {ConfigurationPanelStateType, WorkFlowType} from "@/types";
 
 const WorkSpaceContext = createContext<any| undefined>(undefined);
 
@@ -35,22 +35,18 @@ export function WorkSpaceProvider({
     const [workFlows, setWorkFlows] = useState<WorkFlowType[]>([])
     const [isFetching, setIsFetching] = useState(false)
     const [selectedWorkFlowNode, setSelectedWorkFlowNode] = useState([])
-    const [isConfigurationPanelOpen, setIsConfigurationPanelOpen] = useState(false)
+    const [isConfigurationPanelOpen, setIsConfigurationPanelOpen] = useState(false);
+    const [nodesConfigs, setNodesConfigs] = useState([])
+    const [configPanelState, setConfigPanelState] = useState<ConfigurationPanelStateType>('configuration')
 
     useEffect(() => {
-        // mockWorkSpaceProjects.map(async mp => {
-        //     await db.workSpaceProjects.put({
-        //         id: mp.id,
-        //         name: mp.projectName,
-        //         project_id: 'project_simplify',
-        //         author_id,
-        //         created_At: Date.now(),
-        //         updated_At: Date.now()
-        //     })
-        // })
         loadWorkSpaceProjects(work_space_id);
         fetchAllWorkFlows()
     }, []);
+
+    useEffect(() => {
+        configureNodes();
+    }, [nodes.length]);
 
     const loadWorkSpaceProjects = useCallback(async (id: any) => {
         try {
@@ -85,6 +81,7 @@ export function WorkSpaceProvider({
                 data: {
                     name: project.name,
                     projectId: project.id,
+                    ports: project.ports,
                     color: defaultNodeColor,
                     isVisible: true,
                 },
@@ -103,17 +100,20 @@ export function WorkSpaceProvider({
         }
     }, [nodes.length])
 
+    const configureNodes = useCallback(() => {
+        const formatedNodes = nodes.map((nd: any) => ({
+            id: nd.id,
+            name: nd.data.name,
+            ports: []
+        }))
+
+        setNodesConfigs([...formatedNodes])
+    }, [nodes])
+
     const fetchAllWorkFlows = useCallback(async () => {
 
         const newId = nanoid();
 
-        // await db.workFlows.put({
-        //     id: newId,
-        //     name: 'project_simplify',
-        //     author_id,
-        //     created_At: Date.now(),
-        //     updated_At: Date.now()
-        // })
         try {
             setIsFetching(true);
             const dbWorkFlows: WorkFlow[] = await db.workFlows.where('author_id').equals(author_id).toArray()
@@ -139,6 +139,7 @@ export function WorkSpaceProvider({
             await db.workSpaceProjects.put({
                 id: newId,
                 name,
+                ports: [],
                 project_id: work_space_id,
                 author_id,
                 created_At: Date.now(),
@@ -153,6 +154,7 @@ export function WorkSpaceProvider({
                     name: name,
                     projectId: newId,
                     color: defaultNodeColor,
+                    ports: [],
                     isVisible: true,
                 }
             }])
@@ -329,6 +331,73 @@ export function WorkSpaceProvider({
         return dbProjects || []
     }, [workFlows])
 
+    const addNodePort = useCallback(async (newNode: any, port: number, setErrorMessage: (value: string) => void) => {
+        if (!port){
+            setErrorMessage('port missing.');
+            return;
+        }else if (isNaN(port)){
+            setErrorMessage('port value is not a number')
+        }else {
+            const formatedNode = nodes.map(nd => {
+                if (nd.id === newNode.id) {
+                    const portExists = nd.data.ports.filter(p => p.port === port);
+                    if (portExists.length > 0) {
+                        setErrorMessage('port already exists.');
+                        return nd;
+                    }else {
+                        return {
+                            ...newNode,
+                            data: {
+                                ...newNode.data,
+                                ports: [...newNode.data.ports, { port }]
+                            }
+                        }
+                    }
+                }else {
+                    return nd
+                }
+            })
+
+            setNodes([...formatedNode]);
+
+            await db.workSpaceProjects.put({
+                id: newNode.id,
+                name: newNode.data.name,
+                ports: [...newNode.data.ports, { port }],
+                project_id: work_space_id,
+                author_id,
+                created_At: Date.now(),
+                updated_At: Date.now()
+            })
+        }
+    }, [nodes])
+
+    const removePort  = useCallback(async (nd: any, port: any) => {
+        setNodes(nodes.map(n => {
+            if (n.id === nd.id) {
+                return {
+                    ...n,
+                    data: {
+                        ...n.data,
+                        ports: [...n.data.ports.filter(p => p !== port)]
+                    }
+                }
+            }else {
+                return n;
+            }
+        }))
+
+        await db.workSpaceProjects.put({
+            id: nd.id,
+            name: nd.data.name,
+            ports: [...nd.data.ports.filter(p => p !== port)],
+            project_id: work_space_id,
+            author_id,
+            created_At: Date.now(),
+            updated_At: Date.now()
+        })
+    }, [nodes])
+
     return (
         <WorkSpaceContext.Provider value={{
             nodes,
@@ -367,6 +436,12 @@ export function WorkSpaceProvider({
             getWorkflowProjects,
             isConfigurationPanelOpen,
             setIsConfigurationPanelOpen,
+            configPanelState,
+            setConfigPanelState,
+            nodesConfigs,
+            setNodesConfigs,
+            addNodePort,
+            removePort,
         }}>
             {children}
         </WorkSpaceContext.Provider>

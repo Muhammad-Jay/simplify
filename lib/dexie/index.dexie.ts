@@ -3,6 +3,7 @@ import Dexie, { Table } from 'dexie'
 export interface WorkSpaceProjectInterface {
     id: string;
     name: string;
+    ports: any[],
     project_id: string | any;
     author_id: string;
     created_At?: string | number;
@@ -90,7 +91,7 @@ export class FlowDB extends Dexie {
         });
 
         this.version(5).stores({
-            workSpaceProjects: '&id, name, project_id, author_id, created_At, updated_At'
+            workSpaceProjects: '&id, name, ports, project_id, author_id, created_At, updated_At'
         });
 
         this.version(5).stores({

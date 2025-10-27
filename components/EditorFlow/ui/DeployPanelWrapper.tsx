@@ -26,6 +26,7 @@ const DeployPanelWrapper = () => {
         setIsDeployPanelOpen,
         isDeployPanelOpen,
     } = useFileState();
+
     return (
         <div
             className={cn('!w-[340px] transition-300 absolute right-[10px] top-[30px] !space-y-[10px] !m-[0px] !z-[10] rounded-2xl',
@@ -42,7 +43,7 @@ const DeployPanelWrapper = () => {
                 className={cn(`container-full transition-300 center rounded-2xl center flex-col border-[4px] !z-[10] border-zinc-800 !backdrop-blur-lg !bg-neutral-700/26`)}
             >
                 <div className={'w-full between h-fit pr-[15px] pt-[5px]'}>
-                    <Tabs setDeployState={setDeployState}/>
+                    <Tabs option={deployState} values={deployPanelState} setValue={setDeployState}/>
                     <Deploy/>
                 </div>
                 <div className={cn('center container-full !max-h-[90%]')}>
@@ -69,22 +70,19 @@ const DeployPanelWrapper = () => {
 }
 export default DeployPanelWrapper
 
-export const Tabs = ({setDeployState}: { setDeployState: any}) => {
-    const {
-        deployState
-    } = useFileState();
+export const Tabs = ({values, setValue, option}: { values: any, setValue: any, option: string}) => {
 
     return (
         <ScrollArea className={cn('w-full center !flex-row !mx-[10px] border-b-[1px] pt-[10px] mt-[10px] border-b-neutral-800/70 !justify-start p-[5px] gap-[10px] h-[40px]')}>
-            {Object.entries(deployPanelState).map(([key, value]) => (
+            {Object.entries(values).map(([key, value]: any) => (
                 <Button
-                    key={value}
+                    key={value as string}
                     type={'button'}
                     onClick={() => {
-                        setDeployState(value)
+                        setValue(value)
                     }}
                     className={cn('w-fit h-[25px] hover:bg-transparent mx-[10px] capitalize bg-transparent !p-[0px] cursor-pointer font-semibold text-xs rounded-xs text-foreground/60',
-                        deployState === value && 'text-cyan')}>
+                        option === value && 'text-cyan')}>
                     {value.replace('_', " ")}
                 </Button>
             ))}

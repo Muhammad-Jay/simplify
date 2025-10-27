@@ -32,7 +32,7 @@ import WorkSpaceNode from "@/components/work-space/work_space_nodes/WorkSpaceNod
 import {generateEdges} from "@/utils/flow/edge";
 import AddNewProjectModel from "@/components/work-space/work_space_nodes/AddNewProjectModel";
 import {PanelWrapper} from "@/components/EditorFlow/ui/PanelWrapper";
-import {ConfigurationPanel} from "@/components/work-space/ConfigurationPanel";
+import {ConfigurationPanel} from "@/components/work-space/config_panel/ConfigurationPanel";
 
 const nodeTypes = {
     workSpaceNode: WorkSpaceNode

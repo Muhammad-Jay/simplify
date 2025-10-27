@@ -6,10 +6,19 @@ import { motion } from "framer-motion";
 import {useWorkFlowState} from "@/context/WorkSpaceContext";
 import Deploy from "@/components/EditorFlow/ui/right-sidebar/Deploy";
 import {Tabs} from "@/components/EditorFlow/ui/DeployPanelWrapper";
+import {NodeConfigRenderer} from "@/components/work-space/config_panel/NodeConfigRenderer";
+
+const configurationPanelState = {
+    configuration: 'configuration',
+    advance: 'advance',
+    resource: 'resource',
+}
 
 export const ConfigurationPanel = () => {
     const {
         isConfigurationPanelOpen,
+        configPanelState,
+        setConfigPanelState,
     } = useWorkFlowState();
 
     const { setDeployState } = useWorkFlowState();
@@ -30,11 +39,22 @@ export const ConfigurationPanel = () => {
                 className={cn(`container-full transition-300 center rounded-2xl center flex-col border-[4px] !z-[10] border-zinc-800 !backdrop-blur-lg !bg-neutral-700/26`)}
             >
                 <div className={'w-full between h-fit pr-[15px] pt-[5px]'}>
-                    <Tabs setDeployState={setDeployState}/>
-                    <Deploy/>
+                    <Tabs option={configPanelState} values={configurationPanelState} setValue={setConfigPanelState}/>
                 </div>
                 <div className={cn('center container-full !max-h-[90%]')}>
+                    {configPanelState === configurationPanelState.configuration && (
+                        <NodeConfigRenderer/>
+                    )}
+                    {configPanelState === configurationPanelState.advance && (
+                        <div>
 
+                        </div>
+                    )}
+                    {configPanelState === configurationPanelState.resource && (
+                        <div>
+
+                        </div>
+                    )}
                 </div>
             </motion.div>
         </div>
