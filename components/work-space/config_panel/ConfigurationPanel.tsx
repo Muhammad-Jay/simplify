@@ -21,16 +21,16 @@ export const ConfigurationPanel = () => {
         isConfigurationPanelOpen,
         configPanelState,
         setConfigPanelState,
-    } = useWorkFlowState();
+    } = useWorkFlowState()
 
     const { setDeployState } = useWorkFlowState();
 
     return isConfigurationPanelOpen && (
         <div
-            className={cn('!w-[340px] transition-300 absolute right-[10px] top-[30px] !space-y-[10px] !m-[0px] !z-[10] rounded-2xl',
+            className={cn('!w-[340px] transition-300 absolute right-[10px] top-[10px] !space-y-[10px] !m-[0px] !z-[10] rounded-2xl',
                 // rightSidebarState === sidebarState.runPanel && buildProcess.length > 0 ? '!h-[94%]' : '!h-[250px]',
-                '!h-[85%]',
-                'right-[50%] translate-x-[50%] !w-[750px]'
+                '!h-[90%]',
+                'right-[50%] translate-x-[50%] !w-[850px]'
             )}>
             <motion.div
                 initial={{opacity: 0, scale: .5, x: 50}}

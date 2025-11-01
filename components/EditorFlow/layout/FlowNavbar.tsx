@@ -4,6 +4,7 @@ import {cn} from "@/lib/utils";
 import {useEditorState} from "@/context/EditorContext";
 import {Check, Play, Copy} from 'lucide-react'
 import {useFileState} from "@/context/FileContext";
+import { useParams } from 'next/navigation'
 import {useWorkFlowState} from "@/context/WorkSpaceContext";
 import {useSocket} from "@/context/SocketContext";
 import {Button} from "@/components/ui/button";
@@ -11,6 +12,8 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import { useReactFlow } from 'reactflow'
 
 export default function FlowNavbar({id}: {id: any}) {
+    const { project_id, work_space_id } = useParams()
+
     const { rightSidebarState, leftSidebarState, handleRightSidebarState, handleLeftSidebarState, recentActiveNodes, nodes, selectedNode, setCurrentNode, setIsOnFitView } = useEditorState()
     const { currentProjectId, setIsDeployPanelOpen, isDeployPanelOpen, currentContainer, setGlobalMessage } = useFileState();
     const { handleNavigate, setIsConfigurationPanelOpen } = useWorkFlowState();
@@ -44,8 +47,9 @@ export default function FlowNavbar({id}: {id: any}) {
                         <div className={'w-fit center gap-[10px]'}>
                         <span
                             onClick={() =>  handleNavigate(currentProjectId.workSpaceName)}
-                            className={cn('center cursor-pointer hover:!text-cyan-500 transition-300 text-foreground text-xs font-semibold',
-                                !id && 'text-[#d0ff00]')}>{currentProjectId?.workSpaceName || ''}</span>
+                            className={cn('center cursor-pointer hover:!text-cyan-500 transition-300 flex-nowrap text-nowrap text-foreground text-xs font-semibold',
+                                //@ts-ignore
+                                !id && 'text-[#d0ff00]')}>{currentProjectId?.workSpaceName || work_space_id?.replaceAll('_', " ").replaceAll('-', " ")}</span>
                             <span className={'text-cyan-500/90  text-xs'}>{'>'}</span>
                         </div>
                     )}

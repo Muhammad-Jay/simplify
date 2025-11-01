@@ -20,7 +20,7 @@ export type DeployPanelStateTypes = 'environmentVariable' | 'logs' | 'overview' 
 
 /** Defines the structure for global messages (toasts/notifications). */
 export type GlobalMessageType = {
-    type: 'error' | 'success' | 'warning' | '',
+    type: 'error' | 'success' | 'warning' | 'info' | '',
     message: string
 }
 
@@ -100,7 +100,7 @@ export function GlobalFileProvider({
 }){
     // --- Hooks and Router Setup ---
 
-    const { project_id } = useParams()
+    const { project_id, work_space_id } = useParams()
     const router = useRouter();
 
     // Context consumers
@@ -184,17 +184,11 @@ export function GlobalFileProvider({
     /** Initial load effect based on URL param. */
     useEffect(() => {
         if (project_id) {
-            loadFiles(project_id)
+            setProjectId(currentProjectId.id);
+            loadFiles(project_id);
         }
     }, [project_id]);
 
-    /** Reload files when `currentProjectId` changes its ID. */
-    useEffect(() => {
-        setProjectId(currentProjectId.id);
-        if (currentProjectId.id) {
-            loadFiles(currentProjectId.id)
-        }
-    }, [currentProjectId.id]);
 
     /** Container and Workflow monitoring. Updates container info on changes. */
     useEffect(() => {
@@ -341,6 +335,9 @@ export function GlobalFileProvider({
         }else if (globalMessage.type === 'warning'){
             content = <p className={`${style} text-yellow-400`}>{globalMessage.message}</p>
             toast.warning(content)
+        }else if (globalMessage.type === 'info'){
+            content = <p className={`${style} text-foreground/90`}>{globalMessage.message}</p>
+            toast.info(content)
         }else {
             content = <p className={`${style} text-red-400`}>{globalMessage.message}</p>
             toast.error(content)
@@ -475,6 +472,8 @@ export function GlobalFileProvider({
             const dbFiles: FileInterface[] = await db.files.where('project_id').equals(id).toArray()
             if (dbFiles.length === 0) {
                 console.log('No files found in local storage.')
+                setNodes([]);
+                setEdges([]);
                 return;
             }
 

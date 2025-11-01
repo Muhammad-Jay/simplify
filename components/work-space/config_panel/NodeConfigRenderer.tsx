@@ -95,7 +95,7 @@ const NodeConfigCard = ({node}: {node: any}) => {
                                 </button>
                             </div>
                             <p className={cn('text-xs text-red-500/90 font-normal w-full center !justify-end pr-5')}>{errorMessage && errorMessage}</p>
-                            <div className={cn('w-full min-h-[40px] p-[6px] rounded-sm bg-neutral-950/80 !items-start gap-2 grid grid-cols-5')}>
+                            <div className={cn('w-full min-h-[40px] p-[6px] rounded-sm bg-neutral-950/80 !items-start gap-2 grid grid-cols-6')}>
                                 {ports && ports?.map((port: any, index: number) => (
                                     <div
                                         key={port?.port} className={cn('w-[70px] m-0 px-1 h-[26px] hover:bg-cyan-500/50 transition-300 between gap-2 text-xs rounded-sm border-1 border-neutral-700 bg-neutral-800 backdrop-blur-md')}>

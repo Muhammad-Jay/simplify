@@ -41,7 +41,7 @@ const Deploy: React.FC = () => {
      * Handles the Run/Stop toggle logic for container deployment.
      */
     const handleRun = useCallback(async () => {
-        setIsDeployPanelOpen(true);
+        setIsDeployPanelOpen(true)
         try {
             // 1. Prepare file tree data for deployment payload
             const formatedNodes: DeployFileNode[] = nodes.map(nds => ({

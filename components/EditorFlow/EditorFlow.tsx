@@ -54,7 +54,7 @@ const edgeType = {
 }
 
 // Initial edges data
-const initialEdges: Edge[] = [];
+const initialEdges: Edge[] = []
 
 const ProjectFlow = ({workSpaceId, projectId: id}) => {
     // const onDrop = (event: React.DragEvent) => {
